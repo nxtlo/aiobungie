@@ -473,7 +473,8 @@ class RESTClient(interfaces.RESTInterface):
         oauth2: bool = False,
         auth: str | None = None,
         unwrapping: typing.Literal["json", "read"] = "json",
-        json: collections.Mapping[str, typing.Any] | str | None = None,
+        json: collections.Mapping[str, typing.Any] | None = None,
+        data: collections.Mapping[str, typing.Any] | None = None,
         params: collections.Mapping[str, typing.Any] | None = None,
         headers: dict[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
@@ -506,13 +507,14 @@ class RESTClient(interfaces.RESTInterface):
             async with (stack := contextlib.AsyncExitStack()):
                 await stack.enter_async_context(self._lock)
 
-                data = self._dumps(json) if isinstance(json, dict) else json
                 # We make the request here.
                 taken_time = time.monotonic()
                 response = await self._session.request(
                     method=method,
                     url=f"{endpoint}/{route}",
                     headers=headers,
+                    # FIXME: Bungie refuses to deserialize this for some reason.
+                    json=self._dumps(json) if json else None,
                     data=data,
                     params=params,
                 )
@@ -648,13 +650,15 @@ class RESTClient(interfaces.RESTInterface):
             "client_secret": self._client_secret,
         }
 
-        data = (
-            f"grant_type=authorization_code&code={code}"
-            f"&client_id={self._client_id}&client_secret={self._client_secret}"
-        )
+        data = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "client_id": self._client_id,
+            "client_secret": self._client_secret,
+        }
 
         response = await self._request(
-            RequestMethod.POST, "", headers=headers, json=data, oauth2=True
+            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
         )
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
@@ -672,10 +676,9 @@ class RESTClient(interfaces.RESTInterface):
             "refresh_token": refresh_token,
             "client_id": self._client_id,
             "client_secret": self._client_secret,
-            "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        response = await self._request(RequestMethod.POST, "", json=data, oauth2=True)
+        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 

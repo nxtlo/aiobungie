@@ -419,7 +419,7 @@ class RESTClient(interfaces.RESTInterface):
             raise RuntimeError("Cannot open REST client when it's already open.")
 
         self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False),
+            connector=aiohttp.TCPConnector(),
             connector_owner=True,
             raise_for_status=False,
             timeout=aiohttp.ClientTimeout(total=30.0),

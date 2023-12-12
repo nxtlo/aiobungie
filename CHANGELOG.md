@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.9...HEAD)
 
+## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) - 2023-12-2
+
+## Fixed
+* Fixed `fetch_oauth2_tokens` and `refresh_access_token` raising `BadRequest`.
+* `client_secret` was being logged in the headers when enabling `TRACE` log level.
 
 ## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) - 2023-12-1
 

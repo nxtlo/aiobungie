@@ -438,7 +438,7 @@ def stringify_http_message(headers: collections.Mapping[str, str]) -> str:
         "{ \n"
         + "\n".join(  # noqa: W503
             f"{f'   {key}'}: {value}"
-            if key not in ("Authorization", "X-API-KEY")
+            if key not in ("Authorization", "X-API-KEY", "client_secret", "client_id")
             else f"   {key}: REDACTED_TOKEN"
             for key, value in headers.items()
         )

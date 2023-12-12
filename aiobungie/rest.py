@@ -172,6 +172,13 @@ def _write_sqlite_bytes(
         pathlib.Path(tmp.name).unlink(missing_ok=True)
 
 
+class _JSONPayload(aiohttp.BytesPayload):
+    def __init__(
+        self, value: typing.Any, dumps: typedefs.Dumps = helpers.dumps
+    ) -> None:
+        super().__init__(dumps(value), content_type=_APP_JSON, encoding="UTF-8")
+
+
 class RequestMethod(str, enums.Enum):
     """HTTP request methods enum."""
 
@@ -503,6 +510,9 @@ class RESTClient(interfaces.RESTInterface):
         if self._lock is None:
             self._lock = asyncio.Lock()
 
+        if json:
+            headers["Content-Type"] = _APP_JSON
+
         while True:
             async with (stack := contextlib.AsyncExitStack()):
                 await stack.enter_async_context(self._lock)
@@ -513,9 +523,7 @@ class RESTClient(interfaces.RESTInterface):
                     method=method,
                     url=f"{endpoint}/{route}",
                     headers=headers,
-                    # FIXME: Bungie refuses to deserialize this for some reason.
-                    json=self._dumps(json) if json else None,
-                    data=data,
+                    data=_JSONPayload(json) if json else data,
                     params=params,
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000

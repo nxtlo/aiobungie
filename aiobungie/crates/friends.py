@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: list[str] = ["Friend", "FriendRequestView"]
+__all__ = ["Friend", "FriendRequestView"]
 
 import typing
 

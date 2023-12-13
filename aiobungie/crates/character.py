@@ -26,7 +26,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Character",
     "Dye",
     "MinimalEquipments",
@@ -115,7 +115,7 @@ class MinimalEquipments:
     """The equipped items's hash."""
 
     dyes: collections.Collection[Dye]
-    """An optional collection of the item rendering dyes"""
+    """An collection of the item rendering dyes"""
 
     async def fetch_my_item(self) -> entity.InventoryEntity:
         """Fetch the inventory item definition of this equipment."""
@@ -154,7 +154,7 @@ class RenderedData:
             A collection of the fetched item definitions.
         """
         return await helpers.awaits(
-            *[item.fetch_my_item() for item in self.equipment[:limit]]
+            *(item.fetch_my_item() for item in self.equipment[:limit])
         )
 
 

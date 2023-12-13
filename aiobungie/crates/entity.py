@@ -177,7 +177,7 @@ class Entity(EntityBase):
 class SearchableEntity(EntityBase):
     """Represents an entity object returned from a searchable term."""
 
-    suggested_words: list[str]
+    suggested_words: collections.Sequence[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
@@ -411,7 +411,7 @@ class InventoryEntity(Entity):
     stack_label: str | None = attrs.field(repr=False)
     """If this string is populated, you can't have more than one stack with this label in a given inventory."""
 
-    tooltip_notifications: list[str] = attrs.field(repr=False)
+    tooltip_notifications: collections.Sequence[str] = attrs.field(repr=False)
     """"""
 
     display_source: str | None = attrs.field(hash=False, repr=False)

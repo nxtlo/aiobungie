@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "ItemPerk",
     "ItemInstance",
     "ItemEnergy",
@@ -133,7 +133,7 @@ class CraftableItem:
     is_visible: bool
     """Whether or not the item is visible."""
 
-    failed_requirement_indexes: list[int]
+    failed_requirement_indexes: collections.Sequence[int]
     """If the requirements are not met for crafting this item, these will index into the list of failure strings."""
 
     sockets: collections.Sequence[CraftableSocket]
@@ -157,7 +157,7 @@ class CraftableSocketPlug:
     item_hash: int
     """The hash of the plug item."""
 
-    failed_requirement_indexes: list[int]
+    failed_requirement_indexes: collections.Sequence[int]
     """Index into the unlock requirements to display failure descriptions."""
 
 

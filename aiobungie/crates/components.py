@@ -28,7 +28,7 @@ since it depends on components passed to the request or due to privacy by the pr
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Component",
     "CharacterComponent",
     "ProfileComponent",
@@ -153,7 +153,7 @@ class CraftablesComponent:
         if not self.craftables:
             return None
 
-        item_ids = list(self.craftables.keys())
+        item_ids = tuple(self.craftables.keys())
         return await helpers.awaits(
             *[
                 self.net.request.fetch_inventory_item(item_id)
@@ -487,11 +487,11 @@ class Component(
     import aiobungie
 
     # The components to get and return.
-    components = [
+    components = (
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_INVENTORIES,
-    ]
+    )
     profile = await client.fetch_profile(
         id,
         aiobungie.MembershipType.STEAM,

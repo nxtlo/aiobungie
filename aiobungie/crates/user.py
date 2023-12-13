@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "User",
     "HardLinkedMembership",
     "UserThemes",
@@ -282,13 +282,15 @@ class DestinyMembership(UserLike):
     """The member's crossave override membership type."""
 
     async def fetch_self_profile(
-        self, components: list[enums.ComponentType], auth: str | None = None
+        self,
+        components: collections.Sequence[enums.ComponentType],
+        auth: str | None = None,
     ) -> components_.Component:
         """Fetch this user's profile.
 
         Parameters
         ----------
-        components : `list[aiobungie.ComponentType]`
+        components : `collections.Sequence[aiobungie.ComponentType]`
             A list of profile components to collect and return.
             This either can be arguments of integers or `aiobungie.ComponentType`.
 

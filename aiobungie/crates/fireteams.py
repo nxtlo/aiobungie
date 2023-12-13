@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Fireteam",
     "AvailableFireteam",
     "FireteamUser",
@@ -228,7 +228,7 @@ class FireteamParty:
     last_destination_hash: int | None
     """The hash identifier for the destination of the last location you were orbiting when in orbit."""
 
-    tracking: list[dict[str, typing.Any]]
+    tracking: collections.Sequence[dict[str, typing.Any]]
     """???"""
 
 

@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: list[str] = [
+__all__ = (
     "AiobungieError",
     "NotFound",
     "HTTPException",
@@ -38,7 +38,7 @@ __all__: list[str] = [
     "BadRequest",
     "raise_error",
     "stringify_http_message",
-]
+)
 
 import collections.abc as collections
 import http
@@ -192,7 +192,7 @@ class MembershipTypeError(BadRequest):
         profile = await client.fetch_profile(
             member_id=1,
             type=aiobungie.MembershipType.STADIA,
-            components=[]
+            components=()
         )
 
     # Membership type is wrong!
@@ -204,7 +204,7 @@ class MembershipTypeError(BadRequest):
         profile = await client.fetch_profile(
             member_id=profile_id,
             type=correct_membership,
-            components=[]
+            components=()
         )
     ```
     """

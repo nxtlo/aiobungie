@@ -27,7 +27,7 @@ from __future__ import annotations
 import datetime
 import pathlib
 
-__all__: list[str] = ["RESTInterface"]
+__all__ = ("RESTInterface",)
 
 import abc
 import collections.abc as collections
@@ -287,7 +287,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         membership_id: int,
         type: enums.MembershipType | int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> typedefs.JSONObject:
         """
@@ -299,8 +299,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The member's id.
         type: `aiobungie.aiobungie.MembershipType | int`
             A valid membership type.
-        components : `list[aiobungie.ComponentType]`
-            A list of profile components to collect and return.
+        components : `collections.Sequence[aiobungie.ComponentType]`
+            A sequence of profile components to collect and return.
 
         Other Parameters
         ----------------
@@ -357,7 +357,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         member_id: int,
         membership_type: enums.MembershipType | int,
         character_id: int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> typedefs.JSONObject:
         """Fetch a Destiny 2 player's characters.
@@ -370,7 +370,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The member's membership type.
         character_id : `int`
             The character id to return.
-        components: `list[aiobungie.ComponentType]`
+        components: `collections.Sequence[aiobungie.ComponentType]`
             A list of character components to collect and return.
 
         Other Parameters
@@ -1955,7 +1955,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         member_id: int,
         item_id: int,
         membership_type: enums.MembershipType | int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
     ) -> typedefs.JSONObject:
         """Fetch an instanced Destiny 2 item's details.
 
@@ -1967,7 +1967,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The instance id of the item.
         membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type of the Destiny 2 player.
-        components : `list[aiobungie.ComponentType]`
+        components : `collections.Sequence[aiobungie.ComponentType]`
             A list of components to retrieve.
 
         Returns
@@ -2091,7 +2091,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_id: int,
         membership_type: enums.MembershipType | int,
         /,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         filter: int | None = None,
     ) -> typedefs.JSONObject:
         """Get currently available vendors from the list of vendors that can possibly have rotating inventory.
@@ -2106,7 +2106,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny membership id to return the vendor info for.
         membership_type : `aiobungie.aiobungie.MembershipType | int`
             The Destiny membership type to return the vendor info for.
-        components: `list[aiobungie.ComponentType]`
+        components: `collections.Sequence[aiobungie.ComponentType]`
             A list of vendor components to collect and return.
 
         Other Parameters
@@ -2129,7 +2129,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: enums.MembershipType | int,
         vendor_hash: int,
         /,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
     ) -> typedefs.JSONObject:
         """Fetch details for a specific vendor.
 
@@ -2145,7 +2145,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny membership type to return the vendor info for.
         vendor_hash : `int`
             The vendor hash to return the details for.
-        components: `list[aiobungie.ComponentType]`
+        components: `collections.Sequence[aiobungie.ComponentType]`
             A list of vendor components to collect and return.
 
         Returns
@@ -2221,7 +2221,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: enums.MembershipType | int,
         day_start: datetime.datetime,
         day_end: datetime.datetime,
-        groups: list[enums.StatsGroupType | int],
+        groups: collections.Sequence[enums.StatsGroupType | int],
         modes: collections.Sequence[enums.GameMode | int],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
@@ -2240,9 +2240,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The start of the day to return the stats for.
         day_end : `datetime.datetime`
             The end of the day to return the stats for.
-        groups : `list[aiobungie.StatsGroupType]`
+        groups : `collections.Sequence[aiobungie.StatsGroupType]`
             A list of stats groups to return.
-        modes : `list[aiobungie.GameMode | int]`
+        modes : `collections.Sequence[aiobungie.GameMode | int]`
             A list of game modes to return.
         period_type : `aiobungie.enums.PeriodType`
             The period type to return the stats for.
@@ -2259,7 +2259,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         membership_id: int,
         membership_type: enums.MembershipType | int,
-        groups: list[enums.StatsGroupType | int],
+        groups: collections.Sequence[enums.StatsGroupType | int],
     ) -> typedefs.JSONObject:
         """Fetch historical stats for an account's membership.
 
@@ -2269,7 +2269,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny membership id to return the stats for.
         membership_type : `aiobungie.MembershipType | int`
             The Destiny membership type to return the stats for.
-        groups : `list[aiobungie.StatsGroupType]`
+        groups : `collections.Sequence[aiobungie.StatsGroupType]`
             A list of stats groups to return.
 
         Returns

@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Client",)
+__all__ = ("Client",)
 
 import logging
 import typing
@@ -329,7 +329,7 @@ class Client(traits.ClientApp):
         self,
         member_id: int,
         type: enums.MembershipType | int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> components.Component:
         """
@@ -341,7 +341,7 @@ class Client(traits.ClientApp):
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
-        components : `list[aiobungie.ComponentType]`
+        components : `collections.Sequence[aiobungie.ComponentType]`
             List of profile components to collect and return.
 
         Other Parameters
@@ -442,7 +442,7 @@ class Client(traits.ClientApp):
         member_id: int,
         membership_type: enums.MembershipType | int,
         character_id: int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
@@ -455,7 +455,7 @@ class Client(traits.ClientApp):
             The Destiny character id to retrieve.
         membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
-        components: `list[aiobungie.ComponentType]`
+        components: `collections.Sequence[aiobungie.ComponentType]`
             Multiple arguments of character components to collect and return.
 
         Other Parameters

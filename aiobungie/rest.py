@@ -108,8 +108,11 @@ You can enable this with the following code
 logging.addLevelName(TRACE, "TRACE")
 
 
-def _collect_components(components: list[enums.ComponentType], /) -> str:
-    collector: list[str] = []
+def _collect_components(
+    components: collections.Sequence[enums.ComponentType],
+    /,
+) -> str:
+    collector: collections.MutableSequence[str] = []
 
     for component in components:
         if isinstance(component.value, tuple):
@@ -784,7 +787,7 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         membership_type: enums.MembershipType | int,
         character_id: int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
@@ -828,7 +831,7 @@ class RESTClient(interfaces.RESTInterface):
         self,
         membership_id: int,
         type: enums.MembershipType | int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
@@ -1627,7 +1630,7 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         item_id: int,
         membership_type: enums.MembershipType | int,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
 
@@ -1731,7 +1734,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_id: int,
         membership_type: enums.MembershipType | int,
         /,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
         filter: int | None = None,
     ) -> typedefs.JSONObject:
         components_ = _collect_components(components)
@@ -1759,7 +1762,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
         vendor_hash: int,
         /,
-        components: list[enums.ComponentType],
+        components: collections.Sequence[enums.ComponentType],
     ) -> typedefs.JSONObject:
         components_ = _collect_components(components)
         resp = await self._request(
@@ -2122,7 +2125,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
         day_start: datetime.datetime,
         day_end: datetime.datetime,
-        groups: list[enums.StatsGroupType | int],
+        groups: collections.Sequence[enums.StatsGroupType | int],
         modes: collections.Sequence[enums.GameMode | int],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
@@ -2146,7 +2149,7 @@ class RESTClient(interfaces.RESTInterface):
         self,
         membership_id: int,
         membership_type: enums.MembershipType | int,
-        groups: list[enums.StatsGroupType | int],
+        groups: collections.Sequence[enums.StatsGroupType | int],
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,

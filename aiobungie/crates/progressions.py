@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Progression", "Factions")
+__all__ = ("Progression", "Factions")
 
 import attrs
 

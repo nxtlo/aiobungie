@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "MilestoneContent",
     "MilestoneItems",
     "Milestone",
@@ -99,7 +99,7 @@ class MilestoneActivity:
     challenges: collections.Sequence[records.Objective]
     """A sequence of objectives/challenges bound to this activity."""
 
-    modifier_hashes: list[int] | None
+    modifier_hashes: collections.Sequence[int] | None
     """An optional list of the activity's modifier hashes."""
 
     boolean_options: collections.Mapping[int, bool] | None

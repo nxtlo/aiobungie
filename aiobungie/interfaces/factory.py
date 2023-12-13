@@ -25,7 +25,7 @@ from __future__ import annotations
 
 from aiobungie.internal import iterators
 
-__all__: tuple[str, ...] = ("FactoryInterface",)
+__all__ = ("FactoryInterface",)
 
 import abc
 import typing

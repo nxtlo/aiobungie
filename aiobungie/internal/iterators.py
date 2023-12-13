@@ -96,13 +96,13 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
     def collect(
         self, casting: _B | None = None
     ) -> collections.Sequence[Item] | collections.Sequence[_B]:
-        """Collects all items in the iterator into a list and cast them into an object if provided.
+        """Collects all items in the iterator into an immutable collection.
 
         Example
         -------
         >>> iterator = Iterator([1, 2, 3])
         >>> iterator.collect(casting=str)
-        ["1", "2", "3"]
+        ("1", "2", "3")
 
         Parameters
         ----------
@@ -618,7 +618,7 @@ def iter(
     Example
     -------
     ```py
-    sequence = [1,2,3]
+    sequence = (1,2,3)
     for item in aiobungie.iter(sequence).reversed():
         print(item)
     # 3

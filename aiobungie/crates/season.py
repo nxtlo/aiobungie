@@ -28,7 +28,7 @@ season artifact, season content, season pass, etc.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Artifact",
     "ArtifactTier",
     "ArtifactTierItem",

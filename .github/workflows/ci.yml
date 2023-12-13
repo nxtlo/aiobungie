@@ -61,30 +61,6 @@ jobs:
           pip install .
           nox -s client
 
-  pr_client_test:
-    if: |
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.user.login != 'nxtlo'
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Client Tests
-        env:
-          CLIENT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pip install nox
-          pip install .
-          nox -s client
-
   format:
     runs-on: ubuntu-latest
 

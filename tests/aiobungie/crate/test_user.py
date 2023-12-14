@@ -83,7 +83,7 @@ class TestBungieUser:
         return crate.user.BungieUser(
             id=205432,
             name=None,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(),
             is_deleted=True,
             about=None,
             picture=assets.Image(path="1029312dnoi12.jpg"),

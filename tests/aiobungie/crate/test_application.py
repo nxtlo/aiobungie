@@ -96,7 +96,7 @@ class TestApplication:
             name="aiobungie",
             redirect_url=None,
             created_at=datetime(2017, 4, 8),
-            published_at=datetime.utcnow(),
+            published_at=datetime.now(),
             link="this.io",
             scope=None,
             status=1,

@@ -46,6 +46,7 @@ from aiobungie.crates import season
 from aiobungie.crates import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import iterators
 from aiobungie.internal import time
 
@@ -83,7 +84,7 @@ class Factory(interfaces.FactoryInterface):
             blizzard_name=data.get("blizzardDisplayName", None),
             status=data["statusText"],
             locale=data["locale"],
-            picture=assets.Image(path=str(data["profilePicturePath"])),
+            picture=assets.Image(path=data["profilePicturePath"]),
             code=data.get("cachedBungieGlobalDisplayNameCode", None),
             unique_name=data.get("uniqueName", None),
             theme_id=int(data["profileTheme"]),
@@ -97,15 +98,15 @@ class Factory(interfaces.FactoryInterface):
     ) -> user.PartialBungieUser:
         return user.PartialBungieUser(
             net=self._net,
-            types=[
+            types=tuple(
                 enums.MembershipType(type_)
-                for type_ in payload.get("applicableMembershipTypes", [])
-            ],
+                for type_ in payload.get("applicableMembershipTypes", ())
+            ),
             name=payload.get("displayName"),
             id=int(payload["membershipId"]),
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             is_public=payload["isPublic"],
-            icon=assets.Image(payload.get("iconPath", "")),
+            icon=assets.Image(path=payload.get("iconPath", "")),
             type=enums.MembershipType(payload["membershipType"]),
         )
 
@@ -127,17 +128,19 @@ class Factory(interfaces.FactoryInterface):
             type=enums.MembershipType(payload["membershipType"]),
             is_public=payload["isPublic"],
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
-            icon=assets.Image(payload.get("iconPath", "")),
-            types=[
+            icon=assets.Image(path=payload.get("iconPath", "")),
+            types=tuple(
                 enums.MembershipType(type_)
-                for type_ in payload.get("applicableMembershipTypes", [])
-            ],
+                for type_ in payload.get("applicableMembershipTypes", ())
+            ),
         )
 
     def deserialize_destiny_memberships(
         self, data: typedefs.JSONArray
     ) -> collections.Sequence[user.DestinyMembership]:
-        return [self.deserialize_destiny_membership(membership) for membership in data]
+        return tuple(
+            self.deserialize_destiny_membership(membership) for membership in data
+        )
 
     def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
         primary_membership_id: int | None = None
@@ -175,7 +178,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_user_credentials(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[user.UserCredentials]:
-        return [
+        return tuple(
             user.UserCredentials(
                 type=enums.CredentialType(int(creds["credentialType"])),
                 display_name=creds["credentialDisplayName"],
@@ -183,12 +186,12 @@ class Factory(interfaces.FactoryInterface):
                 self_as_string=creds.get("credentialAsString"),
             )
             for creds in payload
-        ]
+        )
 
     def deserialize_user_themes(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[user.UserThemes]:
-        return [
+        return tuple(
             user.UserThemes(
                 id=int(entry["userThemeId"]),
                 name=entry["userThemeName"] if "userThemeName" in entry else None,
@@ -197,37 +200,15 @@ class Factory(interfaces.FactoryInterface):
                 else None,
             )
             for entry in payload
-        ]
+        )
 
-    def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
-        # This is kinda redundant
-        data = payload
-
-        # This is always outside the details.
-        current_user_map: collections.Mapping[str, clans.ClanMember] = {}
-        if raw_current_user_map := payload.get("currentUserMemberMap"):
-            current_user_map = {
-                membership_type: self.deserialize_clan_member(membership)
-                for membership_type, membership in raw_current_user_map.items()
-            }
-
-        try:
-            data = payload["detail"]
-        except KeyError:
-            pass
-
-        id = data["groupId"]
-        name = data["name"]
-        created_at = data["creationDate"]
-        member_count = data["memberCount"]
-        about = data["about"]
-        motto = data["motto"]
-        is_public = data["isPublic"]
-        banner = assets.Image(str(data["bannerPath"]))
-        avatar = assets.Image(str(data["avatarPath"]))
-        tags = data["tags"]
-        type = data["groupType"]
-
+    def _deserialize_group_details(
+        self,
+        data: typedefs.JSONObject,
+        current_user_memberships: collections.Mapping[str, clans.ClanMember]
+        | None = None,
+        clan_founder: clans.ClanMember | None = None,
+    ) -> clans.Clan:
         features = data["features"]
         features_obj = clans.ClanFeatures(
             max_members=features["maximumMembers"],
@@ -239,7 +220,6 @@ class Factory(interfaces.FactoryInterface):
             update_culture_permissions=features["updateCulturePermissionOverride"],
             join_level=features["joinLevel"],
         )
-
         information: typedefs.JSONObject = data["clanInfo"]
         progression: collections.Mapping[int, progressions.Progression] = {
             int(prog_hash): self.deserialize_progressions(prog)
@@ -248,21 +228,19 @@ class Factory(interfaces.FactoryInterface):
 
         return clans.Clan(
             net=self._net,
-            id=int(id),
-            name=name,
-            type=enums.GroupType(type),
-            created_at=time.clean_date(created_at),
-            member_count=member_count,
-            motto=motto,
-            about=about,
-            is_public=is_public,
-            banner=banner,
-            avatar=avatar,
-            tags=tags,
+            id=int(data["groupId"]),
+            name=data["name"],
+            type=enums.GroupType(data["groupType"]),
+            created_at=time.clean_date(data["creationDate"]),
+            member_count=data["memberCount"],
+            motto=data["motto"],
+            about=data["about"],
+            is_public=data["isPublic"],
+            banner=assets.Image(path=data["bannerPath"]),
+            avatar=assets.Image(path=data["avatarPath"]),
+            tags=tuple(data["tags"]),
             features=features_obj,
-            owner=self.deserialize_clan_member(payload["founder"])
-            if "founder" in payload
-            else None,
+            owner=clan_founder,
             progressions=progression,
             call_sign=information["clanCallsign"],
             banner_data=information["clanBannerData"],
@@ -270,7 +248,23 @@ class Factory(interfaces.FactoryInterface):
             conversation_id=int(data["conversationId"]),
             allow_chat=data["allowChat"],
             theme=data["theme"],
-            current_user_membership=current_user_map,
+            current_user_membership=current_user_memberships,
+        )
+
+    def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
+        current_user_map: collections.Mapping[str, clans.ClanMember] | None = None
+        if raw_current_user := payload.get("currentUserMemberMap"):
+            # This will get populated if only it was a GroupsV2.GroupResponse.
+            # GroupsV2.GetGroupsForMemberResponse doesn't have this field.
+            current_user_map = {
+                membership_type: self.deserialize_clan_member(membership)
+                for membership_type, membership in raw_current_user.items()
+            }
+
+        return self._deserialize_group_details(
+            data=payload["detail"],
+            clan_founder=self.deserialize_clan_member(payload["founder"]),
+            current_user_memberships=current_user_map,
         )
 
     def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
@@ -300,7 +294,7 @@ class Factory(interfaces.FactoryInterface):
         self, data: typedefs.JSONObject, /
     ) -> iterators.Iterator[clans.ClanMember]:
         return iterators.Iterator(
-            [self.deserialize_clan_member(member) for member in data["results"]]
+            self.deserialize_clan_member(member) for member in data["results"]
         )
 
     def deserialize_group_member(
@@ -316,7 +310,7 @@ class Factory(interfaces.FactoryInterface):
             last_online=time.from_timestamp(int(member["lastOnlineStatusChange"])),
             inactive_memberships=payload.get("areAllMembershipsInactive", None),
             member=self.deserialize_destiny_membership(member["destinyUserInfo"]),
-            group=self.deserialize_clan(payload["group"]),
+            group=self._deserialize_group_details(payload["group"]),
         )
 
     def _deserialize_clan_conversation(
@@ -334,7 +328,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_clan_conversations(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
-        return [self._deserialize_clan_conversation(conv) for conv in payload]
+        return tuple(self._deserialize_clan_conversation(conv) for conv in payload)
 
     def deserialize_app_owner(
         self, payload: typedefs.JSONObject
@@ -344,7 +338,7 @@ class Factory(interfaces.FactoryInterface):
             name=payload.get("bungieGlobalDisplayName"),
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
-            icon=assets.Image(str(payload["iconPath"])),
+            icon=assets.Image(path=payload["iconPath"]),
             is_public=payload["isPublic"],
             code=payload.get("bungieGlobalDisplayNameCode", None),
         )
@@ -356,9 +350,9 @@ class Factory(interfaces.FactoryInterface):
             link=payload["link"],
             status=payload["status"],
             redirect_url=payload.get("redirectUrl", None),
-            created_at=time.clean_date(str(payload["creationDate"])),
-            published_at=time.clean_date(str(payload["firstPublished"])),
-            owner=self.deserialize_app_owner(payload["team"][0]["user"]),  # type: ignore
+            created_at=time.clean_date(payload["creationDate"]),
+            published_at=time.clean_date(payload["firstPublished"]),
+            owner=self.deserialize_app_owner(payload["team"][0]["user"]),
             scope=payload.get("scope"),
         )
 
@@ -369,10 +363,10 @@ class Factory(interfaces.FactoryInterface):
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),
             class_type=enums.Class(payload["classType"]),
-            emblem=assets.Image(payload["emblemBackgroundPath"])
+            emblem=assets.Image(path=payload["emblemBackgroundPath"])
             if "emblemBackgroundPath" in payload
             else None,
-            emblem_icon=assets.Image(payload["emblemPath"])
+            emblem_icon=assets.Image(path=payload["emblemPath"])
             if "emblemPath" in payload
             else None,
             emblem_hash=int(payload["emblemHash"]) if "emblemHash" in payload else None,
@@ -392,8 +386,8 @@ class Factory(interfaces.FactoryInterface):
         name = payload["userInfo"]["displayName"]
         is_public = payload["userInfo"]["isPublic"]
         type = enums.MembershipType(payload["userInfo"]["membershipType"])
-        last_played = time.clean_date(str(payload["dateLastPlayed"]))
-        character_ids = [int(cid) for cid in payload["characterIds"]]
+        last_played = time.clean_date(payload["dateLastPlayed"])
+        character_ids = tuple(int(cid) for cid in payload["characterIds"])
         power_cap = payload["currentSeasonRewardPowerCap"]
 
         return profile.Profile(
@@ -456,19 +450,19 @@ class Factory(interfaces.FactoryInterface):
         scores: records.RecordScores | None = None,
         **nodes: int,
     ) -> records.Record:
-        objectives: list[records.Objective] | None = None
-        interval_objectives: list[records.Objective] | None = None
+        objectives: collections.Sequence[records.Objective] | None = None
+        interval_objectives: collections.Sequence[records.Objective] | None = None
         record_state: records.RecordState | int
 
         record_state = records.RecordState(payload["state"])
 
         if raw_objs := payload.get("objectives"):
-            objectives = [self.deserialize_objectives(obj) for obj in raw_objs]
+            objectives = tuple(self.deserialize_objectives(obj) for obj in raw_objs)
 
         if raw_interval_objs := payload.get("intervalObjectives"):
-            interval_objectives = [
+            interval_objectives = tuple(
                 self.deserialize_objectives(obj) for obj in raw_interval_objs
-            ]
+            )
 
         return records.Record(
             scores=scores,
@@ -486,7 +480,7 @@ class Factory(interfaces.FactoryInterface):
         self,
         payload: typedefs.JSONObject,
         scores: records.RecordScores | None = None,
-        record_hashes: list[int] | None = None,
+        record_hashes: collections.Sequence[int] = (),
     ) -> records.CharacterRecord:
         record = self.deserialize_records(payload, scores)
         return records.CharacterRecord(
@@ -499,7 +493,7 @@ class Factory(interfaces.FactoryInterface):
             redeemed_count=payload.get("intervalsRedeemedCount", 0),
             completion_times=payload.get("completedCount"),
             reward_visibility=payload.get("rewardVisibility"),
-            record_hashes=record_hashes or [],
+            record_hashes=record_hashes,
         )
 
     def deserialize_character_dye(self, payload: typedefs.JSONObject) -> character.Dye:
@@ -516,8 +510,8 @@ class Factory(interfaces.FactoryInterface):
             skin_color=payload["skinColor"],
             lip_color=payload["lipColor"],
             eye_color=payload["eyeColor"],
-            hair_colors=payload.get("hairColors", []),
-            feature_colors=payload.get("featureColors", []),
+            hair_colors=payload.get("hairColors", ()),
+            feature_colors=payload.get("featureColors", ()),
             decal_color=payload["decalColor"],
             wear_helmet=payload["wearHelmet"],
             hair_index=payload["hairIndex"],
@@ -529,9 +523,9 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> character.MinimalEquipments:
         if raw_dyes := payload.get("dyes"):
-            dyes = [self.deserialize_character_dye(dye) for dye in raw_dyes]
+            dyes = tuple(self.deserialize_character_dye(dye) for dye in raw_dyes)
         else:
-            dyes = []
+            dyes = ()
 
         return character.MinimalEquipments(
             net=self._net, item_hash=payload["itemHash"], dyes=dyes
@@ -545,15 +539,15 @@ class Factory(interfaces.FactoryInterface):
             customization=self.deserialize_character_customization(
                 payload["customization"]
             ),
-            custom_dyes=[
+            custom_dyes=tuple(
                 self.deserialize_character_dye(dye)
                 for dye in payload["customDyes"]
                 if dye
-            ],
-            equipment=[
+            ),
+            equipment=tuple(
                 self.deserialize_character_minimal_equipments(equipment)
                 for equipment in payload["peerView"]["equipment"]
-            ],
+            ),
         )
 
     def deserialize_available_activity(
@@ -579,29 +573,31 @@ class Factory(interfaces.FactoryInterface):
             current_mode = enums.GameMode(raw_current_mode)
 
         if raw_current_modes := payload.get("currentActivityModeTypes"):
-            current_mode_types = [enums.GameMode(type_) for type_ in raw_current_modes]
+            current_mode_types = tuple(
+                enums.GameMode(type_) for type_ in raw_current_modes
+            )
         else:
-            current_mode_types = []
+            current_mode_types = ()
 
         return activity.CharacterActivity(
             date_started=time.clean_date(payload["dateActivityStarted"]),
             current_hash=payload["currentActivityHash"],
             current_mode_hash=payload["currentActivityModeHash"],
             current_mode=current_mode,
-            current_mode_hashes=payload.get("currentActivityModeHashes", []),
+            current_mode_hashes=payload.get("currentActivityModeHashes", ()),
             current_mode_types=current_mode_types,
             current_playlist_hash=payload.get("currentPlaylistActivityHash"),
             last_story_hash=payload["lastCompletedStoryHash"],
-            available_activities=[
+            available_activities=tuple(
                 self.deserialize_available_activity(activity_)
                 for activity_ in payload["availableActivities"]
-            ],
+            ),
         )
 
     def deserialize_profile_items(
         self, payload: typedefs.JSONObject, /
-    ) -> list[profile.ProfileItemImpl]:
-        return [self.deserialize_profile_item(item) for item in payload["items"]]
+    ) -> collections.Sequence[profile.ProfileItemImpl]:
+        return tuple(self.deserialize_profile_item(item) for item in payload["items"])
 
     def _deserialize_node(self, payload: typedefs.JSONObject) -> records.Node:
         return records.Node(
@@ -620,9 +616,9 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_collectible(payload: typedefs.JSONObject) -> items.Collectible:
         recent_collectibles: collections.Collection[int] | None = None
         if raw_recent_collectibles := payload.get("recentCollectibleHashes"):
-            recent_collectibles = [
+            recent_collectibles = tuple(
                 int(item_hash) for item_hash in raw_recent_collectibles
-            ]
+            )
 
         collectibles: dict[int, int] = {}
         for item_hash, mapping in payload["collectibles"].items():
@@ -639,10 +635,10 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_currencies(
         payload: typedefs.JSONObject,
     ) -> collections.Sequence[items.Currency]:
-        return [
+        return tuple(
             items.Currency(hash=int(item_hash), amount=int(amount))
             for item_hash, amount in payload["itemQuantities"].items()
-        ]
+        )
 
     def deserialize_progressions(
         self, payload: typedefs.JSONObject
@@ -690,19 +686,19 @@ class Factory(interfaces.FactoryInterface):
     ) -> milestones.MilestoneActivity:
         phases: collections.Sequence[milestones.MilestoneActivityPhase] | None = None
         if raw_phases := payload.get("phases"):
-            phases = [
+            phases = tuple(
                 milestones.MilestoneActivityPhase(
                     is_completed=obj["complete"], hash=obj["phaseHash"]
                 )
                 for obj in raw_phases
-            ]
+            )
 
         return milestones.MilestoneActivity(
             hash=payload["activityHash"],
-            challenges=[
+            challenges=tuple(
                 self.deserialize_objectives(obj["objective"])
                 for obj in payload["challenges"]
-            ],
+            ),
             modifier_hashes=payload.get("modifierHashes"),
             boolean_options=payload.get("booleanActivityOptions"),
             phases=phases,
@@ -715,10 +711,10 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
             quest_hash=payload["questHash"],
             step_hash=payload["stepHash"],
-            step_objectives=[
+            step_objectives=tuple(
                 self.deserialize_objectives(objective)
                 for objective in payload["stepObjectives"]
-            ],
+            ),
             is_tracked=payload["tracked"],
             is_completed=payload["completed"],
             started=payload["started"],
@@ -732,14 +728,14 @@ class Factory(interfaces.FactoryInterface):
     ) -> milestones.MilestoneReward:
         return milestones.MilestoneReward(
             category_hash=payload["rewardCategoryHash"],
-            entries=[
+            entries=tuple(
                 milestones.MilestoneRewardEntry(
                     entry_hash=entry["rewardEntryHash"],
                     is_earned=entry["earned"],
                     is_redeemed=entry["redeemed"],
                 )
                 for entry in payload["entries"]
-            ],
+            ),
         )
 
     def deserialize_milestone(
@@ -755,33 +751,33 @@ class Factory(interfaces.FactoryInterface):
 
         rewards: collections.Collection[milestones.MilestoneReward] | None = None
         if raw_rewards := payload.get("rewards"):
-            rewards = [
+            rewards = tuple(
                 self._deserialize_milestone_rewards(reward) for reward in raw_rewards
-            ]
+            )
 
         activities: collections.Sequence[milestones.MilestoneActivity] | None = None
         if raw_activities := payload.get("activities"):
-            activities = [
+            activities = tuple(
                 self._deserialize_milestone_activity(active)
                 for active in raw_activities
-            ]
+            )
 
         quests: collections.Sequence[milestones.MilestoneQuest] | None = None
         if raw_quests := payload.get("availableQuests"):
-            quests = [
+            quests = tuple(
                 self._deserialize_milestone_available_quest(quest)
                 for quest in raw_quests
-            ]
+            )
 
         vendors: collections.Sequence[milestones.MilestoneVendor] | None = None
         if raw_vendors := payload.get("vendors"):
-            vendors = [
+            vendors = tuple(
                 milestones.MilestoneVendor(
                     vendor_hash=vendor["vendorHash"],
                     preview_itemhash=vendor.get("previewItemHash"),
                 )
                 for vendor in raw_vendors
-            ]
+            )
 
         return milestones.Milestone(
             hash=payload["milestoneHash"],
@@ -801,12 +797,12 @@ class Factory(interfaces.FactoryInterface):
             hash=payload["tierHash"],
             is_unlocked=payload["isUnlocked"],
             points_to_unlock=payload["pointsToUnlock"],
-            items=[
+            items=tuple(
                 season.ArtifactTierItem(
                     hash=item["itemHash"], is_active=item["isActive"]
                 )
                 for item in payload["items"]
-            ],
+            ),
         )
 
     def deserialize_characters(
@@ -874,9 +870,9 @@ class Factory(interfaces.FactoryInterface):
             hash=artifact["artifactHash"],
             points_used=artifact["pointsUsed"],
             reset_count=artifact["resetCount"],
-            tiers=[
+            tiers=tuple(
                 self._deserialize_artifact_tiers(tier) for tier in artifact["tiers"]
-            ],
+            ),
         )
         checklists = payload["checklists"]
 
@@ -908,7 +904,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> collections.Mapping[int, records.CharacterRecord]:
         return {
             int(rec_id): self.deserialize_character_records(
-                rec, record_hashes=payload.get("featuredRecordHashes")
+                rec, record_hashes=payload.get("featuredRecordHashes", ())
             )
             for rec_id, rec in payload["records"].items()
         }
@@ -937,17 +933,18 @@ class Factory(interfaces.FactoryInterface):
     ) -> items.CraftableSocketPlug:
         return items.CraftableSocketPlug(
             item_hash=int(payload["plugItemHash"]),
-            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", ()),
         )
 
     def _deserialize_craftable_socket(
         self, payload: typedefs.JSONObject
     ) -> items.CraftableSocket:
-        plugs: list[items.CraftableSocketPlug] = []
         if raw_plug := payload.get("plug"):
-            plugs.extend(
+            plugs = tuple(
                 self._deserialize_craftable_socket_plug(plug) for plug in raw_plug
             )
+        else:
+            plugs = ()
 
         return items.CraftableSocket(
             plug_set_hash=int(payload["plugSetHash"]), plugs=plugs
@@ -958,11 +955,11 @@ class Factory(interfaces.FactoryInterface):
     ) -> items.CraftableItem:
         return items.CraftableItem(
             is_visible=payload["visible"],
-            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
-            sockets=[
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", ()),
+            sockets=tuple(
                 self._deserialize_craftable_socket(socket)
                 for socket in payload["sockets"]
-            ],
+            ),
         )
 
     def deserialize_craftables_component(
@@ -1038,7 +1035,7 @@ class Factory(interfaces.FactoryInterface):
 
             character_records = {
                 int(rec_id): self.deserialize_character_records(
-                    rec, record_hashes=to_update.get("featuredRecordHashes")
+                    rec, record_hashes=to_update.get("featuredRecordHashes", ())
                 )
                 for rec_id, rec in to_update["records"].items()
             }
@@ -1105,7 +1102,7 @@ class Factory(interfaces.FactoryInterface):
 
         if raw_metrics := payload.get("metrics"):
             root_node_hash = raw_metrics["data"]["metricsRootNodeHash"]
-            metrics = [
+            metrics = tuple(
                 {
                     int(metrics_hash): (
                         data["invisible"],
@@ -1113,9 +1110,9 @@ class Factory(interfaces.FactoryInterface):
                         if "objectiveProgress" in data
                         else None,
                     )
-                    for metrics_hash, data in raw_metrics["data"]["metrics"].items()
                 }
-            ]
+                for metrics_hash, data in raw_metrics["data"]["metrics"].items()
+            )
         transitory: fireteams.FireteamParty | None = None
         if raw_transitory := payload.get("profileTransitoryData"):
             if "data" in raw_transitory:
@@ -1255,12 +1252,10 @@ class Factory(interfaces.FactoryInterface):
             collections.Sequence[collections.Mapping[int, items.ItemInstance]]
         ] = None
         if raw_instances := payload.get("instances"):
-            instances = [
-                {
-                    int(ins_id): self.deserialize_instanced_item(item)
-                    for ins_id, item in raw_instances["data"].items()
-                }
-            ]
+            instances = tuple(
+                {int(ins_id): self.deserialize_instanced_item(item)}
+                for ins_id, item in raw_instances["data"].items()
+            )
 
         render_data: typing.Optional[
             collections.Mapping[int, tuple[bool, dict[int, int]]]
@@ -1273,20 +1268,19 @@ class Factory(interfaces.FactoryInterface):
 
         stats: typing.Optional[collections.Mapping[int, items.ItemStatsView]] = None
         if raw_stats := payload.get("stats"):
-            builder: collections.Mapping[int, items.ItemStatsView] = {}
+            stats = {}
             for ins_id, stat in raw_stats["data"].items():
                 for _, items_ in stat.items():
-                    builder[int(ins_id)] = self.deserialize_item_stats_view(items_)  # type: ignore[index]
-            stats = builder
+                    stats[int(ins_id)] = self.deserialize_item_stats_view(items_)
 
         sockets: typing.Optional[
             collections.Mapping[int, collections.Sequence[items.ItemSocket]]
         ] = None
         if raw_sockets := payload.get("sockets"):
             sockets = {
-                int(ins_id): [
+                int(ins_id): tuple(
                     self.deserialize_item_socket(socket) for socket in item["sockets"]
-                ]
+                )
                 for ins_id, item in raw_sockets["data"].items()
             }
 
@@ -1295,9 +1289,11 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_objectives := payload.get("objectives"):
             objectives = {
-                int(ins_id): [self.deserialize_objectives(objective)]
+                int(ins_id): tuple(
+                    self.deserialize_objectives(objective)
+                    for objective in data["objectives"]
+                )
                 for ins_id, data in raw_objectives["data"].items()
-                for objective in data["objectives"]
             }
 
         perks: typing.Optional[
@@ -1305,29 +1301,29 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_perks := payload.get("perks"):
             perks = {
-                int(ins_id): [
+                int(ins_id): tuple(
                     self.deserialize_item_perk(perk) for perk in item["perks"]
-                ]
+                )
                 for ins_id, item in raw_perks["data"].items()
             }
 
         plug_states: typing.Optional[collections.Sequence[items.PlugItemState]] = None
         if raw_plug_states := payload.get("plugStates"):
-            pending_states: list[items.PlugItemState] = []
-            for _, plug in raw_plug_states["data"].items():
-                pending_states.append(self.deserialize_plug_item_state(plug))
-            plug_states = pending_states
+            plug_states = tuple(
+                self.deserialize_plug_item_state(plug)
+                for _, plug in raw_plug_states["data"].items()
+            )
 
         reusable_plugs: typing.Optional[
             collections.Mapping[int, collections.Sequence[items.PlugItemState]]
         ] = None
         if raw_re_plugs := payload.get("reusablePlugs"):
             reusable_plugs = {
-                int(ins_id): [
+                int(ins_id): tuple(
                     self.deserialize_plug_item_state(state) for state in inner
-                ]
+                )
                 for ins_id, plug in raw_re_plugs["data"].items()
-                for inner in list(plug["plugs"].values())
+                for inner in tuple(plug["plugs"].values())
             }
 
         plug_objectives: typing.Optional[
@@ -1338,7 +1334,9 @@ class Factory(interfaces.FactoryInterface):
         if raw_plug_objectives := payload.get("plugObjectives"):
             plug_objectives = {
                 int(ins_id): {
-                    int(obj_hash): [self.deserialize_objectives(obj) for obj in objs]
+                    int(obj_hash): tuple(
+                        self.deserialize_objectives(obj) for obj in objs
+                    )
                     for obj_hash, objs in inner["objectivesPerPlug"].items()
                 }
                 for ins_id, inner in raw_plug_objectives["data"].items()
@@ -1464,7 +1462,7 @@ class Factory(interfaces.FactoryInterface):
                     description=typedefs.unknown(
                         data["displayProperties"]["description"]
                     ),
-                    icon=assets.Image(data["displayProperties"]["icon"]),
+                    icon=assets.Image(path=data["displayProperties"]["icon"]),
                 )
                 for data in payload["results"]["results"]
             ]
@@ -1493,8 +1491,8 @@ class Factory(interfaces.FactoryInterface):
             talent_gird=payload.get("talentGrid"),
             investments_stats=payload.get("investmentStats"),
             perks=payload.get("perks"),
-            animations=payload.get("animations", []),
-            links=payload.get("links", []),
+            animations=payload.get("animations", ()),
+            links=payload.get("links", ()),
         )
 
     def deserialize_inventory_entity(  # noqa: C901 Too complex.
@@ -1509,27 +1507,27 @@ class Factory(interfaces.FactoryInterface):
 
         secondary_icon: assets.Image | None = None
         if raw_second_icon := payload.get("secondaryIcon"):
-            secondary_icon = assets.Image(raw_second_icon)
+            secondary_icon = assets.Image(path=raw_second_icon)
 
         secondary_overlay: assets.Image | None = None
         if raw_second_overlay := payload.get("secondaryOverlay"):
-            secondary_overlay = assets.Image(raw_second_overlay)
+            secondary_overlay = assets.Image(path=raw_second_overlay)
 
         secondary_special: assets.Image | None = None
         if raw_second_special := payload.get("secondarySpecial"):
-            secondary_special = assets.Image(raw_second_special)
+            secondary_special = assets.Image(path=raw_second_special)
 
         screenshot: assets.Image | None = None
         if raw_screenshot := payload.get("screenshot"):
-            screenshot = assets.Image(raw_screenshot)
+            screenshot = assets.Image(path=raw_screenshot)
 
         watermark_icon: assets.Image | None = None
         if raw_watermark_icon := payload.get("iconWatermark"):
-            watermark_icon = assets.Image(raw_watermark_icon)
+            watermark_icon = assets.Image(path=raw_watermark_icon)
 
         watermark_shelved: assets.Image | None = None
         if raw_watermark_shelved := payload.get("iconWatermarkShelved"):
-            watermark_shelved = assets.Image(raw_watermark_shelved)
+            watermark_shelved = assets.Image(path=raw_watermark_shelved)
 
         about: str | None = None
         if raw_about := payload.get("flavorText"):
@@ -1565,11 +1563,11 @@ class Factory(interfaces.FactoryInterface):
 
         damage_types: typing.Optional[collections.Sequence[int]] = None
         if raw_damage_types := payload.get("damageTypes"):
-            damage_types = [int(type_) for type_ in raw_damage_types]
+            damage_types = tuple(int(type_) for type_ in raw_damage_types)
 
         damagetype_hashes: typing.Optional[collections.Sequence[int]] = None
         if raw_damagetype_hashes := payload.get("damageTypeHashes"):
-            damagetype_hashes = [int(type_) for type_ in raw_damagetype_hashes]
+            damagetype_hashes = tuple(int(type_) for type_ in raw_damagetype_hashes)
 
         default_damagetype_hash: int | None = None
         if raw_defaultdmg_hash := payload.get("defaultDamageTypeHash"):
@@ -1605,6 +1603,18 @@ class Factory(interfaces.FactoryInterface):
                 stack_label = inventory["stackUniqueLabel"]
             except KeyError:
                 pass
+
+        if "traitHashes" in payload:
+            trait_hashes = tuple(
+                int(trait_hash) for trait_hash in payload["traitHashes"]
+            )
+        else:
+            trait_hashes = ()
+
+        if "traitIds" in payload:
+            trait_ids = tuple(trait_id for trait_id in payload["traitIds"])
+        else:
+            trait_ids = ()
 
         return entity.InventoryEntity(
             net=self._net,
@@ -1643,9 +1653,9 @@ class Factory(interfaces.FactoryInterface):
             secondary_overlay=secondary_overlay,
             secondary_special=secondary_special,
             type=enums.ItemType(int(payload["itemType"])),
-            trait_hashes=[int(id_) for id_ in payload.get("traitHashes", [])],
-            trait_ids=[trait for trait in payload.get("traitIds", [])],
-            category_hashes=[int(hash_) for hash_ in payload["itemCategoryHashes"]],
+            category_hashes=tuple(
+                int(hash_) for hash_ in payload["itemCategoryHashes"]
+            ),
             item_class=enums.Class(int(payload["classType"])),
             sub_type=enums.ItemSubType(int(payload["itemSubType"])),
             breaker_type=int(payload["breakerType"]),
@@ -1660,6 +1670,8 @@ class Factory(interfaces.FactoryInterface):
             background_colors=payload.get("backgroundColor", {}),
             season_hash=payload.get("seasonHash"),
             has_postmaster_effect=payload["doesPostmasterPullHaveSideEffects"],
+            trait_hashes=trait_hashes,
+            trait_ids=trait_ids,
         )
 
     def deserialize_objective_entity(
@@ -1735,7 +1747,7 @@ class Factory(interfaces.FactoryInterface):
         ref_id = int(details["referenceId"])
         instance_id = int(details["instanceId"])
         mode = enums.GameMode(details["mode"])
-        modes = [enums.GameMode(int(mode_)) for mode_ in details["modes"]]
+        modes = tuple(enums.GameMode(int(mode_)) for mode_ in details["modes"])
         is_private = details["isPrivate"]
         membership_type = enums.MembershipType(int(details["membershipType"]))
 
@@ -1796,11 +1808,11 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> activity.ExtendedValues:
         if raw_weapons := payload.get("weapons"):
-            weapons = [
+            weapons = tuple(
                 self.deserialize_extended_weapon_values(value) for value in raw_weapons
-            ]
+            )
         else:
-            weapons = []
+            weapons = ()
 
         return activity.ExtendedValues(
             precision_kills=payload["values"]["precisionKills"]["basic"]["value"],
@@ -1870,7 +1882,7 @@ class Factory(interfaces.FactoryInterface):
         ref_id = int(details["referenceId"])
         instance_id = int(details["instanceId"])
         mode = enums.GameMode(details["mode"])
-        modes = [enums.GameMode(int(mode_)) for mode_ in details["modes"]]
+        modes = tuple(enums.GameMode(int(mode_)) for mode_ in details["modes"])
         is_private = details["isPrivate"]
         membership_type = enums.MembershipType(int(details["membershipType"]))
         return activity.PostActivity(
@@ -1883,13 +1895,13 @@ class Factory(interfaces.FactoryInterface):
             is_private=is_private,
             occurred_at=period,
             starting_phase=int(payload["startingPhaseIndex"]),
-            players=[
+            players=tuple(
                 self.deserialize_post_activity_player(player)
                 for player in payload["entries"]
-            ],
-            teams=[
+            ),
+            teams=tuple(
                 self._deserialize_post_activity_team(team) for team in payload["teams"]
-            ],
+            ),
         )
 
     def _deserialize_aggregated_activity_values(
@@ -1950,63 +1962,64 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> profile.LinkedProfile:
         bungie_user = self.deserialize_partial_bungie_user(payload["bnetMembership"])
-        error_profiles_vec: typing.MutableSequence[user.DestinyMembership] = []
-        profiles_vec: typing.MutableSequence[user.DestinyMembership] = []
 
         if raw_profile := payload.get("profiles"):
-            for pfile in raw_profile:
-                profiles_vec.append(self.deserialize_destiny_membership(pfile))
+            profiles = tuple(
+                self.deserialize_destiny_membership(p) for p in raw_profile
+            )
+        else:
+            profiles = ()
 
         if raw_profiles_with_errors := payload.get("profilesWithErrors"):
-            for raw_error_pfile in raw_profiles_with_errors:
-                if error_pfile := raw_error_pfile.get("infoCard"):
-                    error_profiles_vec.append(
-                        self.deserialize_destiny_membership(error_pfile)
+            for raw_error_p in raw_profiles_with_errors:
+                if "infoCard" in raw_error_p:
+                    error_profiles = tuple(
+                        self.deserialize_destiny_membership(error_p)
+                        for error_p in raw_error_p
                     )
+        else:
+            error_profiles = ()
 
         return profile.LinkedProfile(
             bungie_user=bungie_user,
-            profiles=profiles_vec,
-            profiles_with_errors=error_profiles_vec,
+            profiles=profiles,
+            profiles_with_errors=error_profiles,
         )
 
     def deserialize_clan_banners(
         self, payload: typedefs.JSONObject
     ) -> collections.Sequence[clans.ClanBanner]:
-        banners_seq: typing.MutableSequence[clans.ClanBanner] = []
         if banners := payload.get("clanBannerDecals"):
-            for k, v in banners.items():
-                banner_obj = clans.ClanBanner(
+            banner_obj = tuple(
+                clans.ClanBanner(
                     id=int(k),
-                    foreground=assets.Image(v["foregroundPath"]),
-                    background=assets.Image(v["backgroundPath"]),
+                    foreground=assets.Image(path=v["foregroundPath"]),
+                    background=assets.Image(path=v["backgroundPath"]),
                 )
-                banners_seq.append(banner_obj)
-        return banners_seq
+                for k, v in banners.items()
+            )
+        else:
+            banner_obj = ()
+        return banner_obj
 
+    @helpers.unstable
     def deserialize_public_milestone_content(
         self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneContent:
-        items_categories: milestones.MilestoneItems | None = None
-
         if raw_categories := payload.get("itemCategories"):
-            for item in raw_categories:
-                title: str | None = None
-                if raw_title := item.get("title"):
-                    title = raw_title
-                if raw_hashes := item.get("itemHashes"):
-                    hashes = raw_hashes
-
-                items_categories = milestones.MilestoneItems(title=title, hashes=hashes)
-
-        tips: typing.MutableSequence[str] = []
-        if raw_tips := payload.get("tips"):
-            tips = raw_tips
+            items_categories = tuple(
+                milestones.MilestoneItems(
+                    title=item["title"], hashes=item["itemHashes"]
+                )
+                for item in raw_categories
+            )
+        else:
+            items_categories = ()
 
         return milestones.MilestoneContent(
             about=typedefs.unknown(payload["about"]),
             status=typedefs.unknown(payload["status"]),
-            tips=tips,
+            tips=payload.get("tips", ()),
             items=items_categories,
         )
 
@@ -2031,25 +2044,26 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_friends(
         self, payload: typedefs.JSONObject
     ) -> collections.Sequence[friends.Friend]:
-        mut_seq: typing.MutableSequence[friends.Friend] = []
-        if raw_friends := payload.get("friends"):
-            for friend in raw_friends:
-                mut_seq.append(self.deserialize_friend(friend))
-        return mut_seq
+        return tuple(self.deserialize_friend(friend) for friend in payload["friends"])
 
     def deserialize_friend_requests(
         self, payload: typedefs.JSONObject
     ) -> friends.FriendRequestView:
-        incoming: typing.MutableSequence[friends.Friend] = []
-        outgoing: typing.MutableSequence[friends.Friend] = []
-
         if raw_incoming_requests := payload.get("incomingRequests"):
-            for incoming_request in raw_incoming_requests:
-                incoming.append(self.deserialize_friend(incoming_request))
+            incoming = tuple(
+                self.deserialize_friend(incoming_request)
+                for incoming_request in raw_incoming_requests
+            )
+        else:
+            incoming = ()
 
         if raw_outgoing_requests := payload.get("outgoingRequests"):
-            for outgoing_request in raw_outgoing_requests:
-                outgoing.append(self.deserialize_friend(outgoing_request))
+            outgoing = tuple(
+                self.deserialize_friend(outgoing_request)
+                for outgoing_request in raw_outgoing_requests
+            )
+        else:
+            outgoing = ()
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
@@ -2086,14 +2100,14 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> collections.Sequence[fireteams.Fireteam]:
         if "results" in payload:
-            fireteams_ = [
+            fireteams_ = tuple(
                 self._set_fireteam_fields(
                     elem, total_results=int(payload["totalResults"])
                 )
                 for elem in payload["results"]
-            ]
+            )
         else:
-            fireteams_ = []
+            fireteams_ = ()
         return fireteams_
 
     def deserialize_fireteam_destiny_users(
@@ -2145,7 +2159,7 @@ class Factory(interfaces.FactoryInterface):
                     type=bungie_fields.type,
                 )
                 members_.append(members_fields)
-        return members_
+        return tuple(members_)
 
     def deserialize_available_fireteam(
         self, payload: typedefs.JSONObject
@@ -2178,11 +2192,11 @@ class Factory(interfaces.FactoryInterface):
         self, data: typedefs.JSONObject
     ) -> collections.Sequence[fireteams.AvailableFireteam]:
         if raw_results := data.get("results"):
-            fireteam_results: list[fireteams.AvailableFireteam] = [
+            fireteam_results = tuple(
                 self.deserialize_available_fireteam(f) for f in raw_results
-            ]
+            )
         else:
-            fireteam_results = []
+            fireteam_results = ()
         return fireteam_results
 
     def deserialize_fireteam_party(
@@ -2193,10 +2207,10 @@ class Factory(interfaces.FactoryInterface):
             last_destination_hash = int(raw_dest_hash)
 
         return fireteams.FireteamParty(
-            members=[
+            members=tuple(
                 self._deserialize_fireteam_party_member(member)
                 for member in payload["partyMembers"]
-            ],
+            ),
             activity=self._deserialize_fireteam_party_current_activity(
                 payload["currentActivity"]
             ),
@@ -2304,7 +2318,7 @@ class Factory(interfaces.FactoryInterface):
 
         required_hashes: typing.Optional[collections.Collection[int]] = None
         if raw_required_hashes := payload.get("unlockHashesRequiredToEquip"):
-            required_hashes = [int(raw_hash) for raw_hash in raw_required_hashes]
+            required_hashes = tuple(int(raw_hash) for raw_hash in raw_required_hashes)
 
         breaker_type: items.ItemBreakerType | None = None
         if raw_break_type := payload.get("breakerType"):
@@ -2358,7 +2372,7 @@ class Factory(interfaces.FactoryInterface):
 
         return items.ItemPerk(
             hash=perk_hash,
-            icon=assets.Image(payload["iconPath"]),
+            icon=assets.Image(path=payload["iconPath"]),
             is_active=payload["isActive"],
             is_visible=payload["visible"],
         )
@@ -2368,9 +2382,9 @@ class Factory(interfaces.FactoryInterface):
         if raw_plug_hash := payload.get("plugHash"):
             plug_hash = int(raw_plug_hash)
 
-        enable_fail_indexes: list[int] | None = None
+        enable_fail_indexes: collections.Sequence[int] | None = None
         if raw_indexes := payload.get("enableFailIndexes"):
-            enable_fail_indexes = [int(index) for index in raw_indexes]
+            enable_fail_indexes = tuple(int(index) for index in raw_indexes)
 
         return items.ItemSocket(
             plug_hash=plug_hash,
@@ -2393,13 +2407,13 @@ class Factory(interfaces.FactoryInterface):
         if raw_item_hash := payload.get("plugItemHash"):
             item_hash = int(raw_item_hash)
 
-        insert_fail_indexes: list[int] | None = None
+        insert_fail_indexes: collections.Sequence[int] | None = None
         if raw_fail_indexes := payload.get("insertFailIndexes"):
-            insert_fail_indexes = [int(k) for k in raw_fail_indexes]
+            insert_fail_indexes = tuple(int(k) for k in raw_fail_indexes)
 
-        enable_fail_indexes: list[int] | None = None
+        enable_fail_indexes: collections.Sequence[int] | None = None
         if raw_enabled_indexes := payload.get("enableFailIndexes"):
-            enable_fail_indexes = [int(k) for k in raw_enabled_indexes]
+            enable_fail_indexes = tuple(int(k) for k in raw_enabled_indexes)
 
         return items.PlugItemState(
             item_hash=item_hash,

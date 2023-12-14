@@ -142,7 +142,7 @@ class EntityBase(abc.ABC):
         return self.hash
 
 
-@attrs.mutable(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Entity(EntityBase):
     """Represents any entity in Destiny 2.
     This can be item definition, activity definition, etc.
@@ -173,11 +173,11 @@ class Entity(EntityBase):
     """A boolean that returns True if the entity has an icon."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class SearchableEntity(EntityBase):
     """Represents an entity object returned from a searchable term."""
 
-    suggested_words: list[str]
+    suggested_words: collections.Sequence[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
@@ -227,7 +227,7 @@ class SearchableEntity(EntityBase):
 
 # We separate the JSON objects within the InventoryEntity from the object itself
 # just to organize them better.
-@attrs.define(kw_only=True, repr=False)
+@attrs.frozen(kw_only=True, repr=False)
 class InventoryEntityObjects:
     """JSON object found inside an inventory item definition."""
 
@@ -301,7 +301,7 @@ class InventoryEntityObjects:
     """"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class InventoryEntity(Entity):
     """Represents a bungie inventory item entity.
 
@@ -317,10 +317,10 @@ class InventoryEntity(Entity):
     objects: InventoryEntityObjects = attrs.field(repr=False)
     """JSON objects found within the item."""
 
-    trait_ids: list[str] = attrs.field(repr=False)
+    trait_ids: collections.Sequence[str] = attrs.field(repr=False)
     """"""
 
-    trait_hashes: list[int] = attrs.field(repr=False)
+    trait_hashes: collections.Sequence[int] = attrs.field(repr=False)
     """"""
 
     item_class: enums.Class = attrs.field(repr=False)
@@ -411,7 +411,7 @@ class InventoryEntity(Entity):
     stack_label: str | None = attrs.field(repr=False)
     """If this string is populated, you can't have more than one stack with this label in a given inventory."""
 
-    tooltip_notifications: list[str] = attrs.field(repr=False)
+    tooltip_notifications: collections.Sequence[str] = attrs.field(repr=False)
     """"""
 
     display_source: str | None = attrs.field(hash=False, repr=False)
@@ -456,7 +456,7 @@ class InventoryEntity(Entity):
     season_hash: int | None = attrs.field(repr=False)
 
 
-@attrs.define(kw_only=True, weakref_slot=False)
+@attrs.frozen(kw_only=True, weakref_slot=False)
 class ObjectiveEntity(Entity):
     """Represents a bungie inventory item entity.
 
@@ -504,7 +504,7 @@ class ObjectiveEntity(Entity):
     ui_style: ObjectiveUIStyle
 
 
-@attrs.define(kw_only=True, hash=True, weakref_slot=False)
+@attrs.frozen(kw_only=True, hash=True, weakref_slot=False)
 class ActivityEntity(Entity):
     """Represents a Bungie Activity definition and its entities.
 
@@ -595,7 +595,7 @@ class ActivityEntity(Entity):
     """A collection of location mappings affected by this activity."""
 
 
-@attrs.define(kw_only=True, hash=True, weakref_slot=False)
+@attrs.frozen(kw_only=True, hash=True, weakref_slot=False)
 class PlaylistActivityEntity:
     """Represents an activity playlists definition/entity.
 

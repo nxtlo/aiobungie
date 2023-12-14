@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import nox
 
-WORDS: list[str] = ["crate"]
+WORDS = ("crate",)
 
 
 @nox.session(reuse_venv=True)

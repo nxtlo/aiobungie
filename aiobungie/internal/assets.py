@@ -24,6 +24,8 @@
 
 from __future__ import annotations
 
+import attrs
+
 __all__ = ("Image", "MimeType")
 
 import asyncio
@@ -69,6 +71,7 @@ def _write(
         file.write(data)
 
 
+@attrs.frozen(kw_only=True, weakref_slot=False)
 class Image:
     """Representation of an image/avatar/picture at Bungie.
 
@@ -95,14 +98,11 @@ class Image:
         The path to the image..
     """
 
-    __slots__ = ("_path",)
-
-    def __init__(self, path: str) -> None:
-        self._path = path
+    path: str = attrs.field()
 
     @property
     def is_missing(self) -> bool:
-        return not self._path
+        return not self.path
 
     @property
     def url(self) -> str:
@@ -132,7 +132,7 @@ class Image:
         img = Image.default_or_else("/some_path/image.png")
         ```
         """
-        return cls(path or Image.default())
+        return cls(path=path or Image.default())
 
     def create_url(self) -> str:
         """Creates a full URL to the image path.
@@ -142,7 +142,7 @@ class Image:
         str
             The URL to the image.
         """
-        return f"{url.BASE}/{self._path if self._path else self.default()}"
+        return f"{url.BASE}/{self.path if self.path else self.default()}"
 
     async def save(
         self,
@@ -240,14 +240,6 @@ class Image:
 
         async for chunk in self:
             yield chunk
-
-    def __eq__(self, __value: object) -> bool:
-        if not isinstance(__value, Image):
-            return NotImplemented
-        return self._path == __value._path
-
-    def __ne__(self, __value: object) -> bool:
-        return not self.__eq__(__value)
 
     def __repr__(self) -> str:
         return f"Image(url={self.create_url()})"

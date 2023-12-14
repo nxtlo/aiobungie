@@ -55,11 +55,11 @@ class TestUserThemes:
 
     @pytest.fixture()
     def list_objs(self):
-        return [
+        return (
             crate.user.UserThemes(id=1, name=None, description=None),
             crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
             crate.user.UserThemes(id=22, name="Ok", description=None),
-        ]
+        )
 
     def test_model_meta(self, mod):
         assert isinstance(mod, crate.user.UserThemes)
@@ -67,7 +67,7 @@ class TestUserThemes:
         assert mod.description is None
 
     def test_list_of_objs(self, list_objs):
-        assert isinstance(list_objs, list)
+        assert isinstance(list_objs, tuple)
 
 
 class TestUserLike:
@@ -83,10 +83,10 @@ class TestBungieUser:
         return crate.user.BungieUser(
             id=205432,
             name=None,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(),
             is_deleted=True,
             about=None,
-            picture=assets.Image("1029312dnoi12.jpg"),
+            picture=assets.Image(path="1029312dnoi12.jpg"),
             locale="eu",
             updated_at=datetime(2019, 4, 5),
             status=None,
@@ -108,10 +108,6 @@ class TestBungieUser:
 
     def test_int_op(self, model):
         assert int(model) == 205432
-
-    def test_user_status_when_None(self, model):
-        model.status = None
-        assert isinstance(model, crate.user.BungieUser) and model.status is None
 
 
 class TestDestinyUser:

@@ -23,6 +23,8 @@
 # SOFTWARE.
 
 import datetime
+import attrs.exceptions as attrs
+
 
 import mock
 import pytest
@@ -138,19 +140,27 @@ class TestCharacterProgression:
         )
 
     def test_progressions(self, model: crate.CharacterProgression) -> None:
-        with mock.patch.object(model, "progressions", new={0: mock.Mock()}) as progress:
+        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
+            model, "progressions", new={0: mock.Mock()}
+        ) as progress:
             assert model.progressions == progress
 
     def test_factions(self, model: crate.CharacterProgression) -> None:
-        with mock.patch.object(model, "factions", new={1: mock.Mock()}) as factions:
+        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
+            model, "factions", new={1: mock.Mock()}
+        ) as factions:
             assert model.factions == factions
 
     def test_milestones(self, model: crate.CharacterProgression) -> None:
-        with mock.patch.object(model, "milestones", new={2: mock.Mock()}) as milestone:
+        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
+            model, "milestones", new={2: mock.Mock()}
+        ) as milestone:
             assert model.milestones == milestone
 
     def test_checklists(self, model: crate.CharacterProgression) -> None:
-        with mock.patch.object(model, "checklists", new={3: mock.Mock()}) as checklist:
+        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
+            model, "checklists", new={3: mock.Mock()}
+        ) as checklist:
             assert model.checklists == checklist
 
 
@@ -165,8 +175,8 @@ class TestCharacter:
             light=1310,
             gender=aiobungie.Gender.MALE,
             race=aiobungie.Race.EXO,
-            emblem=assets.Image("emblempath.jpg"),
-            emblem_icon=assets.Image("emblemiconpath.jpg"),
+            emblem=assets.Image(path="emblempath.jpg"),
+            emblem_icon=assets.Image(path="emblemiconpath.jpg"),
             emblem_hash=998877,
             last_played=datetime.datetime(2021, 9, 1),
             total_played_time=2020,
@@ -202,15 +212,15 @@ class TestCharacter:
         assert model.title_hash is None
 
     def test_emblem(self, model: crate.Character) -> None:
-        assert model.emblem == assets.Image("emblempath.jpg")
+        assert model.emblem == assets.Image(path="emblempath.jpg")
 
     def test_emblem___str__(self, model: crate.Character) -> None:
-        assert str(model.emblem) == str(assets.Image("emblempath.jpg"))
+        assert str(model.emblem) == str(assets.Image(path="emblempath.jpg"))
 
     def test_emblem_icon(self, model: crate.Character) -> None:
         assert (
             model.emblem_icon is not None
-            and model.emblem_icon.url == assets.Image("emblemiconpath.jpg").url
+            and model.emblem_icon.url == assets.Image(path="emblemiconpath.jpg").url
         )
 
     @pytest.mark.asyncio()

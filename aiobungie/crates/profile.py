@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Profile",
     "LinkedProfile",
     "ProfileProgression",
@@ -49,7 +49,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import season
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class LinkedProfile:
     """Represents a membership linked profile information summary."""
 
@@ -66,7 +66,7 @@ class LinkedProfile:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ProfileProgression:
     """Represents a profile progression component details."""
 
@@ -149,7 +149,7 @@ class ProfileItemImpl:
         return self.hash
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Profile:
     """Represents a Bungie member profile-only component.
 
@@ -175,20 +175,22 @@ class Profile:
     last_played: datetime.datetime
     """Profile's last played Destiny 2 played date."""
 
-    character_ids: list[int]
+    character_ids: collections.Sequence[int]
     """A list of the profile's character ids."""
 
     power_cap: int
     """The profile's current season power cap."""
 
     async def collect_characters(
-        self, components: list[enums.ComponentType], auth: str | None = None
+        self,
+        components: collections.Sequence[enums.ComponentType],
+        auth: str | None = None,
     ) -> collections.Sequence[components.CharacterComponent]:
         """Fetch this profile's characters.
 
         Parameters
         ----------
-        components: `list[aiobungie.ComponentType]`
+        components: `collections.Sequence[aiobungie.ComponentType]`
             A sequence of character components to collect and return.
 
         Other Parameters

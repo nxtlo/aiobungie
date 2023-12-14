@@ -28,7 +28,7 @@ since it depends on components passed to the request or due to privacy by the pr
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Component",
     "CharacterComponent",
     "ProfileComponent",
@@ -80,7 +80,7 @@ class ComponentFields(enums.Enum):
 
 # Main component cannot inherit from multiple classes that have `__slots__`
 # Which's why some components have no slots.
-@attrs.define(kw_only=True, slots=False)
+@attrs.frozen(kw_only=True, slots=False)
 class RecordsComponent:
     """Represents records-only Bungie component.
 
@@ -116,7 +116,7 @@ class RecordsComponent:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CraftablesComponent:
     """Represents craftables-only Bungie component."""
 
@@ -153,7 +153,7 @@ class CraftablesComponent:
         if not self.craftables:
             return None
 
-        item_ids = list(self.craftables.keys())
+        item_ids = tuple(self.craftables.keys())
         return await helpers.awaits(
             *[
                 self.net.request.fetch_inventory_item(item_id)
@@ -162,7 +162,7 @@ class CraftablesComponent:
         )
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ProfileComponent:
     """Represents a profile-only Bungie component.
 
@@ -212,7 +212,7 @@ class ProfileComponent:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class UninstancedItemsComponent:
     """Represents Components belonging to the player's uninstanced items."""
 
@@ -225,7 +225,7 @@ class UninstancedItemsComponent:
     """A mapping for the item instance id to its perks."""
 
 
-@attrs.define(kw_only=True, repr=False)
+@attrs.frozen(kw_only=True, repr=False)
 class ItemsComponent(UninstancedItemsComponent):
     """Represents items-only Bungie component.
 
@@ -325,12 +325,12 @@ class ItemsComponent(UninstancedItemsComponent):
 
 
 @helpers.unimplemented()
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class VendorsComponent:
     """Represents vendors-only Bungie component."""
 
 
-@attrs.define(kw_only=True, slots=False)
+@attrs.frozen(kw_only=True, slots=False)
 class StringVariableComponent:
     """Represents the profile string variable component.
 
@@ -351,7 +351,7 @@ class StringVariableComponent:
     """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
-@attrs.define(kw_only=True, slots=False)
+@attrs.frozen(kw_only=True, slots=False)
 class MetricsComponent:
     """Represents the profile metrics component.
 
@@ -377,7 +377,7 @@ class MetricsComponent:
     """The metrics presentation root node hash."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CharacterComponent(RecordsComponent):
     """Represents a character-only Bungie component.
 
@@ -473,7 +473,7 @@ class CharacterComponent(RecordsComponent):
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Component(
     ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
@@ -487,11 +487,11 @@ class Component(
     import aiobungie
 
     # The components to get and return.
-    components = [
+    components = (
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_INVENTORIES,
-    ]
+    )
     profile = await client.fetch_profile(
         id,
         aiobungie.MembershipType.STEAM,

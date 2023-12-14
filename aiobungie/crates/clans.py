@@ -53,7 +53,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ClanFeatures:
     """Represents Bungie clan features."""
 
@@ -81,7 +81,7 @@ class ClanFeatures:
     """The clan's join level."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ClanConversation:
     """Represents a clan conversation."""
 
@@ -152,7 +152,7 @@ class ClanConversation:
         return str(self.name)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ClanBanner:
     """Representation of information of the clan banner."""
 
@@ -169,7 +169,7 @@ class ClanBanner:
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ClanMember(user.DestinyMembership):
     """Represents a Bungie clan member."""
 
@@ -297,7 +297,7 @@ class ClanMember(user.DestinyMembership):
         )
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
@@ -342,7 +342,7 @@ class GroupMember:
         return self.group_id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Clan:
     """Represents a Bungie clan."""
 
@@ -405,7 +405,7 @@ class Clan:
     features: ClanFeatures
     """The clan features."""
 
-    current_user_membership: collections.Mapping[str, ClanMember]
+    current_user_membership: collections.Mapping[str, ClanMember] | None
     """If an authorized user made this request and this user belongs to this clan.
     This field will be available.
 

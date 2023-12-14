@@ -39,7 +39,7 @@ class TestAppOwner:
             type=aiobungie.MembershipType.XBOX,
             id=411098,
             is_public=True,
-            icon=assets.Image("dndlkwadjnh9.jpg"),
+            icon=assets.Image(path="dndlkwadjnh9.jpg"),
             code=2463,
         )
 
@@ -86,7 +86,7 @@ class TestApplication:
             net=mock.AsyncMock(),
             type=aiobungie.MembershipType.XBOX,
             is_public=True,
-            icon=assets.Image("dndlkwadjnh9.jpg"),
+            icon=assets.Image(path="dndlkwadjnh9.jpg"),
         )
 
     @pytest.fixture()
@@ -96,7 +96,7 @@ class TestApplication:
             name="aiobungie",
             redirect_url=None,
             created_at=datetime(2017, 4, 8),
-            published_at=datetime.utcnow(),
+            published_at=datetime.now(),
             link="this.io",
             scope=None,
             status=1,

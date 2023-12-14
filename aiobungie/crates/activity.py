@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Activity",
     "PostActivity",
     "ActivityValues",
@@ -73,7 +73,7 @@ class Difficulty(int, enums.Enum):
     IMPOSSIBLE = 7
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Rewards:
     """Represents rewards achieved from activities."""
 
@@ -102,7 +102,7 @@ class Rewards:
         return await self.net.request.fetch_inventory_item(self.hash)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Challenges:
     """Represents challenges found in activities."""
 
@@ -119,7 +119,7 @@ class Challenges:
         return await self.net.request.fetch_objective_entity(self.objective_hash)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Matchmaking:
     """Represents activity's matchmaking information."""
 
@@ -139,7 +139,7 @@ class Matchmaking:
     """If true, you have to Solemnly Swear to be up to Nothing But Good(tm) to play."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class GuidedGame:
     """Represents information about a guided game activity."""
 
@@ -157,7 +157,7 @@ class GuidedGame:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Location:
     """Represents information about an activity location."""
 
@@ -177,7 +177,7 @@ class Location:
     """The activity hash if populated."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CharacterActivity:
     """Represents a character activity profile component."""
 
@@ -209,7 +209,7 @@ class CharacterActivity:
     """A sequence of the available activities associated with this character."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class AvailableActivity:
     """Represents an available activity that can be found in character activities profile component."""
 
@@ -246,7 +246,7 @@ class AvailableActivity:
         return NotImplemented
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ActivityValues:
     """Information about values found in an activity.
 
@@ -310,7 +310,7 @@ class ActivityValues:
     """???"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class AggregatedActivityValues:
     """Information found in an aggregated activity stats."""
 
@@ -367,7 +367,7 @@ class AggregatedActivityValues:
     precision_kills: int
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ExtendedWeaponValues:
     """Information about post activity extended player's weapon values data."""
 
@@ -394,7 +394,7 @@ class ExtendedWeaponValues:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ExtendedValues:
     """Information about post activity extended player values data."""
 
@@ -417,7 +417,7 @@ class ExtendedValues:
     """Collection of unique player weapons used in this activity. if no weapons found None will be returned."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class PostActivityTeam:
     """Represents a post activity team information.
 
@@ -437,7 +437,7 @@ class PostActivityTeam:
     """Team score"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class PostActivityPlayer:
     """Represents a post activity Destiny 2 player."""
 
@@ -484,7 +484,7 @@ class PostActivityPlayer:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
@@ -548,7 +548,7 @@ class PostActivity:
         return self.hash
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Activity:
     """Represents a Bungie Activity."""
 
@@ -613,7 +613,7 @@ class Activity:
         return self.instance_id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class AggregatedActivity:
     """Represents aggregated activity data."""
 

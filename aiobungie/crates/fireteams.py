@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Fireteam",
     "AvailableFireteam",
     "FireteamUser",
@@ -152,7 +152,7 @@ class FireteamPartyMemberState(enums.Flag):
     """Fireteam party member leader."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamPartyMember:
     """Minimal information about a party member in a fireteam."""
 
@@ -175,7 +175,7 @@ class FireteamPartyMember:
         return self.membership_id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamPartyCurrentActivity:
     """Represents information about a fireteam party's current activity."""
 
@@ -198,7 +198,7 @@ class FireteamPartyCurrentActivity:
     """How many human players were playing in this fireteam."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamPartySettings:
     """Represents information about a fireteam's joinability settings."""
 
@@ -212,7 +212,7 @@ class FireteamPartySettings:
     """Reasons why a person can't join this person's fireteam."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamParty:
     """Represents a fireteam party. This information found in profile transitory component."""
 
@@ -228,11 +228,11 @@ class FireteamParty:
     last_destination_hash: int | None
     """The hash identifier for the destination of the last location you were orbiting when in orbit."""
 
-    tracking: list[dict[str, typing.Any]]
+    tracking: collections.Sequence[dict[str, typing.Any]]
     """???"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamUser(user.DestinyMembership):
     """Represents a Bungie fireteam user info."""
 
@@ -243,7 +243,7 @@ class FireteamUser(user.DestinyMembership):
     """The fireteam's membership type."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FireteamMember(user.PartialBungieUser):
     """Represents a Bungie fireteam member."""
 
@@ -266,7 +266,7 @@ class FireteamMember(user.PartialBungieUser):
     """"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Fireteam:
     """A representation of a Bungie fireteam."""
 
@@ -336,7 +336,7 @@ class Fireteam:
         return str(self.title)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class AvailableFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 

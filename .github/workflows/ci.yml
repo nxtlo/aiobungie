@@ -107,8 +107,8 @@ jobs:
       - name: Type Check
         run: |
           pip install nox
-          nox -s gen_stubs
-          nox -s type_check
+          nox -s stubgen
+          nox -s type-check
 
   docs:
     if: github.event_name == 'pull_request'

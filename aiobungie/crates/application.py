@@ -41,7 +41,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ApplicationOwner(user.UserLike):
     """Represents a Bungie Application owner."""
 
@@ -93,7 +93,7 @@ class ApplicationOwner(user.UserLike):
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Application:
     """Represents a Bungie developer application."""
 

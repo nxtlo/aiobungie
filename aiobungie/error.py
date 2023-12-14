@@ -120,16 +120,19 @@ class HTTPException(HTTPError):
     """
 
     def __str__(self) -> str:
-        if self.message:
-            message_body = self.message
-
-        if self.error_status:
-            error_status_body = self.error_status
-
+        status_name, status_value = (
+            self.http_status.name.replace("_", "").title(),
+            self.http_status.value,
+        )
         return (
-            f"{self.http_status.name.replace('_', '').title()} {self.http_status.value}: "
-            f"Error status: {error_status_body}, Error message: {message_body} from {self.url} "
-            f"{str(self.body)}"
+            f"{status_name}: " + "{"
+            f"""
+            http_status: {status_value},
+            message: {self.message if self.message else 'UNDEFINED'},
+            error_status: {self.error_status if self.error_status else 'UNDEFINED'},
+            url: {self.url if self.url else 'UNDEFINED'},
+            message_data: {self.message_data}
+        """ + "}"
         )
 
 

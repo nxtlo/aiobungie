@@ -26,4 +26,4 @@ import nox
 @nox.session(reuse_venv=True)
 def lint(session: nox.Session) -> None:
     session.install("-r", "dev-requirements.txt")
-    session.run("python", "-m", "ruff", "lint", ".", "--fix")
+    session.run("python", "-m", "ruff", "check", ".", "--fix")

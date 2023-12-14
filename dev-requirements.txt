@@ -14,3 +14,4 @@ python-dotenv~=1.0.0
 ruff~=0.1.7
 isort~=5.13.1
 pyright~=1.1.340
+codespell~=2.2.6

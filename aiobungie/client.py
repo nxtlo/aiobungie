@@ -504,10 +504,10 @@ class Client(traits.ClientApp):
             membership_id, character_id, membership_type
         )
 
-        return [
+        return tuple(
             self._factory.deserialize_extended_weapon_values(weapon)
             for weapon in resp["weapons"]
-        ]
+        )
 
     # * Destiny 2 Activities.
 
@@ -759,9 +759,9 @@ class Client(traits.ClientApp):
             member_id, member_type, filter=filter, group_type=group_type
         )
 
-        return [
+        return tuple(
             self.factory.deserialize_group_member(group) for group in resp["results"]
-        ]
+        )
 
     async def fetch_potential_groups_for_member(
         self,
@@ -798,9 +798,9 @@ class Client(traits.ClientApp):
             member_id, member_type, filter=filter, group_type=group_type
         )
 
-        return [
+        return tuple(
             self.factory.deserialize_group_member(group) for group in resp["results"]
-        ]
+        )
 
     async def fetch_clan_members(
         self,

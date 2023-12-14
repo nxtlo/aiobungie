@@ -405,7 +405,7 @@ class Clan:
     features: ClanFeatures
     """The clan features."""
 
-    current_user_membership: collections.Mapping[str, ClanMember]
+    current_user_membership: collections.Mapping[str, ClanMember] | None
     """If an authorized user made this request and this user belongs to this clan.
     This field will be available.
 

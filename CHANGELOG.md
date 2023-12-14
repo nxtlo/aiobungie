@@ -10,11 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `Iterator.by_ref` method.
 
 ### Changed
-* Object immutability, All objects are frozen. All sequences are now built as tuples instead of list, This reduces the size of the objects and increases the speed by a little bit since tuples are sized and lists are dynamic.
-
-* Printing an `Iterator` now doesn't consume the data.
+* Object immutability, all objects are now *frozen*.
+* All sequences are now built as tuples instead of list, This can help reduces the size of the allocated bytes
+and increases the speed by a little bit since tuples are sized and lists are dynamic, This obviously depends on how
+large the data that has been fetched. But in general tuples are *faster*.
+* Logging an `Iterator` object now doesn't consume the data.
 * `fetch_public_milestone_content` and `deserialize_public_milestone_content` are currently unstable.
-
+* `ClanMember.current_user_memberships` is now nullable.
+* Optimized factory deserialization methods.
 
 ## [0.2.10](https://github.com/nxtlo/aiobungie/compare/0.2.9...0.2.19) - 2023-12-12
 

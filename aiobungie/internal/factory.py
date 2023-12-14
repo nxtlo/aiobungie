@@ -202,36 +202,13 @@ class Factory(interfaces.FactoryInterface):
             for entry in payload
         )
 
-    # TODO: optimize this method.
-    def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
-        # This is kinda redundant
-        data = payload
-
-        # This is always outside the details.
-        current_user_map: collections.Mapping[str, clans.ClanMember] = {}
-        if raw_current_user_map := payload.get("currentUserMemberMap"):
-            current_user_map = {
-                membership_type: self.deserialize_clan_member(membership)
-                for membership_type, membership in raw_current_user_map.items()
-            }
-
-        try:
-            data = payload["detail"]
-        except KeyError:
-            pass
-
-        id = data["groupId"]
-        name = data["name"]
-        created_at = data["creationDate"]
-        member_count = data["memberCount"]
-        about = data["about"]
-        motto = data["motto"]
-        is_public = data["isPublic"]
-        banner = assets.Image(path=data["bannerPath"])
-        avatar = assets.Image(path=data["avatarPath"])
-        tags = data["tags"]
-        type = data["groupType"]
-
+    def _deserialize_group_details(
+        self,
+        data: typedefs.JSONObject,
+        current_user_memberships: collections.Mapping[str, clans.ClanMember]
+        | None = None,
+        clan_founder: clans.ClanMember | None = None,
+    ) -> clans.Clan:
         features = data["features"]
         features_obj = clans.ClanFeatures(
             max_members=features["maximumMembers"],
@@ -243,7 +220,6 @@ class Factory(interfaces.FactoryInterface):
             update_culture_permissions=features["updateCulturePermissionOverride"],
             join_level=features["joinLevel"],
         )
-
         information: typedefs.JSONObject = data["clanInfo"]
         progression: collections.Mapping[int, progressions.Progression] = {
             int(prog_hash): self.deserialize_progressions(prog)
@@ -252,21 +228,19 @@ class Factory(interfaces.FactoryInterface):
 
         return clans.Clan(
             net=self._net,
-            id=int(id),
-            name=name,
-            type=enums.GroupType(type),
-            created_at=time.clean_date(created_at),
-            member_count=member_count,
-            motto=motto,
-            about=about,
-            is_public=is_public,
-            banner=banner,
-            avatar=avatar,
-            tags=tags,
+            id=int(data["groupId"]),
+            name=data["name"],
+            type=enums.GroupType(data["groupType"]),
+            created_at=time.clean_date(data["creationDate"]),
+            member_count=data["memberCount"],
+            motto=data["motto"],
+            about=data["about"],
+            is_public=data["isPublic"],
+            banner=assets.Image(path=data["bannerPath"]),
+            avatar=assets.Image(path=data["avatarPath"]),
+            tags=tuple(data["tags"]),
             features=features_obj,
-            owner=self.deserialize_clan_member(payload["founder"])
-            if "founder" in payload
-            else None,
+            owner=clan_founder,
             progressions=progression,
             call_sign=information["clanCallsign"],
             banner_data=information["clanBannerData"],
@@ -274,7 +248,23 @@ class Factory(interfaces.FactoryInterface):
             conversation_id=int(data["conversationId"]),
             allow_chat=data["allowChat"],
             theme=data["theme"],
-            current_user_membership=current_user_map,
+            current_user_membership=current_user_memberships,
+        )
+
+    def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
+        current_user_map: collections.Mapping[str, clans.ClanMember] | None = None
+        if raw_current_user := payload.get("currentUserMemberMap"):
+            # This will get populated if only it was a GroupsV2.GroupResponse.
+            # GroupsV2.GetGroupsForMemberResponse doesn't have this field.
+            current_user_map = {
+                membership_type: self.deserialize_clan_member(membership)
+                for membership_type, membership in raw_current_user.items()
+            }
+
+        return self._deserialize_group_details(
+            data=payload["detail"],
+            clan_founder=self.deserialize_clan_member(payload["founder"]),
+            current_user_memberships=current_user_map,
         )
 
     def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
@@ -320,7 +310,7 @@ class Factory(interfaces.FactoryInterface):
             last_online=time.from_timestamp(int(member["lastOnlineStatusChange"])),
             inactive_memberships=payload.get("areAllMembershipsInactive", None),
             member=self.deserialize_destiny_membership(member["destinyUserInfo"]),
-            group=self.deserialize_clan(payload["group"]),
+            group=self._deserialize_group_details(payload["group"]),
         )
 
     def _deserialize_clan_conversation(

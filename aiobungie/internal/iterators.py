@@ -595,6 +595,8 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
     def __repr__(self) -> str:
         return f"Iterator(ptr: {hex(id(self._items))})"
 
+    __str__ = __repr__
+
     def __len__(self) -> int:
         return self.count()
 

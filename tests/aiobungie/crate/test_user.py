@@ -55,11 +55,11 @@ class TestUserThemes:
 
     @pytest.fixture()
     def list_objs(self):
-        return [
+        return (
             crate.user.UserThemes(id=1, name=None, description=None),
             crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
             crate.user.UserThemes(id=22, name="Ok", description=None),
-        ]
+        )
 
     def test_model_meta(self, mod):
         assert isinstance(mod, crate.user.UserThemes)
@@ -67,7 +67,7 @@ class TestUserThemes:
         assert mod.description is None
 
     def test_list_of_objs(self, list_objs):
-        assert isinstance(list_objs, list)
+        assert isinstance(list_objs, tuple)
 
 
 class TestUserLike:

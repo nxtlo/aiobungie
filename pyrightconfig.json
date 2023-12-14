@@ -3,7 +3,7 @@
     "venv": ".venv",
     "pythonVersion": "3.12",
     "typeCheckingMode": "strict",
-    "reportUnboundVariable": "none",
+    "reportUnboundVariable": "error",
     "reportUnknownParameterType": "error",
     "reportUnknownLambdaType": "warning",
     "reportUnknownMemberType": "warning",
@@ -14,7 +14,8 @@
     "reportMissingTypeArgument": "error",
     "reportMissingTypeStubs": "error",
     "reportGeneralTypeIssues": "error",
-    "reportPrivateUsage": "warning",
+    "reportPrivateUsage": "error",
+    "reportUnusedVariable": "error",
     "reportIncompatibleMethodOverride": "none",
     // This will always cause warnings above license.
     "reportImportCycles": "warning",

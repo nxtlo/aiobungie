@@ -45,31 +45,55 @@ profile = "black"
 force_single_line = true
 skip_glob = "**/__init__.pyi"
 
-[tool.mypy]
-python_version = 3.12
-pretty = true
-show_column_numbers = true
-show_error_codes = true
-show_error_context = true
-check_untyped_defs = true
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".nox",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "dist",
+    "node_modules",
+    "venv",
+    "aiobungie/_*.py",
+    "aiobungie/_*.pyi",
+    "aiobungie/crates/_*.py",
+    "aiobungie/crates/_*.pyi",
+]
 
-# Ignored
-ignore_missing_imports = true
-ignore_missing_imports_per_module = true
+# Same as Black.
+line-length = 88
+indent-width = 4
 
-# Warns
-warn_no_return = true
-warn_return_any = true
+# Assume Python 3.8
+target-version = "py312"
 
-# Disallowed
-disallow_any_generics = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
 
-# Allowed
-allow_redefinition = true
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
 
 [tool.pyright]
 include = ["aiobungie", "tests", "nix", "examples"]
@@ -77,7 +101,7 @@ venvPath = "."
 venv = ".venv"
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-reportUnboundVariable = "none"
+reportUnboundVariable = "error"
 reportUnknownParameterType = "error"
 reportUnknownLambdaType = "warning"
 reportUnknownMemberType = "warning"
@@ -88,8 +112,9 @@ reportMissingParameterType = "error"
 reportMissingTypeArgument = "error"
 reportMissingTypeStubs = "error"
 reportGeneralTypeIssues = "information"
-reportPrivateUsage = "warning"
+reportPrivateUsage = "error"
 reportIncompatibleMethodOverride = "none"
+reportUnusedVariable = "error"
 # This will always cause warnings above license.
 reportImportCycles = "warning"
 reportUnusedImport = "warning"

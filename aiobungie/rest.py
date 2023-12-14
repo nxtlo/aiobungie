@@ -158,21 +158,20 @@ def _write_sqlite_bytes(
     path: pathlib.Path | str = "./",
     file_name: str = "manifest",
 ) -> None:
-    try:
-        with open(f"{_uuid()}.zip", "wb") as tmp:
-            tmp.write(data)
+    with open(f"{_uuid()}.zip", "wb") as tmp:
+        tmp.write(data)
+        try:
+            with zipfile.ZipFile(tmp.name) as zipped:
+                file = zipped.namelist()
 
-        with zipfile.ZipFile(tmp.name) as zipped:
-            file = zipped.namelist()
+                if file:
+                    zipped.extractall(".")
 
-            if file:
-                zipped.extractall(".")
+                    os.rename(file[0], _get_path(file_name, path, sql=True))
+                    _LOG.debug("Finished downloading manifest.")
 
-                os.rename(file[0], _get_path(file_name, path, sql=True))
-                _LOG.debug("Finished downloading manifest.")
-
-    finally:
-        pathlib.Path(tmp.name).unlink(missing_ok=True)
+        finally:
+            pathlib.Path(tmp.name).unlink(missing_ok=True)
 
 
 class _JSONPayload(aiohttp.BytesPayload):
@@ -1842,7 +1841,6 @@ class RESTClient(interfaces.RESTInterface):
             "currentpage": page or 1,
             "ctype": content_type,
             "searchtxt": search_text,
-            "ctype": content_type,
             "searchtext": search_text,
             "tag": tag,
             "source": source,

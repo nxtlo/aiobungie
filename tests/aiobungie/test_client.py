@@ -379,7 +379,7 @@ async def main() -> None:
         if cls[0].startswith("Test"):
             for name in dir(cls[1]):
                 if name.startswith("test_"):
-                    print("Testing method: ", name)
+                    print("Tested: ", name)
                     coro = getattr(cls[1], name)()
                     assert inspect.iscoroutine(coro)
                     tasks.append(coro)

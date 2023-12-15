@@ -2,7 +2,7 @@
 nox~=2023.4.22
 
 # Ducumentation.
-pdoc~=14.1.0
+pdoc~=14.2.0
 
 # Testing and Mocking.
 pytest~=7.4.3
@@ -11,7 +11,7 @@ mock~=5.1.0
 python-dotenv~=1.0.0
 
 # Format - Type checking.
-ruff~=0.1.7
-isort~=5.13.1
+ruff~=0.1.8
+isort~=5.13.2
 pyright~=1.1.340
 codespell~=2.2.6

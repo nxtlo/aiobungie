@@ -99,7 +99,7 @@ line-ending = "auto"
 include = ["aiobungie", "examples"]
 exclude = ["**/__init__.py", "aiobungie/internal/enums.py"]
 pythonVersion = "3.12"
-reportUnnecessaryTypeIgnoreComment = "error"
+reportUnnecessaryTypeIgnoreComment = "warning" # backports needs to be ignored on Py 3.10
 reportMissingTypeStubs = "none"
 # This will always cause warnings above license.
 reportIncompatibleVariableOverride = "none"

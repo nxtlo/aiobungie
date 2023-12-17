@@ -33,6 +33,7 @@ import attrs
 from aiobungie import url
 from aiobungie.crates import user
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     from datetime import datetime
@@ -68,6 +69,11 @@ class ApplicationOwner(user.UserLike):
     This can be None if the user hasn't logged in after season of the lost update.
     """
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_bungie_user",
+    )
     async def fetch_self(self) -> user.BungieUser:
         """Fetch the bungie user for this application owner.
 

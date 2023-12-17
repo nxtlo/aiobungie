@@ -103,6 +103,11 @@ class ClanConversation:
     security: int
     """Conversation's security level."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.edit_optional_conversation",
+    )
     async def edit(
         self,
         access_token: str,
@@ -211,6 +216,12 @@ class ClanMember(user.DestinyMembership):
         """Check whether this member is the clan founder or not."""
         return self.member_type is enums.ClanMemberType.FOUNDER
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_clan_from_id",
+        hint="You can use {self}.group_id to get the clan ID.",
+    )
     async def fetch_clan(self) -> Clan:
         """Fetch the clan this member belongs to.
 
@@ -221,6 +232,12 @@ class ClanMember(user.DestinyMembership):
         """
         return await self.net.request.fetch_clan_from_id(self.group_id)
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.ban_clan_member",
+        hint="You can use {self}.group_id and {self}.id to get the clan ID and the member ID.",
+    )
     async def ban(
         self,
         access_token: str,
@@ -255,6 +272,12 @@ class ClanMember(user.DestinyMembership):
             length=length,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.unban_clan_member",
+        hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
+    )
     async def unban(self, access_token: str, /) -> None:
         """Unban this member from the clan.
 
@@ -273,6 +296,12 @@ class ClanMember(user.DestinyMembership):
             membership_type=self.type,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.kick_clan_member",
+        hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
+    )
     async def kick(self, access_token: str, /) -> Clan:
         """Kick this member from the clan.
 
@@ -328,6 +357,11 @@ class GroupMember:
     group: Clan
     """The member's group/clan object that represents the group member."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_clan_from_id",
+    )
     async def fetch_self_clan(self) -> Clan:
         """Fetch an up-to-date clan/group object of the current group.
 
@@ -412,6 +446,11 @@ class Clan:
     This maps from the membership type represented as a string to the authorized clan member.
     """
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.edit_clan_options",
+    )
     async def edit_options(
         self,
         access_token: str,
@@ -471,6 +510,11 @@ class Clan:
             join_level=join_level,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.edit_clan",
+    )
     async def edit(
         self,
         access_token: str,
@@ -568,6 +612,11 @@ class Clan:
             is_public_topic_admin=is_public_topic_admin,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_available_clan_fireteams",
+    )
     async def fetch_available_fireteams(
         self,
         access_token: str,
@@ -621,6 +670,11 @@ class Clan:
             slots_filter=slots_filter,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_my_clan_fireteams",
+    )
     async def fetch_fireteams(
         self,
         access_token: str,
@@ -659,7 +713,7 @@ class Clan:
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crates.AvalaibleFireteam]`
+        `collections.Sequence[aiobungie.crates.AvailableFireteam]`
             A sequence of available fireteams objects.
         """
         return await self.net.request.fetch_my_clan_fireteams(
@@ -672,6 +726,11 @@ class Clan:
             page=page,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_clan_conversations",
+    )
     async def fetch_conversations(self) -> collections.Sequence[ClanConversation]:
         """Fetch the conversations/chat channels of this clan.
 
@@ -681,6 +740,11 @@ class Clan:
         """
         return await self.net.request.fetch_clan_conversations(self.id)
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.add_optional_conversation",
+    )
     async def add_optional_conversation(
         self,
         access_token: str,
@@ -714,6 +778,11 @@ class Clan:
             access_token, self.id, name=name, security=security
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_clan_members",
+    )
     async def fetch_members(
         self,
         *,
@@ -742,6 +811,11 @@ class Clan:
         """
         return await self.net.request.fetch_clan_members(self.id, type=type, name=name)
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.approve_all_pending_group_users",
+    )
     async def approve_pending_members(
         self,
         access_token: str,
@@ -768,6 +842,11 @@ class Clan:
             access_token, self.id, message=message
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.deny_all_pending_group_users",
+    )
     async def deny_pending_members(
         self,
         access_token: str,
@@ -794,7 +873,10 @@ class Clan:
             access_token, self.id, message=message
         )
 
-    @helpers.unimplemented()
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
@@ -808,7 +890,10 @@ class Clan:
         """
         return NotImplemented
 
-    @helpers.unimplemented()
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
 
@@ -823,7 +908,10 @@ class Clan:
         """
         return NotImplemented
 
-    @helpers.unimplemented()
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been invited.
 

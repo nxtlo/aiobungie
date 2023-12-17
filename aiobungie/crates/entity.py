@@ -204,6 +204,12 @@ class SearchableEntity(EntityBase):
     weight: float
     """The ranking value for sorting that we calculated using our relevance formula."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+        hint="{self}.entity_type and {self}.hash can be used here.",
+    )
     async def fetch_self_item(self) -> InventoryEntity:
         """Fetch an item definition of this partial entity.
 
@@ -617,7 +623,10 @@ class PlaylistActivityEntity:
     mode_types: collections.Sequence[enums.GameMode]
     """A sequence of the activity gamemode types."""
 
-    @helpers.unimplemented()
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     async def fetch_self(self) -> ActivityEntity:
         """Fetch the definition of this activity."""
         return NotImplemented

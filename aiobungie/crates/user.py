@@ -44,6 +44,7 @@ from aiobungie import url
 from aiobungie.crates import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -147,6 +148,11 @@ class PartialBungieUser:
     icon: assets.Image
     """The user's icon."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_bungie_user",
+    )
     async def fetch_self(self) -> BungieUser:
         """Fetch the Bungie user of this partial user.
 
@@ -281,6 +287,11 @@ class DestinyMembership(UserLike):
     crossave_override: enums.MembershipType | int
     """The member's crossave override membership type."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_profile",
+    )
     async def fetch_self_profile(
         self,
         components: collections.Sequence[enums.ComponentType],

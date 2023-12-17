@@ -16,70 +16,72 @@ MEMBERSHIP_ID = 4403
 MEMBERSHIP_TYPE = aiobungie.MembershipType.STEAM
 
 
-async def fetch_my_titan() -> aiobungie.crate.CharacterComponent:
+async def fetch_my_titan_inventory():
     """A helper function to fetch our titan character and return both character and inventory components."""
-    return await client.fetch_character(
+    character = await client.fetch_character(
         MEMBERSHIP_ID,
         MEMBERSHIP_TYPE,
         TITAN_ID,
-        # Titian character component and inventory component.
+        # This component type will fetch our character inventory.
         [
-            aiobungie.ComponentType.CHARACTERS,
             aiobungie.ComponentType.CHARACTER_INVENTORY,
         ],
     )
+    # No reason to return the inventory if it was empty.
+    if not character.inventory:
+        raise Exception("Character inventory is empty...", character.inventory)
+
+    return character.inventory
 
 
 async def transfer() -> None:
     """A helper function to transfer our items from a character to another."""
 
-    my_titan = await fetch_my_titan()
+    inventory = await fetch_my_titan_inventory()
 
-    # Check if the inventory component is not empty.
-    if inventory := my_titan.inventory:
-        for item in inventory:
-            # Try to transfer an item.
-            if (
-                # Check if the item is One thousand Voices in our titan inventory.
-                item.hash == 2069224589
-                # Check if the item can be transferred.
-                and item.is_transferable
-            ):
-                assert item.instance_id is not None
+    for item in inventory:
+        # Try to transfer the item.
+        if (
+            # Check if the item is One thousand Voices in our titan inventory.
+            item.hash == 2069224589
+            # Check if the item can be transferred.
+            and item.transfer_status == aiobungie.TransferStatus.CAN_TRANSFER
+            and item.instance_id is not None
+        ):
+            # Transfer the item.
+            try:
+                # ! NOTES
 
-                # Transfer the item.
-                try:
-                    # ! Notes
+                # * A bearer access token must be provided to be able to
+                # * make OAuth2 requests otherwise this will not work.
 
-                    # * A bearer access token must be provided to be able to
-                    # * make OAuth2 requests otherwise this will not work.
+                # * To ensure items are transferred to your character
+                # * you must first transfer it to vault then from vault to character.
+                # * CHAR_HAS_WEAPON -> VAULT -> CHAR_NEEDS_WEAPON.
 
-                    # * To ensure items are transferred to your character
-                    # * you must first transfer it to vault then from vault to character.
+                await client.rest.transfer_item(
+                    "BEARER_TOKEN",
+                    item.instance_id,
+                    item.hash,
+                    # From titan to vault.
+                    TITAN_ID,
+                    MEMBERSHIP_TYPE,
+                    vault=True,
+                )
+                await client.rest.transfer_item(
+                    "BEARER_TOKEN",
+                    item.instance_id,
+                    item.hash,
+                    # From vault to hunter.
+                    HUNTER_ID,
+                    MEMBERSHIP_TYPE,
+                )
+                print("Transferred item success!.")
 
-                    await client.rest.transfer_item(
-                        "BEARER_TOKEN",
-                        item.instance_id,
-                        item.hash,
-                        # From titan to vault.
-                        TITAN_ID,
-                        MEMBERSHIP_TYPE,
-                        vault=True,
-                    )
-                    await client.rest.transfer_item(
-                        "BEARER_TOKEN",
-                        item.instance_id,
-                        item.hash,
-                        # From vault to hunter.
-                        HUNTER_ID,
-                        MEMBERSHIP_TYPE,
-                    )
-                    print("Transferred item success!.")
-
-                # Handle the error.
-                except aiobungie.HTTPError as err:
-                    print(f"Couldn't transfer item: {err!r}.")
-                    return
+            # Handle the error.
+            except aiobungie.HTTPError as err:
+                print(f"Couldn't transfer item: {err.message}.")
+                pass
 
 
 async def main() -> None:

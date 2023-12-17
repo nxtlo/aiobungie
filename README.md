@@ -43,12 +43,12 @@ async def main() -> None:
 
         # Get the first item equipped on this character.
         item = my_warlock.equipment[0]
-        print(item.hash, item.location, item)
+        print(item.hash, item.location)
 
         # Fetch this item, Note that this performs an HTTP request.
         # Alternatively, You can use the manifest here instead.
         # See examples folder for more information.
-        item = await my_warlock.equipment[0].fetch_self()
+        item = await client.fetch_inventory_item(item.hash)
         print(item.name, item.type_and_tier_name)
         # Prints: Izanagi's Burden Exotic Sniper Rifle
 

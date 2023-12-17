@@ -128,6 +128,12 @@ class ProfileItemImpl:
     """The item version number of available, other wise will be `None`."""
 
     @property
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="Check if {self}.instance_id is not `None`.",
+        hint="You can also check if {self}.transfer_status == 0",
+    )
     def is_transferable(self) -> bool:
         """Check whether this item can be transferred or not."""
         return (
@@ -135,6 +141,11 @@ class ProfileItemImpl:
             and self.instance_id is not None  # noqa: W503
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+    )
     async def fetch_self(self) -> entity.InventoryEntity:
         """Fetch this profile item.
 
@@ -181,6 +192,12 @@ class Profile:
     power_cap: int
     """The profile's current season power cap."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_character",
+        hint="You can fetch each character concurrently with {self}.character_ids.",
+    )
     async def collect_characters(
         self,
         components: collections.Sequence[enums.ComponentType],

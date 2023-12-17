@@ -57,6 +57,7 @@ def deprecated(
     since: str,
     removed_in: str | None = None,
     use_instead: str | None = None,
+    hint: str | None = None,
 ) -> collections.Callable[[T], T]:
     """A decorator that marks a function as deprecated.
 
@@ -72,13 +73,18 @@ def deprecated(
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
             obj_type = "class" if inspect.isclass(func) else "function"
-            msg = f"Warning! {obj_type} {func.__module__}.{func.__name__} is deprecated since {since}."
+            msg = f"\n> {obj_type} {func.__qualname__} is deprecated since {since}.\n"
 
             if removed_in:
-                msg += f" Will be removed in {removed_in}."
+                msg += f"> Will be removed in {removed_in}.\n"
 
             if use_instead:
-                msg += f" Use {use_instead} instead."
+                cls_name = func.__qualname__.split(".")[0]
+                msg += f'> Use "{use_instead.format(self=cls_name)}" instead.\n'
+
+            if hint:
+                cls_name = func.__qualname__.split(".")[0]
+                msg += f"> Hint: {hint}".format(self=cls_name)
 
             warnings.warn(
                 msg,

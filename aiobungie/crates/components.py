@@ -133,6 +133,12 @@ class CraftablesComponent:
     crafting_root_node_hash: int
     """The hash for the root presentation node definition of craftable item categories."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+        hint="You can fetch each item in {self}.craftables concurrently using their keys.",
+    )
     async def fetch_craftables(
         self, limit: int | None = None
     ) -> collections.Sequence[entity.InventoryEntity] | None:
@@ -295,6 +301,10 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     def any(self) -> bool:
         """Returns `True` if one if the components are available, `False` otherwise."""
         return any(
@@ -309,6 +319,10 @@ class ItemsComponent(UninstancedItemsComponent):
             )
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+    )
     def all(self) -> bool:
         """Returns `True` if all components are available, `False` otherwise."""
         return all(

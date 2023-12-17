@@ -103,6 +103,7 @@ reportUnnecessaryTypeIgnoreComment = "warning" # backports needs to be ignored o
 reportMissingTypeStubs = "none"
 # This will always cause warnings above license.
 reportIncompatibleVariableOverride = "none"
+reportMissingImports = "warning"
 reportImportCycles = "none"
 reportOverlappingOverload = "none"
 typeCheckingMode = "strict"

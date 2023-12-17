@@ -41,6 +41,8 @@ import typing
 
 import attrs
 
+from aiobungie.internal import helpers
+
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
@@ -147,6 +149,11 @@ class QuestStatus:
     If you care about that, this is the instance ID of that item.
     """
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+    )
     async def fetch_quest(self) -> entity.InventoryEntity:
         """Fetch the definition of this quest.
 
@@ -157,6 +164,11 @@ class QuestStatus:
         """
         return await self.net.request.fetch_inventory_item(self.quest_hash)
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+    )
     async def fetch_step(self) -> entity.InventoryEntity:
         """Fetch the definition of this quest step.
 

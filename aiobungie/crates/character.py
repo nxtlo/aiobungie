@@ -117,6 +117,11 @@ class MinimalEquipments:
     dyes: collections.Collection[Dye]
     """An collection of the item rendering dyes"""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+    )
     async def fetch_my_item(self) -> entity.InventoryEntity:
         """Fetch the inventory item definition of this equipment."""
         return await self.net.request.fetch_inventory_item(self.item_hash)
@@ -138,6 +143,12 @@ class RenderedData:
     equipment: collections.Sequence[MinimalEquipments]
     """A sequence of minimal view of this character's equipment."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+        hint="You can fetch each item in {self}.equipment concurrently.",
+    )
     async def fetch_my_items(
         self, *, limit: int | None = None
     ) -> collections.Collection[entity.InventoryEntity]:
@@ -237,6 +248,11 @@ class Character:
     stats: collections.Mapping[enums.Stat, int]
     """A mapping of the character stats and its level."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_activities",
+    )
     async def fetch_activities(
         self,
         mode: enums.GameMode | int,
@@ -277,6 +293,11 @@ class Character:
             limit=limit,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.transfer_item",
+    )
     async def transfer_item(
         self,
         access_token: str,
@@ -318,6 +339,11 @@ class Character:
             stack_size=stack_size,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.pull_item",
+    )
     async def pull_item(
         self,
         access_token: str,
@@ -359,6 +385,11 @@ class Character:
             stack_size=stack_size,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.equip_item",
+    )
     async def equip_item(self, access_token: str, item_id: int, /) -> None:
         """Equip an item to this character.
 
@@ -381,6 +412,11 @@ class Character:
             membership_type=self.member_type,
         )
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.rest.equip_items",
+    )
     async def equip_items(
         self, access_token: str, item_ids: collections.Sequence[int], /
     ) -> None:

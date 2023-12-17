@@ -37,6 +37,7 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -108,6 +109,11 @@ class Objective:
     this is the unique identifier of the Activity being referred to.
     """
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_objective_entity",
+    )
     async def fetch_self(self) -> entity.ObjectiveEntity:
         """Perform an HTTP request fetching this objective entity definition.
 

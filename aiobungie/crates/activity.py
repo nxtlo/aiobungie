@@ -91,6 +91,11 @@ class Rewards:
     has_conditional_visibility: bool
     """???"""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_inventory_item",
+    )
     async def fetch_self(self) -> entity.InventoryEntity:
         """Fetch the definition of this reward.
 
@@ -114,6 +119,11 @@ class Challenges:
     dummy_rewards: collections.Sequence[Rewards]
     """A sequence of the challenge rewards as they're represented in the UI."""
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_objective_entity",
+    )
     async def fetch_objective(self) -> entity.ObjectiveEntity:
         """Fetch the objective of this challenge."""
         return await self.net.request.fetch_objective_entity(self.objective_hash)
@@ -240,7 +250,7 @@ class AvailableActivity:
     difficulty: Difficulty
     """Activity's difficulty tier."""
 
-    @helpers.unimplemented()
+    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
     async def fetch_self(self) -> entity.ActivityEntity:
         """Fetch the definition of this activity."""
         return NotImplemented
@@ -525,16 +535,19 @@ class PostActivity:
     """
 
     @property
+    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
     def is_flawless(self) -> bool:
         """Whether this activity was a flawless run or not."""
         return all(player.values.deaths == 0 for player in self.players)
 
     @property
+    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
     def is_solo(self) -> bool:
         """Whether this activity was completed solo or not."""
         return len(self.players) == 1
 
     @property
+    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
     def is_solo_flawless(self) -> bool:
         """Whether this activity was completed solo and flawless."""
         return self.is_solo & self.is_flawless
@@ -599,6 +612,11 @@ class Activity:
         """An alias to the activity's hash"""
         return self.hash
 
+    @helpers.deprecated(
+        since="0.2.10",
+        removed_in="0.3.0",
+        use_instead="{self}.net.request.fetch_post_activity",
+    )
     async def fetch_post(self) -> PostActivity:
         """Fetch this activity's data after it was finished.
 

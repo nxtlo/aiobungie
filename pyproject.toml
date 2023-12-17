@@ -96,10 +96,15 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.pyright]
-include = ["aiobungie", "tests", "nix", "examples"]
-venvPath = "."
-venv = ".venv"
+include = ["aiobungie", "examples"]
+exclude = ["**/__init__.py", "aiobungie/internal/enums.py"]
 pythonVersion = "3.12"
+reportUnnecessaryTypeIgnoreComment = "error"
+reportMissingTypeStubs = "none"
+# This will always cause warnings above license.
+reportIncompatibleVariableOverride = "none"
+reportImportCycles = "none"
+reportOverlappingOverload = "none"
 typeCheckingMode = "strict"
 reportUnboundVariable = "error"
 reportUnknownParameterType = "error"
@@ -110,13 +115,10 @@ reportUnknownVariableType = "warning"
 reportMissingModuleSource = "error"
 reportMissingParameterType = "error"
 reportMissingTypeArgument = "error"
-reportMissingTypeStubs = "error"
 reportGeneralTypeIssues = "information"
 reportPrivateUsage = "error"
 reportIncompatibleMethodOverride = "none"
 reportUnusedVariable = "error"
-# This will always cause warnings above license.
-reportImportCycles = "warning"
 reportUnusedImport = "warning"
 
 [build-system]

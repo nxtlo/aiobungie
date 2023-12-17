@@ -47,9 +47,9 @@ def clean_date(iso_date: str, /) -> datetime.datetime:
 
     if _sys.version_info.minor == 10:
         try:
-            from backports.datetime_fromisoformat import MonkeyPatch  # type: ignore[reportMissingImports]
+            from backports.datetime_fromisoformat import MonkeyPatch  # pyright: ignore[reportMissingImports]
 
-            MonkeyPatch.patch_fromisoformat()  # type: ignore[reportUnknownMemberType]
+            MonkeyPatch.patch_fromisoformat()  # pyright: ignore[reportUnknownMemberType]
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "The backports module is required for Python 3.10 compatibility.\n"

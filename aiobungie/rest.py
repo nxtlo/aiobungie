@@ -115,8 +115,8 @@ def _collect_components(
     collector: collections.MutableSequence[str] = []
 
     for component in components:
-        if isinstance(component.value, tuple):
-            collector.extend(str(c) for c in component.value)  # type: ignore
+        if isinstance(component.value, tuple):  # pyright: ignore[reportUnknownMemberType]
+            collector.extend(str(c) for c in component.value)  # pyright: ignore
         else:
             collector.append(str(component.value))
     return ",".join(collector)
@@ -570,10 +570,12 @@ class RESTClient(interfaces.RESTInterface):
                             )
 
                         # Return the response.
-                        # oauth2 responses are not packed inside a Response object.
+                        # auth responses are not inside a Response object.
                         if oauth2:
-                            return json_data  # type: ignore[no-any-return]
+                            return json_data
 
+                        # The reason we have a type ignore is because the actual response type
+                        # is within this `Response` key.
                         return json_data["Response"]  # type: ignore
 
                 if (
@@ -624,6 +626,7 @@ class RESTClient(interfaces.RESTInterface):
                 http.HTTPStatus.TOO_MANY_REQUESTS,
             )
 
+        # The reason we have a type ignore here is that we guaranteed the content type is JSON above.
         json: typedefs.JSONObject = self._loads(await response.read())  # type: ignore
         retry_after = float(json.get("ThrottleSeconds", 15.0)) + 0.1
         max_calls: int = 0
@@ -652,7 +655,7 @@ class RESTClient(interfaces.RESTInterface):
         if not isinstance(self._client_secret, (str, int)):
             raise TypeError(
                 "Expected (str, int) for client secret "
-                f"but got {type(self._client_secret).__name__}"  # type: ignore
+                f"but got {type(self._client_secret).__name__}"
             )
 
         headers = {
@@ -677,7 +680,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> builders.OAuth2Response:
         if not isinstance(self._client_secret, (int, str)):
             raise TypeError(
-                f"Expected (str, int) for client secret but got {type(self._client_secret).__name__}"  # type: ignore
+                f"Expected (str, int) for client secret but got {type(self._client_secret).__name__}"
             )
 
         data = {
@@ -1090,7 +1093,8 @@ class RESTClient(interfaces.RESTInterface):
     ) -> pathlib.Path:
         _ensure_manifest_language(language)
 
-        _LOG.info(f"Downloading manifest JSON to {_get_path(file_name, path)!r}...")
+        full_path = _get_path(file_name, path)
+        _LOG.info(f"Downloading manifest JSON to {full_path!r}...")
 
         content = await self.fetch_manifest_path()
         json_bytes = await self._request(
@@ -1100,15 +1104,16 @@ class RESTClient(interfaces.RESTInterface):
             base=True,
         )
 
+        assert isinstance(json_bytes, bytes)
         await asyncio.get_running_loop().run_in_executor(
             None, _write_json_bytes, json_bytes, file_name, path
         )
         _LOG.info("Finished downloading manifest JSON.")
-        return _get_path(file_name, path)
+        return full_path
 
     async def fetch_manifest_version(self) -> str:
         # This is guaranteed str.
-        return (await self.fetch_manifest_path())["version"]  # type: ignore[no-any-return]
+        return (await self.fetch_manifest_path())["version"]
 
     async def fetch_linked_profiles(
         self,

@@ -885,18 +885,13 @@ class Factory(interfaces.FactoryInterface):
             uninstanced_item_objectives=uninstanced_item_objectives,
         )
 
-    def deserialize_character_progressions_mapping(
-        self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, character.CharacterProgression]:
-        character_progressions: collections.Mapping[
-            int, character.CharacterProgression
-        ] = {}
+    # fmt: off
+    def deserialize_character_progressions_mapping(self, payload: typedefs.JSONObject) -> collections.Mapping[int, character.CharacterProgression]:
+        character_progressions: collections.MutableMapping[int, character.CharacterProgression] = {}
         for char_id, data in payload["data"].items():
-            # A little hack to stop mypy complaining about Mapping <-> dict
-            character_progressions[
-                int(char_id)
-            ] = self.deserialize_character_progressions(data)  # type: ignore[index]
+            character_progressions[int(char_id)] = self.deserialize_character_progressions(data)
         return character_progressions
+    # fmt: on
 
     def deserialize_characters_records(
         self,
@@ -1354,7 +1349,7 @@ class Factory(interfaces.FactoryInterface):
             plug_objectives=plug_objectives,
         )
 
-    def deserialize_character_component(  # type: ignore[call-arg]
+    def deserialize_character_component(
         self, payload: typedefs.JSONObject
     ) -> components.CharacterComponent:
         character_: character.Character | None = None
@@ -2462,7 +2457,7 @@ class EmptyFactory(Factory):
 
     if typing.TYPE_CHECKING:
         # We explicitly want this to be `None`.
-        _net: None  # type: ignore[assignment]
+        _net: None
 
     def __init__(self, net: None = None) -> None:
         self._net = net

@@ -65,7 +65,7 @@ def deprecated(
     since : `str`
         The version that the function was deprecated.
     use_instead : `str | None`
-        If provided, This should be the alternaviate object name that should be used instead.
+        If provided, This should be the alternative object name that should be used instead.
     """
 
     def decorator(func: T) -> T:
@@ -215,6 +215,11 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     return loop
 
 
+# The reason we're ignoring the types here because one of those modules will be
+# available at runtime which we need to ignore, But json is guaranteed to be available
+# if none of the others are.
+
+
 def dumps(
     obj: typedefs.JSONArray | typedefs.JSONObject,
 ) -> bytes:
@@ -233,22 +238,22 @@ def dumps(
         except ModuleNotFoundError:
             pass
 
-    return default_dumps(obj)  # type: ignore[no-any-return]
+    return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
 
 
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
     default_loads = _json.loads
     try:
-        import orjson  # type: ignore[reportMissingImports]
+        import orjson  # pyright: ignore[reportMissingImports]
 
-        default_loads = orjson.loads  # type: ignore[UnknownMemberType]
+        default_loads = orjson.loads  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
     except ModuleNotFoundError:
         try:
-            import ujson  # type: ignore[reportMissingImports]
+            import ujson  # pyright: ignore[reportMissingModuleSource]
 
             default_loads = ujson.loads
         except ModuleNotFoundError:
             pass
 
-    return default_loads(obj)  # type: ignore[no-any-return]
+    return default_loads(obj)  # pyright: ignore[reportUnknownVariableType]

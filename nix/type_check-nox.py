@@ -30,7 +30,7 @@ FILES = [
 
 @nox.session(reuse_venv=True, name="stubgen")
 def gen_stubs(session: nox.Session) -> None:
-    session.install("mypy", "-r", "dev-requirements.txt")
+    session.install("mypy", "-r", "dev-requirements.txt", "-r", "requirements.txt")
     session.run("stubgen", *FILES, "-o", ".", "--include-private", "--no-import")
 
     _paths = [p + "i" for p in FILES]
@@ -40,5 +40,5 @@ def gen_stubs(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True, name="type-check")
 def type_check(session: nox.Session) -> None:
-    session.install("-r", "dev-requirements.txt")
+    session.install("-r", "dev-requirements.txt", "-r", "requirements.txt")
     session.run("python", "-m", "pyright", "aiobungie")

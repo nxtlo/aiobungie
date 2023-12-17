@@ -29,7 +29,7 @@ WORDS = ("crate",)
 
 @nox.session(reuse_venv=True)
 def format(session: nox.Session) -> None:
-    session.install("-r", "dev-requirements.txt")
+    session.install("-r", "dev-requirements.txt", "-r", "requirements.txt")
     session.run("python", "-m", "isort", "aiobungie")
     session.run("python", "-m", "ruff", "format", ".")
     session.run("python", "-m", "ruff", "check", ".")

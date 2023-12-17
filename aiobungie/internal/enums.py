@@ -69,11 +69,11 @@ class Enum(__enum.Enum):
     """Builtin Python enum with extra handlings."""
 
     @property
-    def name(self) -> str:  # type: ignore[override]
+    def name(self) -> str:
         return self._name_
 
     @property
-    def value(self) -> typing.Any:  # type: ignore[override]
+    def value(self) -> typing.Any:
         return self._value_
 
     def __str__(self) -> str:
@@ -93,14 +93,14 @@ class Flag(__enum.Flag):
     _value_: int
 
     @property
-    def name(self) -> str:  # type: ignore[override]
+    def name(self) -> str:
         if self._name_ is None:
             self._name_ = f"UNKNOWN {self._value_}"
 
         return self._name_
 
     @property
-    def value(self) -> int:  # type: ignore[override]
+    def value(self) -> int:
         return self._value_
 
     def __str__(self) -> str:
@@ -425,11 +425,12 @@ class ComponentType(Enum):
     )
     """All character components."""
 
+    # Ignores: We those are iterables, They're tuples.
     ALL = (
-        *ALL_PROFILES,  # type: ignore
-        *ALL_CHARACTERS,  # type: ignore
-        *ALL_VENDORS,  # type: ignore
-        *ALL_ITEMS,  # type: ignore
+        *ALL_PROFILES,  # pyright: ignore[reportGeneralTypeIssues]
+        *ALL_CHARACTERS,  # pyright: ignore[reportGeneralTypeIssues]
+        *ALL_VENDORS,  # pyright: ignore[reportGeneralTypeIssues]
+        *ALL_ITEMS,  # pyright: ignore[reportGeneralTypeIssues]
         RECORDS,
         CURRENCY_LOOKUPS,
         PRESENTATION_NODES,

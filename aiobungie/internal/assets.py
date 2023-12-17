@@ -208,18 +208,19 @@ class Image:
         """
         client_session = aiohttp.ClientSession()
 
+        byte = b""
         try:
             await client_session.__aenter__()
             response = await client_session.get(self.create_url())
 
             if 300 >= response.status >= 200:
-                reader = await response.read()
+                byte = await response.read()
 
         except Exception as exc:
             raise RuntimeError(f"Failed to read image: {exc}") from None
         finally:
             await client_session.__aexit__(None, None, None)
-        return reader
+        return byte
 
     async def iter(self) -> collections.AsyncGenerator[bytes, None]:
         """Iterates over the image bytes lazily.

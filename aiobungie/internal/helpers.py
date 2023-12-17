@@ -65,7 +65,7 @@ def deprecated(
     since : `str`
         The version that the function was deprecated.
     use_instead : `str | None`
-        If provided, This should be the alternaviate object name that should be used instead.
+        If provided, This should be the alternative object name that should be used instead.
     """
 
     def decorator(func: T) -> T:
@@ -161,8 +161,6 @@ async def awaits(
         Multiple awaitables to await.
     timeout : `float | None`
         An optional timeout.
-    with_exceptions : `bool`
-        If `True` then exceptions will be returned.
 
     Returns
     -------
@@ -178,8 +176,9 @@ async def awaits(
 
     for future in aws:
         tasks.append(asyncio.ensure_future(future))
+
+    gatherer = asyncio.gather(*tasks)
     try:
-        gatherer = asyncio.gather(*tasks)
         return await asyncio.wait_for(gatherer, timeout=timeout)
 
     except asyncio.CancelledError:
@@ -216,6 +215,11 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     return loop
 
 
+# The reason we're ignoring the types here because one of those modules will be
+# available at runtime which we need to ignore, But json is guaranteed to be available
+# if none of the others are.
+
+
 def dumps(
     obj: typedefs.JSONArray | typedefs.JSONObject,
 ) -> bytes:
@@ -223,33 +227,33 @@ def dumps(
         return _json.dumps(x).encode("UTF-8")
 
     try:
-        import orjson
+        import orjson  # type: ignore[reportMissingImports]
 
-        default_dumps = orjson.dumps  # noqa: F811
+        default_dumps = orjson.dumps  # type: ignore[UnknownMemberType]  # noqa: F811
     except ModuleNotFoundError:
         try:
-            import ujson
+            import ujson  # type: ignore[reportMissingImports]
 
             default_dumps = lambda x: ujson.dumps(x).encode("UTF-8")  # noqa: E731
         except ModuleNotFoundError:
             pass
 
-    return default_dumps(obj)  # type: ignore[no-any-return]
+    return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
 
 
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
     default_loads = _json.loads
     try:
-        import orjson
+        import orjson  # pyright: ignore[reportMissingImports]
 
-        default_loads = orjson.loads
+        default_loads = orjson.loads  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
     except ModuleNotFoundError:
         try:
-            import ujson
+            import ujson  # pyright: ignore[reportMissingModuleSource]
 
             default_loads = ujson.loads
         except ModuleNotFoundError:
             pass
 
-    return default_loads(obj)  # type: ignore[no-any-return]
+    return default_loads(obj)  # pyright: ignore[reportUnknownVariableType]

@@ -885,18 +885,13 @@ class Factory(interfaces.FactoryInterface):
             uninstanced_item_objectives=uninstanced_item_objectives,
         )
 
-    def deserialize_character_progressions_mapping(
-        self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, character.CharacterProgression]:
-        character_progressions: collections.Mapping[
-            int, character.CharacterProgression
-        ] = {}
+    # fmt: off
+    def deserialize_character_progressions_mapping(self, payload: typedefs.JSONObject) -> collections.Mapping[int, character.CharacterProgression]:
+        character_progressions: collections.MutableMapping[int, character.CharacterProgression] = {}
         for char_id, data in payload["data"].items():
-            # A little hack to stop mypy complaining about Mapping <-> dict
-            character_progressions[
-                int(char_id)
-            ] = self.deserialize_character_progressions(data)  # type: ignore[index]
+            character_progressions[int(char_id)] = self.deserialize_character_progressions(data)
         return character_progressions
+    # fmt: on
 
     def deserialize_characters_records(
         self,
@@ -1354,7 +1349,7 @@ class Factory(interfaces.FactoryInterface):
             plug_objectives=plug_objectives,
         )
 
-    def deserialize_character_component(  # type: ignore[call-arg]
+    def deserialize_character_component(
         self, payload: typedefs.JSONObject
     ) -> components.CharacterComponent:
         character_: character.Character | None = None
@@ -1970,6 +1965,7 @@ class Factory(interfaces.FactoryInterface):
         else:
             profiles = ()
 
+        error_profiles = ()
         if raw_profiles_with_errors := payload.get("profilesWithErrors"):
             for raw_error_p in raw_profiles_with_errors:
                 if "infoCard" in raw_error_p:
@@ -1977,8 +1973,6 @@ class Factory(interfaces.FactoryInterface):
                         self.deserialize_destiny_membership(error_p)
                         for error_p in raw_error_p
                     )
-        else:
-            error_profiles = ()
 
         return profile.LinkedProfile(
             bungie_user=bungie_user,
@@ -2263,40 +2257,40 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_seasonal_artifact(
         self, payload: typedefs.JSONObject
     ) -> season.Artifact:
-        if raw_artifact := payload.get("seasonalArtifact"):
-            if points := raw_artifact.get("pointProgression"):
-                points_prog = progressions.Progression(
-                    hash=points["progressionHash"],
-                    level=points["level"],
-                    cap=points["levelCap"],
-                    daily_limit=points["dailyLimit"],
-                    weekly_limit=points["weeklyLimit"],
-                    current_progress=points["currentProgress"],
-                    daily_progress=points["dailyProgress"],
-                    needed=points["progressToNextLevel"],
-                    next_level=points["nextLevelAt"],
-                )
+        raw_artifact = payload["seasonalArtifact"]
 
-            if bonus := raw_artifact.get("powerBonusProgression"):
-                power_bonus_prog = progressions.Progression(
-                    hash=bonus["progressionHash"],
-                    level=bonus["level"],
-                    cap=bonus["levelCap"],
-                    daily_limit=bonus["dailyLimit"],
-                    weekly_limit=bonus["weeklyLimit"],
-                    current_progress=bonus["currentProgress"],
-                    daily_progress=bonus["dailyProgress"],
-                    needed=bonus["progressToNextLevel"],
-                    next_level=bonus["nextLevelAt"],
-                )
-            artifact = season.Artifact(
-                hash=raw_artifact["artifactHash"],
-                power_bonus=raw_artifact["powerBonus"],
-                acquired_points=raw_artifact["pointsAcquired"],
-                bonus=power_bonus_prog,
-                points=points_prog,
-            )
-        return artifact
+        points = raw_artifact["pointProgression"]
+        points_prog = progressions.Progression(
+            hash=points["progressionHash"],
+            level=points["level"],
+            cap=points["levelCap"],
+            daily_limit=points["dailyLimit"],
+            weekly_limit=points["weeklyLimit"],
+            current_progress=points["currentProgress"],
+            daily_progress=points["dailyProgress"],
+            needed=points["progressToNextLevel"],
+            next_level=points["nextLevelAt"],
+        )
+
+        bonus = raw_artifact["powerBonusProgression"]
+        power_bonus_prog = progressions.Progression(
+            hash=bonus["progressionHash"],
+            level=bonus["level"],
+            cap=bonus["levelCap"],
+            daily_limit=bonus["dailyLimit"],
+            weekly_limit=bonus["weeklyLimit"],
+            current_progress=bonus["currentProgress"],
+            daily_progress=bonus["dailyProgress"],
+            needed=bonus["progressToNextLevel"],
+            next_level=bonus["nextLevelAt"],
+        )
+        return season.Artifact(
+            hash=raw_artifact["artifactHash"],
+            power_bonus=raw_artifact["powerBonus"],
+            acquired_points=raw_artifact["pointsAcquired"],
+            bonus=power_bonus_prog,
+            points=points_prog,
+        )
 
     def deserialize_profile_progression(
         self, payload: typedefs.JSONObject
@@ -2463,7 +2457,7 @@ class EmptyFactory(Factory):
 
     if typing.TYPE_CHECKING:
         # We explicitly want this to be `None`.
-        _net: None  # type: ignore[assignment]
+        _net: None
 
     def __init__(self, net: None = None) -> None:
         self._net = net

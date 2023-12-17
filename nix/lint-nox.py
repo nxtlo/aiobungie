@@ -22,8 +22,8 @@
 
 import nox
 
+
 @nox.session(reuse_venv=True)
 def lint(session: nox.Session) -> None:
-    session.install("-r", "dev-requirements.txt")
-    session.install("flake8")
-    session.run("python", "-m", "flake8", "--config", "./.flake8", "aiobungie")
+    session.install("-r", "dev-requirements.txt", "-r", "requirements.txt")
+    session.run("python", "-m", "ruff", "check", ".", "--fix")

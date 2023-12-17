@@ -1240,7 +1240,7 @@ class Client(traits.ClientApp):
     # Milestones
 
     @helpers.unstable
-    async def fetch_public_milestone_content(  # type: ignore[empty-body]
+    async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> milestones.MilestoneContent:
         """Fetch the milestone content given its hash.

@@ -271,7 +271,9 @@ class RateLimitedError(HTTPError):
     message: str = attrs.field(init=False)
     """A Bungie human readable message describes the cause of the error."""
 
-    @message.default  # type: ignore
+    # Type Ignore: attrs provide a `.default` setter on its attribs to allow
+    # changing the default value.
+    @message.default  # pyright: ignore
     def _(self) -> str:
         return f"You're ratelimited for {self.retry_after}, Endpoint: {self.url}. Slow down!"
 

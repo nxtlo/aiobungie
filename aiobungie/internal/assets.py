@@ -31,7 +31,6 @@ __all__ = ("Image", "MimeType")
 import asyncio
 import collections.abc as collections
 import concurrent.futures
-import logging
 import pathlib
 import typing
 
@@ -41,11 +40,12 @@ from aiobungie import url
 
 from . import enums
 from . import helpers
+from . import log
 
 if typing.TYPE_CHECKING:
     from typing_extensions import Self
 
-_LOGGER: typing.Final[logging.Logger] = logging.getLogger("aiobungie.assets")
+_LOGGER = log.alloc(name="aiobungie.assets", level=log.DEBUG)
 
 
 class MimeType(str, enums.Enum):

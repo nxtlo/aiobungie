@@ -26,7 +26,6 @@ from __future__ import annotations
 
 __all__ = ("Client",)
 
-import logging
 import typing
 
 from aiobungie import rest as rest_
@@ -37,6 +36,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import factory as factory_
 from aiobungie.internal import helpers
 from aiobungie.internal import iterators
+from aiobungie.internal import log
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import milestones
     from aiobungie.crates import profile
 
-_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
+_LOG = log.alloc(name="aiobungie.client", level=log.DEBUG)
 
 
 class Client(traits.ClientApp):
@@ -197,7 +197,7 @@ class Client(traits.ClientApp):
 
         Parameters
         ----------
-        name : `buildins.str`
+        name : `str`
             The user name.
 
         Returns

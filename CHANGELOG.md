@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * `Iterator.by_ref` method.
+* An option to use `rich` as a log handler.
+* Installing option `rich` and `full` by calling `pip install aiobungie[full | rich]`.
 
 ### Changed
 * Object immutability, all objects are now *frozen*.
@@ -18,6 +20,9 @@ large the data that has been fetched. But in general tuples are *faster*.
 * `fetch_public_milestone_content` and `deserialize_public_milestone_content` are currently unstable.
 * `ClanMember.current_user_memberships` is now nullable.
 * Optimized factory deserialization methods.
+* The `enable_debugging` parameter renamed to `debug`.
+* You won't need to pass `True` when calling `RESTClient.enable_debug`.
+* You'll be getting deprecation warning on `crates` level helper methods.
 
 ## [0.2.10](https://github.com/nxtlo/aiobungie/compare/0.2.9...0.2.19) - 2023-12-12
 

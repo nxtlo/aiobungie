@@ -35,7 +35,7 @@ from tests import config
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
     client = aiobungie.Client(token, max_retries=0)
-    client.rest.enable_debugging(True)
+    client.rest.enable_debugging()
     return client
 
 

@@ -31,14 +31,12 @@ __all__ = (
     "RESTClient",
     "RESTPool",
     "RequestMethod",
-    "TRACE",
 )
 
 import asyncio
 import contextlib
 import datetime
 import http
-import logging
 import os
 import pathlib
 import sys
@@ -58,13 +56,13 @@ from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import log
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import types
 
-_LOG: logging.Logger = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "en",
     "fr",
@@ -88,24 +86,6 @@ _USER_AGENT: str = (
     f"AiobungieClient (Author: {metadata.__author__}), "
     f"(Version: {metadata.__version__}), (URL: {metadata.__url__})"
 )
-
-TRACE: typing.Final[int] = logging.DEBUG - 5
-"""The trace logging level for the `RESTClient` responses.
-
-You can enable this with the following code
-
->>> import logging
->>> logging.getLogger("aiobungie.rest").setLevel(aiobungie.TRACE)
-# or
->>> logging.basicConfig(level=aiobungie.TRACE)
-# Or
->>> client = aiobungie.RESTClient(..., enable_debug="TRACE")
-# Or if you're using `aiobungie.Client`
->>> client = aiobungie.Client(...)
->>> client.rest.enable_debugging(level=aiobungie.TRACE, file="rest_logs.txt") # optional file
-"""
-
-logging.addLevelName(TRACE, "TRACE")
 
 
 def _collect_components(
@@ -168,7 +148,6 @@ def _write_sqlite_bytes(
                     zipped.extractall(".")
 
                     os.rename(file[0], _get_path(file_name, path, sql=True))
-                    _LOG.debug("Finished downloading manifest.")
 
         finally:
             pathlib.Path(tmp.name).unlink(missing_ok=True)
@@ -230,7 +209,7 @@ class RESTPool:
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_debugging : `bool | str`
+    debug : `bool | str`
         Whether to enable logging responses or not.
 
     Logging Levels
@@ -268,14 +247,14 @@ class RESTPool:
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
+        debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._client_secret = client_secret
         self._client_id = client_id
         self._token = token
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
-        self._enable_debug = enable_debugging
+        self._enable_debug = debug
         self._client_session = client_session
         self._loads = loads
         self._dumps = dumps
@@ -305,7 +284,7 @@ class RESTPool:
             loads=self._loads,
             dumps=self._dumps,
             max_retries=self._max_retries,
-            enable_debugging=self._enable_debug,
+            debug=self._enable_debug,
             client_session=self._client_session,
         )
 
@@ -347,7 +326,7 @@ class RESTClient(interfaces.RESTInterface):
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_debugging : `bool | str`
+    debug : `bool | str`
         Whether to enable logging responses or not.
 
     Logging Levels
@@ -380,7 +359,7 @@ class RESTClient(interfaces.RESTInterface):
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
+        debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._session = client_session
         self._lock: asyncio.Lock | None = None
@@ -391,8 +370,7 @@ class RESTClient(interfaces.RESTInterface):
         self._dumps = dumps
         self._loads = loads
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
-
-        self._set_debug_level(enable_debugging)
+        self._logger = log.alloc(name="aiobungie.rest", level=debug)
 
     @property
     def client_id(self) -> int | None:
@@ -430,11 +408,11 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     def enable_debugging(
         self,
-        level: typing.Literal["TRACE"] | bool | int = False,
+        level: typing.Literal["TRACE"] | bool | int = True,
         file: pathlib.Path | str | None = None,
         /,
     ) -> None:
-        self._set_debug_level(level, file)
+        log.init(file, level)
 
     @typing.final
     async def static_request(
@@ -456,22 +434,6 @@ class RESTClient(interfaces.RESTInterface):
             return None
 
         return builders.OAuthURL(client_id=client_id)
-
-    @staticmethod
-    def _set_debug_level(
-        level: typing.Literal["TRACE"] | bool | int = False,
-        file: pathlib.Path | str | None = None,
-    ) -> None:
-        file_handler = logging.FileHandler(file, mode="w") if file else None
-        if level == "TRACE" or level == TRACE:
-            logging.basicConfig(
-                level=TRACE, handlers=[file_handler] if file_handler else None
-            )
-
-        elif level:
-            logging.basicConfig(
-                level=logging.DEBUG, handlers=[file_handler] if file_handler else None
-            )
 
     async def _request(
         self,
@@ -530,7 +492,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000
 
-                _LOG.debug(
+                self._logger.debug(
                     "%s %s %s Time %.4fms",
                     method,
                     f"{endpoint}/{route}",
@@ -552,7 +514,7 @@ class RESTClient(interfaces.RESTInterface):
                         # json_data = self._loads(await response.read())
                         json_data = self._loads(await response.read())
 
-                        _LOG.debug(
+                        self._logger.debug(
                             "%s %s %s Time %.4fms",
                             method,
                             f"{endpoint}/{route}",
@@ -560,13 +522,11 @@ class RESTClient(interfaces.RESTInterface):
                             response_time,
                         )
 
-                        if _LOG.isEnabledFor(TRACE):
-                            _LOG.log(
-                                TRACE,
-                                "%s",
-                                error.stringify_http_message(
-                                    dict(response.headers) | headers
-                                ),
+                        if self._logger.isEnabledFor(log.TRACE):
+                            log.jsonify(
+                                self._logger,
+                                level=log.TRACE,
+                                data=dict(response.headers) | headers,
                             )
 
                         # Return the response.
@@ -583,7 +543,7 @@ class RESTClient(interfaces.RESTInterface):
                 ):
                     backoff_ = backoff.ExponentialBackOff(maximum=6)
                     sleep_time = next(backoff_)
-                    _LOG.warning(
+                    self._logger.warning(
                         "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
                         response.status,
                         response.reason,
@@ -641,7 +601,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
 
             # We sleep for a little bit to avoid funky behavior.
-            _LOG.warning(
+            self._logger.warning(
                 "We're being ratelimited, Method %s Route %s. Sleeping for %.2fs.",
                 method,
                 route,
@@ -1063,7 +1023,7 @@ class RESTClient(interfaces.RESTInterface):
 
         if complete_path.exists() and force:
             if force:
-                _LOG.info(
+                self._logger.info(
                     f"Found manifest in {complete_path!s}. Forcing to Re-Download."
                 )
                 complete_path.unlink(missing_ok=True)
@@ -1078,11 +1038,12 @@ class RESTClient(interfaces.RESTInterface):
                     "To force download, set the `force` parameter to `True`."
                 )
 
-        _LOG.info(f"Downloading manifest. Location: {complete_path!s}")
+        self._logger.info(f"Downloading manifest. Location: {complete_path!s}")
         data_bytes = await self.read_manifest_bytes(language)
         await asyncio.get_running_loop().run_in_executor(
             None, _write_sqlite_bytes, data_bytes, path, name
         )
+        self._logger.debug("Finished downloading manifest.")
         return _get_path(name, path, sql=True)
 
     async def download_json_manifest(
@@ -1092,9 +1053,9 @@ class RESTClient(interfaces.RESTInterface):
         language: str = "en",
     ) -> pathlib.Path:
         _ensure_manifest_language(language)
-
+        #
         full_path = _get_path(file_name, path)
-        _LOG.info(f"Downloading manifest JSON to {full_path!r}...")
+        self._logger.info(f"Downloading manifest JSON to {full_path!r}...")
 
         content = await self.fetch_manifest_path()
         json_bytes = await self._request(
@@ -1108,7 +1069,7 @@ class RESTClient(interfaces.RESTInterface):
         await asyncio.get_running_loop().run_in_executor(
             None, _write_json_bytes, json_bytes, file_name, path
         )
-        _LOG.info("Finished downloading manifest JSON.")
+        self._logger.info("Finished downloading manifest JSON.")
         return full_path
 
     async def fetch_manifest_version(self) -> str:

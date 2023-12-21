@@ -92,7 +92,7 @@ class Debug(typing.Protocol):
 
     def enable_debugging(
         self,
-        level: typing.Literal["TRACE"] | bool = False,
+        level: int | typing.Literal["TRACE"] | bool = True,
         file: pathlib.Path | str | None = None,
         /,
     ) -> None:

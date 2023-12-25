@@ -34,8 +34,7 @@ from tests import config
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    client = aiobungie.Client(token, max_retries=0)
-    client.rest.enable_debugging()
+    client = aiobungie.Client(token, max_retries=0, debug=True)
     return client
 
 
@@ -47,37 +46,37 @@ class TestUser:
     @staticmethod
     async def test_users():
         u = await client.fetch_bungie_user(config.PRIMARY_BUNGIE_ID)
-        assert isinstance(u, aiobungie.crate.BungieUser)
+        assert isinstance(u, aiobungie.crates.BungieUser)
 
     @staticmethod
     async def test_user_themes():
         ut = await client.fetch_user_themes()
         assert isinstance(ut, tuple)
-        assert isinstance(ut[0], aiobungie.crate.UserThemes)
+        assert isinstance(ut[0], aiobungie.crates.UserThemes)
 
     if config.PRIMARY_STEAM_ID is not None:
         # This method only uses STEAM IDs.
         @staticmethod
         async def test_hard_types():
             uht = await client.fetch_hard_types(config.PRIMARY_STEAM_ID)
-            assert isinstance(uht, aiobungie.crate.HardLinkedMembership)
+            assert isinstance(uht, aiobungie.crates.HardLinkedMembership)
 
     @staticmethod
     async def test_membership():
         p = await client.fetch_membership(config.PRIMARY_USERNAME, config.PRIMARY_CODE)
         profile = await p[0].fetch_self_profile([])
-        assert isinstance(profile, aiobungie.crate.Component)
+        assert isinstance(profile, aiobungie.crates.Component)
 
     @staticmethod
     async def test_membership_types_from_id():
         u = await client.fetch_membership_from_id(config.PRIMARY_MEMBERSHIP_ID)
-        assert isinstance(u, aiobungie.crate.User)
-        assert isinstance(u.bungie_user, aiobungie.crate.BungieUser)
+        assert isinstance(u, aiobungie.crates.User)
+        assert isinstance(u.bungie_user, aiobungie.crates.BungieUser)
 
     @staticmethod
     async def test_search_users():
         x = await client.search_users("Fate")
-        assert isinstance(x.next(), aiobungie.crate.SearchableDestinyUser)
+        assert isinstance(x.next(), aiobungie.crates.SearchableDestinyUser)
 
 
 # *->> Activities tests <<-*
@@ -90,15 +89,15 @@ class TestActivities:
             aiobungie.GameMode.RAID,
         )
         post = await a.next().fetch_post()
-        assert isinstance(post, aiobungie.crate.PostActivity)
+        assert isinstance(post, aiobungie.crates.PostActivity)
 
         for act in a:
-            assert isinstance(act, aiobungie.crate.Activity)
+            assert isinstance(act, aiobungie.crates.Activity)
 
     @staticmethod
     async def test_post_activity():
         a = await client.fetch_post_activity(9538108571)
-        assert isinstance(a, aiobungie.crate.PostActivity)
+        assert isinstance(a, aiobungie.crates.PostActivity)
         assert len(a.players) >= 1
 
     @staticmethod
@@ -115,7 +114,7 @@ class TestActivities:
             config.PRIMARY_MEMBERSHIP_ID,
             config.PRIMARY_MEMBERSHIP_TYPE,
         )
-        assert isinstance(a.next(), aiobungie.crate.AggregatedActivity)
+        assert isinstance(a.next(), aiobungie.crates.AggregatedActivity)
 
 
 # *->> Clan tests <<-*
@@ -125,14 +124,14 @@ class TestClans:
         c = await client.fetch_clan_from_id(config.PRIMARY_CLAN_ID)
         members = await c.fetch_members()
         for member in members:
-            assert isinstance(member, aiobungie.crate.ClanMember)
+            assert isinstance(member, aiobungie.crates.ClanMember)
 
     @staticmethod
     async def test_clan():
         c = await client.fetch_clan(config.PRIMARY_CLAN_NAME)
         members = await c.fetch_members()
 
-        assert isinstance(members.next(), aiobungie.crate.ClanMember)
+        assert isinstance(members.next(), aiobungie.crates.ClanMember)
 
     @staticmethod
     async def test_fetch_clan_members():
@@ -148,7 +147,7 @@ class TestClans:
     async def test_clan_conversations():
         x = await client.fetch_clan_conversations(881267)
         for c in x:
-            assert isinstance(c, aiobungie.crate.ClanConversation)
+            assert isinstance(c, aiobungie.crates.ClanConversation)
 
     @staticmethod
     async def test_clan_admins():
@@ -162,7 +161,7 @@ class TestClans:
         )
         assert obj
         up_to_date_clan_obj = await obj[0].fetch_self_clan()
-        assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
+        assert isinstance(up_to_date_clan_obj, aiobungie.crates.Clan)
 
     @staticmethod
     async def test_potential_groups_for_member():
@@ -175,12 +174,12 @@ class TestClans:
     async def test_clan_banners():
         cb = await client.fetch_clan_banners()
         for b in cb:
-            assert isinstance(b, aiobungie.crate.ClanBanner)
+            assert isinstance(b, aiobungie.crates.ClanBanner)
 
     @staticmethod
     async def test_clan_weekly_rewards():
         r = await client.fetch_clan_weekly_rewards(4389205)
-        assert isinstance(r, aiobungie.crate.Milestone)
+        assert isinstance(r, aiobungie.crates.Milestone)
 
 
 # *->> Application tests <<-*
@@ -188,7 +187,7 @@ class TestApplication:
     @staticmethod
     async def test_fetch_app():
         a = await client.fetch_application(config.APP_ID)
-        assert isinstance(a, aiobungie.crate.Application)
+        assert isinstance(a, aiobungie.crates.Application)
 
 
 # *->> Character components tests <<-*
@@ -202,7 +201,7 @@ class TestCharacter:
             config.PRIMARY_CHARACTER_ID,
             [aiobungie.ComponentType.ALL],
         )
-        assert isinstance(c, aiobungie.crate.CharacterComponent)
+        assert isinstance(c, aiobungie.crates.CharacterComponent)
         assert c.activities
         assert c.character
         assert c.character_records
@@ -224,53 +223,53 @@ class TestProfile:
             config.PRIMARY_MEMBERSHIP_TYPE,
             [aiobungie.ComponentType.ALL],
         )
-        assert isinstance(pf, aiobungie.crate.Component)
+        assert isinstance(pf, aiobungie.crates.Component)
 
         assert pf.profiles
-        assert isinstance(pf.profile_progression, aiobungie.crate.ProfileProgression)
+        assert isinstance(pf.profile_progression, aiobungie.crates.ProfileProgression)
 
         assert pf.characters
         for config.PRIMARY_CHARACTER_ID, character in pf.characters.items():
             assert isinstance(config.PRIMARY_CHARACTER_ID, int)
-            assert isinstance(character, aiobungie.crate.Character)
+            assert isinstance(character, aiobungie.crates.Character)
             assert config.PRIMARY_CHARACTER_ID in pf.profiles.character_ids
 
         assert pf.profile_records
         for _, prec in pf.profile_records.items():
-            assert isinstance(prec, aiobungie.crate.Record)
+            assert isinstance(prec, aiobungie.crates.Record)
 
         assert pf.character_records
         for _, record in pf.character_records.items():
-            assert isinstance(record, aiobungie.crate.CharacterRecord)
+            assert isinstance(record, aiobungie.crates.CharacterRecord)
 
         assert pf.character_equipments
         for config.PRIMARY_CHARACTER_ID, items in pf.character_equipments.items():
             assert isinstance(config.PRIMARY_CHARACTER_ID, int)
             for item in items:
-                assert isinstance(item, aiobungie.crate.ProfileItemImpl)
+                assert isinstance(item, aiobungie.crates.ProfileItemImpl)
 
         assert pf.character_activities
         for char_id, act in pf.character_activities.items():
             assert isinstance(char_id, int)
-            assert isinstance(act, aiobungie.crate.activity.CharacterActivity)
+            assert isinstance(act, aiobungie.crates.activity.CharacterActivity)
 
         assert pf.character_render_data
         for _, data in pf.character_render_data.items():
-            assert isinstance(data, aiobungie.crate.RenderedData)
+            assert isinstance(data, aiobungie.crates.RenderedData)
             items_ = await data.fetch_my_items(limit=2)
             assert len(items_) == 2
 
         assert pf.character_progressions
         for config.PRIMARY_CHARACTER_ID, prog in pf.character_progressions.items():
             assert isinstance(config.PRIMARY_CHARACTER_ID, int)
-            assert isinstance(prog, aiobungie.crate.CharacterProgression)
+            assert isinstance(prog, aiobungie.crates.CharacterProgression)
 
         assert pf.profile_string_variables
         assert pf.character_string_variables
         assert isinstance(pf.profile_string_variables, dict)
         assert isinstance(pf.character_string_variables, dict)
         assert pf.metrics
-        assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
+        assert isinstance(pf.item_components, aiobungie.crates.ItemsComponent)
         assert pf.character_craftables
 
     @staticmethod
@@ -278,9 +277,9 @@ class TestProfile:
         obj = await client.fetch_linked_profiles(
             config.PRIMARY_MEMBERSHIP_ID, config.PRIMARY_MEMBERSHIP_TYPE
         )
-        assert isinstance(obj, aiobungie.crate.LinkedProfile)
+        assert isinstance(obj, aiobungie.crates.LinkedProfile)
         user = obj.profiles[0]
-        assert isinstance(user, aiobungie.crate.DestinyMembership)
+        assert isinstance(user, aiobungie.crates.DestinyMembership)
 
 
 # *->> Entities tests <<-*
@@ -288,7 +287,7 @@ class TestEntities:
     @staticmethod
     async def test_fetch_inventory_item():
         i = await client.fetch_inventory_item(1216319404)
-        assert isinstance(i, aiobungie.crate.InventoryEntity)
+        assert isinstance(i, aiobungie.crates.InventoryEntity)
 
     @staticmethod
     async def test_search_entities():
@@ -333,7 +332,7 @@ class TestMeta:
             config.PRIMARY_MEMBERSHIP_TYPE,
         )
         for weapon in w:
-            assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
+            assert isinstance(weapon, aiobungie.crates.ExtendedWeaponValues)
 
     @staticmethod
     async def test_client_metadata():
@@ -355,7 +354,7 @@ class TestMeta:
     # @staticmethod
     # async def test_public_milestones_content():
     #     cb = await client.fetch_public_milestone_content(4253138191)
-    #     assert isinstance(cb, aiobungie.crate.MilestoneContent)
+    #     assert isinstance(cb, aiobungie.crates.MilestoneContent)
 
     # * Fireteam methods.
     @staticmethod
@@ -368,7 +367,7 @@ class TestMeta:
         )
         assert f2
         for ft in f2:
-            assert isinstance(ft, aiobungie.crate.Fireteam)
+            assert isinstance(ft, aiobungie.crates.Fireteam)
 
 
 async def main() -> None:

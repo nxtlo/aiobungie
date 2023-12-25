@@ -30,9 +30,8 @@ from __future__ import annotations
 
 from aiobungie import typedefs
 
-__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
+__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
 
-import pathlib
 import typing
 
 if typing.TYPE_CHECKING:
@@ -56,7 +55,7 @@ class Netrunner(typing.Protocol):
     ```py
     import aiobungie
 
-    membership = aiobungie.crate.DestinyMembership(…)
+    membership = aiobungie.crates.DestinyMembership(…)
     # Access the base client that references this membership.
     external_request = await membership.net.request.fetch_user(…)
     ```
@@ -73,7 +72,7 @@ class Netrunner(typing.Protocol):
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
     """Types which can deserialize REST payloads responses
-    into a `aiobungie.crate` implementation using the `Serializable.factory` property.
+    into a `aiobungie.crates` implementation using the `Serializable.factory` property.
 
     Only `ClientApp` implement this trait
     """
@@ -87,35 +86,7 @@ class Serializable(typing.Protocol):
 
 
 @typing.runtime_checkable
-class Debug(typing.Protocol):
-    """Objects that are able to enable debugging REST calls."""
-
-    def enable_debugging(
-        self,
-        level: int | typing.Literal["TRACE"] | bool = True,
-        file: pathlib.Path | str | None = None,
-        /,
-    ) -> None:
-        """Enables debugging for the REST calls.
-
-        Logging Levels
-        --------------
-        * `False`: This will disable logging.
-        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
-
-        Parameters
-        -----------
-        level : `str | bool | int`
-            The level of debugging to enable.
-        file : `pathlib.Path | str | None`
-            The file path to write the debug logs to. If provided.
-        """
-        raise NotImplementedError
-
-
-@typing.runtime_checkable
-class RESTful(Debug, typing.Protocol):
+class RESTful(typing.Protocol):
     """Types which it is possible to interact with the API directly
     which provides RESTful functionalities.
 

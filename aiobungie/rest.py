@@ -37,6 +37,7 @@ import asyncio
 import contextlib
 import datetime
 import http
+import logging
 import os
 import pathlib
 import sys
@@ -86,6 +87,8 @@ _USER_AGENT: str = (
     f"AiobungieClient (Author: {metadata.__author__}), "
     f"(Version: {metadata.__version__}), (URL: {metadata.__url__})"
 )
+
+_LOGGER = logging.getLogger("aiobungie.rest")
 
 
 def _collect_components(
@@ -370,7 +373,8 @@ class RESTClient(interfaces.RESTInterface):
         self._dumps = dumps
         self._loads = loads
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
-        self._logger = log.alloc(name="aiobungie.rest", level=debug)
+        # _LOGGER.setLevel(log.TRACE) if debug == "TRACE" else _LOGGER.setLevel(debug)
+        log.init(_LOGGER, level=debug)
 
     @property
     def client_id(self) -> int | None:
@@ -406,15 +410,6 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     @typing.final
-    def enable_debugging(
-        self,
-        level: typing.Literal["TRACE"] | bool | int = True,
-        file: pathlib.Path | str | None = None,
-        /,
-    ) -> None:
-        log.init(file, level)
-
-    @typing.final
     async def static_request(
         self,
         method: RequestMethod | str,
@@ -443,17 +438,16 @@ class RESTClient(interfaces.RESTInterface):
         base: bool = False,
         oauth2: bool = False,
         auth: str | None = None,
-        unwrapping: typing.Literal["json", "read"] = "json",
+        unwrap_bytes: bool = False,
         json: collections.Mapping[str, typing.Any] | None = None,
         data: collections.Mapping[str, typing.Any] | None = None,
         params: collections.Mapping[str, typing.Any] | None = None,
-        headers: dict[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
         assert self._session is not None
 
         retries: int = 0
-        headers = headers or {}
+        headers = {}
 
         headers[_USER_AGENT_HEADERS] = _USER_AGENT
         headers["X-API-KEY"] = self._token
@@ -468,6 +462,10 @@ class RESTClient(interfaces.RESTInterface):
             endpoint = endpoint + url.REST_EP
 
         if oauth2:
+            assert self._client_id
+            assert self._client_secret
+            headers["client_secret"] = self._client_secret
+
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             endpoint = endpoint + url.TOKEN_EP
 
@@ -477,8 +475,9 @@ class RESTClient(interfaces.RESTInterface):
         if json:
             headers["Content-Type"] = _APP_JSON
 
+        stack = contextlib.AsyncExitStack()
         while True:
-            async with (stack := contextlib.AsyncExitStack()):
+            try:
                 await stack.enter_async_context(self._lock)
 
                 # We make the request here.
@@ -492,7 +491,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000
 
-                self._logger.debug(
+                _LOGGER.debug(
                     "%s %s %s Time %.4fms",
                     method,
                     f"{endpoint}/{route}",
@@ -502,60 +501,91 @@ class RESTClient(interfaces.RESTInterface):
 
                 await self._handle_ratelimit(response, method, route)
 
-                if response.status == http.HTTPStatus.NO_CONTENT:
-                    return None
+            except aiohttp.ClientConnectionError as exc:
+                if retries >= self._max_retries:
+                    raise error.HTTPError(
+                        str(exc),
+                        http.HTTPStatus.SERVICE_UNAVAILABLE,
+                    )
+                backoff_ = backoff.ExponentialBackOff(maximum=8)
 
-                if 300 > response.status >= 200:
-                    if unwrapping == "read":
-                        # We need to read the bytes for the manifest response.
-                        return await response.read()
+                timer = next(backoff_)
+                _LOGGER.warning(
+                    "Client received a connection error <%s> Retrying in %.2fs. Remaining retries: %s",
+                    type(exc).__qualname__,
+                    timer,
+                    self._max_retries - retries,
+                )
+                retries += 1
+                await asyncio.sleep(timer)
+                continue
 
-                    if response.content_type == _APP_JSON:
-                        # json_data = self._loads(await response.read())
-                        json_data = self._loads(await response.read())
+            finally:
+                await stack.aclose()
 
-                        self._logger.debug(
-                            "%s %s %s Time %.4fms",
-                            method,
-                            f"{endpoint}/{route}",
-                            f"{response.status} {response.reason}",
-                            response_time,
-                        )
+            if response.status == http.HTTPStatus.NO_CONTENT:
+                return None
 
-                        if self._logger.isEnabledFor(log.TRACE):
-                            log.jsonify(
-                                self._logger,
-                                level=log.TRACE,
-                                data=dict(response.headers) | headers,
-                            )
+            # Handle the successful response.
+            if 300 > response.status >= 200:
+                if unwrap_bytes:
+                    # We need to read the bytes for the manifest response.
+                    return await response.read()
 
-                        # Return the response.
-                        # auth responses are not inside a Response object.
-                        if oauth2:
-                            return json_data
-
-                        # The reason we have a type ignore is because the actual response type
-                        # is within this `Response` key.
-                        return json_data["Response"]  # type: ignore
-
-                if (
-                    response.status in _RETRY_5XX and retries < self._max_retries  # noqa: W503
-                ):
-                    backoff_ = backoff.ExponentialBackOff(maximum=6)
-                    sleep_time = next(backoff_)
-                    self._logger.warning(
-                        "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
-                        response.status,
-                        response.reason,
-                        sleep_time,
-                        self._max_retries - retries,
+                # Bungie get funky and return HTML instead of JSON when making an authorized
+                # request with a dummy access token. We could technically read the page content
+                # but that's Bungie's fault for not returning a JSON response.
+                if response.content_type != _APP_JSON:
+                    raise error.HTTPError(
+                        message=f"Expected JSON response, Got {response.content_type}, "
+                        f"{response.real_url.human_repr()}",
+                        http_status=http.HTTPStatus(response.status),
                     )
 
-                    retries += 1
-                    await asyncio.sleep(sleep_time)
-                    continue
+                json_data = self._loads(await response.read())
 
-                raise await error.raise_error(response)
+                _LOGGER.debug(
+                    "%s %s %s Time %.4fms",
+                    method,
+                    f"{endpoint}/{route}",
+                    f"{response.status} {response.reason}",
+                    response_time,
+                )
+
+                if _LOGGER.isEnabledFor(log.TRACE):
+                    log.jsonify(
+                        _LOGGER,
+                        level=log.TRACE,
+                        data=dict(response.headers),
+                    )
+
+                # Return the response.
+                # auth responses are not inside a Response object.
+                if oauth2:
+                    return json_data
+
+                # The reason we have a type ignore is because the actual response type
+                # is within this `Response` key.
+                return json_data["Response"]  # type: ignore
+
+            if (
+                response.status in _RETRY_5XX and retries < self._max_retries  # noqa: W503
+            ):
+                backoff_ = backoff.ExponentialBackOff(maximum=6)
+                sleep_time = next(backoff_)
+                _LOGGER.warning(
+                    "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
+                    response.status,
+                    response.reason,
+                    sleep_time,
+                    self._max_retries - retries,
+                )
+
+                retries += 1
+                await asyncio.sleep(sleep_time)
+                continue
+
+            raise await error.panic(response)
 
     async def __aenter__(self) -> RESTClient:
         self.open()
@@ -601,7 +631,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
 
             # We sleep for a little bit to avoid funky behavior.
-            self._logger.warning(
+            _LOGGER.warning(
                 "We're being ratelimited, Method %s Route %s. Sleeping for %.2fs.",
                 method,
                 route,
@@ -612,16 +642,6 @@ class RESTClient(interfaces.RESTInterface):
             continue
 
     async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
-        if not isinstance(self._client_secret, (str, int)):
-            raise TypeError(
-                "Expected (str, int) for client secret "
-                f"but got {type(self._client_secret).__name__}"
-            )
-
-        headers = {
-            "client_secret": self._client_secret,
-        }
-
         data = {
             "grant_type": "authorization_code",
             "code": code,
@@ -629,20 +649,13 @@ class RESTClient(interfaces.RESTInterface):
             "client_secret": self._client_secret,
         }
 
-        response = await self._request(
-            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
-        )
+        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
     async def refresh_access_token(
         self, refresh_token: str, /
     ) -> builders.OAuth2Response:
-        if not isinstance(self._client_secret, (int, str)):
-            raise TypeError(
-                f"Expected (str, int) for client secret but got {type(self._client_secret).__name__}"
-            )
-
         data = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
@@ -1005,7 +1018,7 @@ class RESTClient(interfaces.RESTInterface):
         resp = await self._request(
             RequestMethod.GET,
             content["mobileWorldContentPaths"][language],
-            unwrapping="read",
+            unwrap_bytes=True,
             base=True,
         )
         assert isinstance(resp, bytes)
@@ -1023,7 +1036,7 @@ class RESTClient(interfaces.RESTInterface):
 
         if complete_path.exists() and force:
             if force:
-                self._logger.info(
+                _LOGGER.info(
                     f"Found manifest in {complete_path!s}. Forcing to Re-Download."
                 )
                 complete_path.unlink(missing_ok=True)
@@ -1038,12 +1051,12 @@ class RESTClient(interfaces.RESTInterface):
                     "To force download, set the `force` parameter to `True`."
                 )
 
-        self._logger.info(f"Downloading manifest. Location: {complete_path!s}")
+        _LOGGER.info(f"Downloading manifest. Location: {complete_path!s}")
         data_bytes = await self.read_manifest_bytes(language)
         await asyncio.get_running_loop().run_in_executor(
             None, _write_sqlite_bytes, data_bytes, path, name
         )
-        self._logger.debug("Finished downloading manifest.")
+        _LOGGER.info("Finished downloading manifest.")
         return _get_path(name, path, sql=True)
 
     async def download_json_manifest(
@@ -1055,13 +1068,13 @@ class RESTClient(interfaces.RESTInterface):
         _ensure_manifest_language(language)
         #
         full_path = _get_path(file_name, path)
-        self._logger.info(f"Downloading manifest JSON to {full_path!r}...")
+        _LOGGER.info(f"Downloading manifest JSON to {full_path!r}...")
 
         content = await self.fetch_manifest_path()
         json_bytes = await self._request(
             RequestMethod.GET,
             content["jsonWorldContentPaths"][language],
-            unwrapping="read",
+            unwrap_bytes=True,
             base=True,
         )
 
@@ -1069,7 +1082,7 @@ class RESTClient(interfaces.RESTInterface):
         await asyncio.get_running_loop().run_in_executor(
             None, _write_json_bytes, json_bytes, file_name, path
         )
-        self._logger.info("Finished downloading manifest JSON.")
+        _LOGGER.info("Finished downloading manifest JSON.")
         return full_path
 
     async def fetch_manifest_version(self) -> str:

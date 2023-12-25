@@ -128,17 +128,6 @@ from aiobungie.internal.factory import Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 
-from .metadata import __about__
-from .metadata import __author__
-from .metadata import __docs__
-from .metadata import __email__
-from .metadata import __license__
-from .metadata import __url__
-from .metadata import __version__
-
-# Alias for crate for backwards compatibility.
-crate = crates
-
 # Activity enums
 from .crates.activity import Difficulty
 
@@ -159,5 +148,12 @@ from .crates.fireteams import FireteamPlatform
 
 # Records enums
 from .crates.records import RecordState
+from .metadata import __about__
+from .metadata import __author__
+from .metadata import __docs__
+from .metadata import __email__
+from .metadata import __license__
+from .metadata import __url__
+from .metadata import __version__
 
 __all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

@@ -103,13 +103,16 @@ asyncio.run(main())
 * attrs
 * `backports.datetime_fromisoformat`, required for `Python 3.10` only.
 
-### Speedups - Optional
-Additionally, If you have [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
-installed they will be used as the default JSON parser.
+### Features
+aiobungie features are extra dependencies that replaces the standard library with either faster/neater pkgs.
 
-Just install `pip install aiobungie[speedup]` like this.
+* `speedup`
+This will include and uses [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
+as the default `json` parser. They provide faster json serialization and de-serialization than the standard Python JSON pkg.
+* `rich`: Used for pretty [rich](https://github.com/Textualize/rich) logging and automatic traceback handler.
+* `full`: This will include all of the features above.
 
-They provide faster json serialization and de-serialization than the standard Python JSON pkg.
+For installing the specified feature, type `pip install aiobungie[feature-name]`
 
 ## Contributing
 Please read this [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)

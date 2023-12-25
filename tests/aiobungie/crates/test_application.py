@@ -26,14 +26,14 @@ import mock
 import pytest
 
 import aiobungie
-from aiobungie import crate
+from aiobungie import crates
 from aiobungie.internal import assets
 
 
 class TestAppOwner:
     @pytest.fixture()
     def obj(self):
-        return crate.ApplicationOwner(
+        return crates.ApplicationOwner(
             net=mock.Mock(),
             name="rose",
             type=aiobungie.MembershipType.XBOX,
@@ -43,43 +43,43 @@ class TestAppOwner:
             code=2463,
         )
 
-    def test_app_owner_name(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "name") as name:
+    def test_app_owner_name(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "name") as name:
             assert obj.name == name
 
-    def test_app_owner_id(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "id") as id:
+    def test_app_owner_id(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "id") as id:
             assert obj.id == id
 
-    def test_app_owner_type(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "type") as type:
+    def test_app_owner_type(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "type") as type:
             assert obj.type == type and int(obj.type) == int(
                 aiobungie.MembershipType.XBOX
             )
 
-    def test_app_owner_is_public(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "is_public") as is_public:
+    def test_app_owner_is_public(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "is_public") as is_public:
             assert obj.is_public == is_public
 
-    def test_app_owner_icon(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "icon") as icon:
+    def test_app_owner_icon(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "icon") as icon:
             assert obj.icon == icon
 
-    def test_app_owner_code(self, obj: crate.ApplicationOwner):
-        with mock.patch.object(crate.ApplicationOwner, "code") as code:
+    def test_app_owner_code(self, obj: crates.ApplicationOwner):
+        with mock.patch.object(crates.ApplicationOwner, "code") as code:
             assert obj.code == code
 
-    def test___int__(self, obj: crate.ApplicationOwner) -> None:
+    def test___int__(self, obj: crates.ApplicationOwner) -> None:
         assert int(obj) == obj.id
 
-    def test___str__(self, obj: crate.ApplicationOwner) -> None:
+    def test___str__(self, obj: crates.ApplicationOwner) -> None:
         assert str(obj) == "rose#2463"
 
 
 class TestApplication:
     @pytest.fixture()
-    def owner(self) -> crate.ApplicationOwner:
-        return crate.ApplicationOwner(
+    def owner(self) -> crates.ApplicationOwner:
+        return crates.ApplicationOwner(
             name="rose",
             id=411098,
             code=2463,
@@ -90,8 +90,8 @@ class TestApplication:
         )
 
     @pytest.fixture()
-    def app(self, owner: crate.ApplicationOwner) -> crate.Application:
-        return crate.Application(
+    def app(self, owner: crates.ApplicationOwner) -> crates.Application:
+        return crates.Application(
             id=402928,
             name="aiobungie",
             redirect_url=None,
@@ -103,23 +103,23 @@ class TestApplication:
             owner=owner,
         )
 
-    def test___int__(self, app: crate.Application) -> None:
+    def test___int__(self, app: crates.Application) -> None:
         assert int(app) == 402928
 
-    def test___str__(self, app: crate.Application) -> None:
+    def test___str__(self, app: crates.Application) -> None:
         assert str(app) == "aiobungie"
 
-    def test_app_scope(self, app: crate.Application) -> None:
+    def test_app_scope(self, app: crates.Application) -> None:
         assert app.scope is None
 
-    def test_app_owner(self, app: crate.Application) -> None:
+    def test_app_owner(self, app: crates.Application) -> None:
         assert app.owner.id == 411098
         assert app.owner.name == "rose"
         assert app.owner.code == 2463
 
     @pytest.mark.asyncio()
     async def test_fetch_self_app_owner_bungie_user(
-        self, owner: crate.ApplicationOwner
+        self, owner: crates.ApplicationOwner
     ) -> None:
         owner.net.request.fetch_bungie_user = mock.AsyncMock()
 

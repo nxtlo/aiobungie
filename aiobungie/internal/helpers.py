@@ -244,7 +244,10 @@ def dumps(
         except ModuleNotFoundError:
             pass
 
-    return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
+    try:
+        return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
+    except TypeError:
+        return _json.dumps(obj).encode("UTF-8")
 
 
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:

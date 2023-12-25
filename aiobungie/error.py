@@ -36,8 +36,8 @@ __all__ = (
     "InternalServerError",
     "HTTPError",
     "BadRequest",
-    "raise_error",
-    "stringify_http_message",
+    "panic",
+    "stringify_headers",
 )
 
 import collections.abc as collections
@@ -125,14 +125,14 @@ class HTTPException(HTTPError):
             self.http_status.value,
         )
         return (
-            f"{status_name}: " + "{"
+            f"{status_name}: " + "("
             f"""
             http_status: {status_value},
             message: {self.message if self.message else 'UNDEFINED'},
             error_status: {self.error_status if self.error_status else 'UNDEFINED'},
             url: {self.url if self.url else 'UNDEFINED'},
             message_data: {self.message_data}
-        """ + "}"
+        """ + ")"
         )
 
 
@@ -281,18 +281,8 @@ class RateLimitedError(HTTPError):
         return self.message
 
 
-async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
-    """Generates and raise exceptions on error responses."""
-
-    # Not a JSON response, raise immediately.
-
-    # Also Bungie sometimes get funky and return HTML instead of JSON when making an authorized
-    # request with a dummy access token. I can't really do anything about this..
-    if response.content_type != "application/json":
-        return HTTPError(
-            f"Expected JSON content but got {response.content_type!s}, {response.real_url!s}",
-            http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
-        )
+async def panic(response: aiohttp.ClientResponse) -> HTTPError:
+    """Immediately raise an exception based on the response."""
 
     body: collections.Mapping[str, typing.Any] = helpers.loads(await response.read())  # type: ignore
     message: str = body.get("Message", "UNDEFINED_MESSAGE")
@@ -438,12 +428,20 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
                 )
 
 
-def stringify_http_message(headers: collections.Mapping[str, str]) -> str:
+def stringify_headers(headers: collections.Mapping[str, typing.Any]) -> str:
     return (
         "{ \n"
         + "\n".join(  # noqa: W503
             f"{f'   {key}'}: {value}"
-            if key not in ("Authorization", "X-API-KEY", "client_secret", "client_id")
+            if key
+            not in {
+                "Authorization",
+                "X-API-KEY",
+                "client_secret",
+                "client_id",
+                "access_token",
+                "refresh_token",
+            }
             else f"   {key}: REDACTED_TOKEN"
             for key, value in headers.items()
         )

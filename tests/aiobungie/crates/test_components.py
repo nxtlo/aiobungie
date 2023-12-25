@@ -24,25 +24,25 @@ import mock
 import pytest
 import attrs.exceptions as attrs
 
-from aiobungie import crate
+from aiobungie import crates
 
 
 class TestRecordsComponent:
     @pytest.fixture()
     def model(self):
-        return crate.RecordsComponent(
-            profile_records=mock.Mock({1234: mock.Mock(crate.Record)}),
-            character_records=mock.Mock({1234: mock.Mock(crate.CharacterRecord)}),
+        return crates.RecordsComponent(
+            profile_records=mock.Mock({1234: mock.Mock(crates.Record)}),
+            character_records=mock.Mock({1234: mock.Mock(crates.CharacterRecord)}),
         )
 
-    def test_profile_records(self, model: crate.RecordsComponent):
+    def test_profile_records(self, model: crates.RecordsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "profile_records"
         ) as profile_records:
             assert model.profile_records is not None
             assert profile_records[1234] is model.profile_records[1234]
 
-    def test_character_records(self, model: crate.RecordsComponent):
+    def test_character_records(self, model: crates.RecordsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "character_records"
         ) as character_records:
@@ -53,35 +53,35 @@ class TestRecordsComponent:
 class TestProfileComponent:
     @pytest.fixture()
     def model(self):
-        return crate.ProfileComponent(
+        return crates.ProfileComponent(
             profiles=mock.Mock(
-                crate.Profile,
+                crates.Profile,
             ),
-            profile_progression=mock.Mock(crate.ProfileProgression),
+            profile_progression=mock.Mock(crates.ProfileProgression),
             profile_currencies=None,
             profile_inventories=[
-                mock.Mock(crate.ProfileItemImpl, crate.ProfileItemImpl)
+                mock.Mock(crates.ProfileItemImpl, crates.ProfileItemImpl)
             ],
         )
 
-    def test_profiles_component(self, model: crate.ProfileComponent):
+    def test_profiles_component(self, model: crates.ProfileComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "profiles"
         ) as profiles:
             assert model.profiles is not None
             assert model.profiles is profiles
 
-    def test_profile_progression_component(self, model: crate.ProfileComponent):
+    def test_profile_progression_component(self, model: crates.ProfileComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "profile_progression"
         ) as profile_progression:
             assert model.profile_progression is not None
             assert profile_progression is model.profile_progression
 
-    def test_profile_currencies(self, model: crate.ProfileComponent):
+    def test_profile_currencies(self, model: crates.ProfileComponent):
         assert model.profile_currencies is None
 
-    def test_profile_inventories(self, model: crate.ProfileComponent):
+    def test_profile_inventories(self, model: crates.ProfileComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "profile_inventories"
         ) as profile_inventories:
@@ -92,12 +92,12 @@ class TestProfileComponent:
 class TestUninstancedItemsComponent:
     @pytest.fixture()
     def model(self):
-        return crate.UninstancedItemsComponent(
-            objectives={0: [mock.Mock(crate.Objective), mock.Mock(crate.Objective)]},
-            perks={0: [mock.Mock(crate.ItemPerk)], 1: [mock.Mock(crate.ItemPerk)]},
+        return crates.UninstancedItemsComponent(
+            objectives={0: [mock.Mock(crates.Objective), mock.Mock(crates.Objective)]},
+            perks={0: [mock.Mock(crates.ItemPerk)], 1: [mock.Mock(crates.ItemPerk)]},
         )
 
-    def test_objectives(self, model: crate.UninstancedItemsComponent):
+    def test_objectives(self, model: crates.UninstancedItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "objectives"
         ) as objectives:
@@ -105,7 +105,7 @@ class TestUninstancedItemsComponent:
             assert objectives[0] is model.objectives[0]
             assert objectives[1] is model.objectives[1]
 
-    def test_perks(self, model: crate.UninstancedItemsComponent):
+    def test_perks(self, model: crates.UninstancedItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "perks"
         ) as perks:
@@ -117,29 +117,29 @@ class TestUninstancedItemsComponent:
 class TestItemsComponent:
     @pytest.fixture()
     def model(self):
-        return crate.ItemsComponent(
+        return crates.ItemsComponent(
             instances=[
-                {0: mock.Mock(crate.ItemInstance), 1: mock.Mock(crate.ItemInstance)},
+                {0: mock.Mock(crates.ItemInstance), 1: mock.Mock(crates.ItemInstance)},
             ],
             render_data=None,
-            stats={0: mock.Mock(crate.ItemStatsView)},
-            sockets={23: [mock.Mock(crate.ItemSocket)]},
-            reusable_plugs={0: [mock.Mock(crate.PlugItemState)]},
+            stats={0: mock.Mock(crates.ItemStatsView)},
+            sockets={23: [mock.Mock(crates.ItemSocket)]},
+            reusable_plugs={0: [mock.Mock(crates.PlugItemState)]},
             plug_objectives=None,
-            plug_states=[mock.Mock(crate.PlugItemState)],
+            plug_states=[mock.Mock(crates.PlugItemState)],
             objectives={
-                0: [mock.Mock(crate.Objective)],
+                0: [mock.Mock(crates.Objective)],
             },
             perks=None,
         )
 
-    def test_any_meth(self, model: crate.ItemsComponent):
+    def test_any_meth(self, model: crates.ItemsComponent):
         assert model.any()
 
-    def test_all_meth(self, model: crate.ItemsComponent):
+    def test_all_meth(self, model: crates.ItemsComponent):
         assert not model.all()
 
-    def test_instances(self, model: crate.ItemsComponent):
+    def test_instances(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "instances"
         ) as instances:
@@ -147,48 +147,48 @@ class TestItemsComponent:
             assert instances[0] is model.instances[0]
             assert instances[1] is model.instances[1]
 
-    def test_render_data(self, model: crate.ItemsComponent):
+    def test_render_data(self, model: crates.ItemsComponent):
         assert model.render_data is None
 
-    def test_stats(self, model: crate.ItemsComponent):
+    def test_stats(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "stats"
         ) as stats:
             assert model.stats is not None
             assert stats[0] is model.stats[0]
 
-    def test_sockets(self, model: crate.ItemsComponent):
+    def test_sockets(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "sockets"
         ) as sockets:
             assert model.sockets is not None
             assert sockets[23] is model.sockets[23]
 
-    def test_reusable_plugs(self, model: crate.ItemsComponent):
+    def test_reusable_plugs(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "reusable_plugs"
         ) as reusable_plugs:
             assert model.reusable_plugs is not None
             assert reusable_plugs[0] is model.reusable_plugs[0]
 
-    def test_plug_objectives(self, model: crate.ItemsComponent):
+    def test_plug_objectives(self, model: crates.ItemsComponent):
         assert model.plug_objectives is None
 
-    def test_plug_states(self, model: crate.ItemsComponent):
+    def test_plug_states(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "plug_states"
         ) as plug_states:
             assert model.plug_states is not None
             assert plug_states is model.plug_states
 
-    def test_objectives(self, model: crate.ItemsComponent):
+    def test_objectives(self, model: crates.ItemsComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "objectives"
         ) as objectives:
             assert model.objectives is not None
             assert objectives[0] is model.objectives[0]
 
-    def test_perks(self, model: crate.ItemsComponent):
+    def test_perks(self, model: crates.ItemsComponent):
         assert model.perks is None
 
 
@@ -200,12 +200,12 @@ class TestVendorsComponent:
 class TestStringVariablesComponent:
     @pytest.fixture()
     def model(self):
-        return crate.StringVariableComponent(
+        return crates.StringVariableComponent(
             profile_string_variables={0: 1, 2: 3},
             character_string_variables={1: {2: 3}},
         )
 
-    def test_profile_string_variables(self, model: crate.StringVariableComponent):
+    def test_profile_string_variables(self, model: crates.StringVariableComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "profile_string_variables"
         ) as profile_string_variables:
@@ -213,7 +213,7 @@ class TestStringVariablesComponent:
             assert profile_string_variables[0] is model.profile_string_variables[0]
             assert profile_string_variables[2] is model.profile_string_variables[2]
 
-    def test_character_string_variables(self, model: crate.StringVariableComponent):
+    def test_character_string_variables(self, model: crates.StringVariableComponent):
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "character_string_variables"
         ) as character_string_variables:

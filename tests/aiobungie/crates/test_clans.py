@@ -28,14 +28,14 @@ import mock
 import pytest
 
 import aiobungie
-from aiobungie import crate
+from aiobungie import crates
 from aiobungie.internal import assets
 
 
 class TestClanFeatures:
     @pytest.fixture()
     def obj(self):
-        return crate.ClanFeatures(
+        return crates.ClanFeatures(
             max_members=200,
             max_membership_types=5,
             capabilities=3,
@@ -49,26 +49,26 @@ class TestClanFeatures:
             join_level=1,
         )
 
-    def test_clan_has_features(self, obj: crate.ClanFeatures):
+    def test_clan_has_features(self, obj: crates.ClanFeatures):
         assert obj.invite_permissions is True
         assert obj.update_banner_permissions is True
         assert obj.update_culture_permissions is False
         assert obj.join_level >= 1
 
-    def test_clan_max_members(self, obj: crate.ClanFeatures):
+    def test_clan_max_members(self, obj: crates.ClanFeatures):
         assert obj.max_members == 200
 
-    def test_clan_max_membership_types(self, obj: crate.ClanFeatures):
+    def test_clan_max_membership_types(self, obj: crates.ClanFeatures):
         assert obj.max_membership_types == 5
 
-    def test_clan_capabilities(self, obj: crate.ClanFeatures):
+    def test_clan_capabilities(self, obj: crates.ClanFeatures):
         assert obj.capabilities == 3
 
 
 class TestClanCoversation:
     @pytest.fixture()
     def model(self):
-        return crate.ClanConversation(
+        return crates.ClanConversation(
             net=mock.Mock(),
             group_id=123,
             id=456,
@@ -77,14 +77,14 @@ class TestClanCoversation:
             security=1,
         )
 
-    def test___int__(self, model: crate.ClanConversation):
+    def test___int__(self, model: crates.ClanConversation):
         assert int(model) == 456
 
-    def test___str__(self, model: crate.ClanConversation):
+    def test___str__(self, model: crates.ClanConversation):
         assert str(model) == "cool convo chat"
 
     @pytest.mark.asyncio()
-    async def test_edit(self, model: crate.ClanConversation):
+    async def test_edit(self, model: crates.ClanConversation):
         model.net.request.rest.edit_optional_conversation = convo = mock.AsyncMock()
 
         await model.edit("token", name="new cool name", security=0, enable_chat=False)
@@ -102,27 +102,27 @@ class TestClanCoversation:
 class TestClanBanner:
     @pytest.fixture()
     def model(self):
-        return crate.ClanBanner(
+        return crates.ClanBanner(
             id=2934,
             foreground=assets.Image(path="brrr.png"),
             background=assets.Image(path="xo.jpg"),
         )
 
-    def test___int__(self, model: crate.ClanBanner):
+    def test___int__(self, model: crates.ClanBanner):
         assert int(model) == 2934
 
-    def test_foreground(self, model: crate.ClanBanner):
+    def test_foreground(self, model: crates.ClanBanner):
         assert model.foreground.__str__() == assets.Image(path="brrr.png").url
 
-    def test_background(self, model: crate.ClanBanner):
+    def test_background(self, model: crates.ClanBanner):
         assert model.background.__str__() == assets.Image(path="xo.jpg").url
 
 
 class TestClanMember:
     @pytest.fixture()
     def obj(self):
-        mock_bungie_user = mock.Mock(crate.PartialBungieUser)
-        return crate.ClanMember(
+        mock_bungie_user = mock.Mock(crates.PartialBungieUser)
+        return crates.ClanMember(
             net=mock.Mock(),
             id=4432,
             name="thom",
@@ -141,20 +141,20 @@ class TestClanMember:
             member_type=aiobungie.ClanMemberType.ADMIN,
         )
 
-    def test_clan_member___int__(self, obj: crate.ClanMember):
+    def test_clan_member___int__(self, obj: crates.ClanMember):
         assert int(obj) == 4432
 
-    def test_clan_member___str__(self, obj: crate.ClanMember):
+    def test_clan_member___str__(self, obj: crates.ClanMember):
         assert str(obj) == "thom#None"
 
-    def test_is_admin_property(self, obj: crate.ClanMember):
+    def test_is_admin_property(self, obj: crates.ClanMember):
         assert obj.is_admin is True
 
-    def test_is_founder_property(self, obj: crate.ClanMember):
+    def test_is_founder_property(self, obj: crates.ClanMember):
         assert not obj.is_founder
 
     @pytest.mark.asyncio()
-    async def test_fetch_clan(self, obj: crate.ClanMember):
+    async def test_fetch_clan(self, obj: crates.ClanMember):
         obj.net.request.fetch_clan_from_id = mock.AsyncMock()
 
         assert await obj.fetch_clan() is obj.net.request.fetch_clan_from_id.return_value
@@ -164,7 +164,7 @@ class TestClanMember:
         obj.net.request.fetch_clan_from_id.assert_awaited_once_with(obj.group_id)
 
     @pytest.mark.asyncio()
-    async def test_clan_member_ban(self, obj: crate.ClanMember):
+    async def test_clan_member_ban(self, obj: crates.ClanMember):
         obj.net.request.rest.ban_clan_member = mock.AsyncMock()
         await obj.ban("token")
 
@@ -178,7 +178,7 @@ class TestClanMember:
         )
 
     @pytest.mark.asyncio()
-    async def test_clan_member_unban(self, obj: crate.ClanMember):
+    async def test_clan_member_unban(self, obj: crates.ClanMember):
         obj.net.request.rest.unban_clan_member = mock.AsyncMock()
         await obj.unban("token")
 
@@ -190,10 +190,10 @@ class TestClanMember:
         )
 
     @pytest.mark.asyncio()
-    async def test_clan_member_kick(self, obj: crate.ClanMember):
+    async def test_clan_member_kick(self, obj: crates.ClanMember):
         obj.net.request.kick_clan_member = mock.AsyncMock()
 
-        obj.net.request.kick_clan_member.return_value = clan = mock.Mock(crate.Clan)
+        obj.net.request.kick_clan_member.return_value = clan = mock.Mock(crates.Clan)
         clan.id = obj.group_id
 
         kicked_clan = await obj.kick("token")
@@ -211,10 +211,10 @@ class TestClanMember:
 class TestGroupMember:
     @pytest.fixture()
     def obj(self):
-        mock_membership = mock.Mock(crate.DestinyMembership)
-        mock_group = mock.Mock(crate.Clan, id=1234)
+        mock_membership = mock.Mock(crates.DestinyMembership)
+        mock_group = mock.Mock(crates.Clan, id=1234)
 
-        return crate.GroupMember(
+        return crates.GroupMember(
             net=mock.Mock(),
             inactive_memberships=None,
             member_type=aiobungie.ClanMemberType.ADMIN,
@@ -226,14 +226,14 @@ class TestGroupMember:
             join_date=datetime.datetime(2021, 9, 6),
         )
 
-    def test_group_member___int__(self, obj: crate.GroupMember):
+    def test_group_member___int__(self, obj: crates.GroupMember):
         assert obj.__int__() == 3342
 
-    def test_group_id(self, obj: crate.GroupMember):
+    def test_group_id(self, obj: crates.GroupMember):
         assert obj.group.id == 1234
 
     @pytest.mark.asyncio()
-    async def test_fetch_self_clan(self, obj: crate.GroupMember):
+    async def test_fetch_self_clan(self, obj: crates.GroupMember):
         obj.net.request.fetch_clan_from_id = mock.AsyncMock()
 
         assert (
@@ -247,9 +247,9 @@ class TestGroupMember:
 class TestClan:
     @pytest.fixture()
     def obj(self):
-        mock_owner = mock.Mock(spec_set=crate.ClanMember)
-        mock_features = mock.Mock(spec_set=crate.clans.ClanFeatures)
-        return crate.Clan(
+        mock_owner = mock.Mock(spec_set=crates.ClanMember)
+        mock_features = mock.Mock(spec_set=crates.clans.ClanFeatures)
+        return crates.Clan(
             net=mock.Mock(),
             id=998271,
             type=aiobungie.GroupType.CLAN,
@@ -271,26 +271,26 @@ class TestClan:
             progressions={},
             banner_data={},
             call_sign="C",
-            current_user_membership=mock.Mock({"Steam": mock.Mock(crate.ClanMember)}),
+            current_user_membership=mock.Mock({"Steam": mock.Mock(crates.ClanMember)}),
         )
 
-    def test_clan___int__(self, obj: crate.Clan):
+    def test_clan___int__(self, obj: crates.Clan):
         assert int(obj) == obj.id
 
-    def test_clan___str__(self, obj: crate.Clan):
+    def test_clan___str__(self, obj: crates.Clan):
         assert str(obj) == obj.name
 
-    def test_clan_tags(self, obj: crate.Clan):
+    def test_clan_tags(self, obj: crates.Clan):
         assert obj.tags == ["Raids", "Tag", "Another tag"]
 
-    def test_clan_member_count(self, obj: crate.Clan):
+    def test_clan_member_count(self, obj: crates.Clan):
         assert obj.member_count == 2
 
-    def test_clan_about(self, obj: crate.Clan):
+    def test_clan_about(self, obj: crates.Clan):
         assert obj.about == "A cool clan."
 
     @pytest.mark.asyncio()
-    async def test_edit_options(self, obj: crate.Clan):
+    async def test_edit_options(self, obj: crates.Clan):
         obj.net.request.rest.edit_clan_options = mock.AsyncMock()
 
         await obj.edit_options(
@@ -313,7 +313,7 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_edit(self, obj: crate.Clan):
+    async def test_edit(self, obj: crates.Clan):
         obj.net.request.rest.edit_clan = mock.AsyncMock()
 
         await obj.edit(
@@ -348,11 +348,11 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_fetch_available_fireteams(self, obj: crate.Clan):
+    async def test_fetch_available_fireteams(self, obj: crates.Clan):
         obj.net.request.fetch_available_clan_fireteams = fts = mock.AsyncMock(
-            [crate.Fireteam]
+            [crates.Fireteam]
         )
-        fts.return_value = [mock.Mock(crate.Fireteam), mock.Mock(crate.Fireteam)]
+        fts.return_value = [mock.Mock(crates.Fireteam), mock.Mock(crates.Fireteam)]
 
         fts.return_value[0].activity_type = aiobungie.FireteamActivity.RAID_DSC
 
@@ -379,8 +379,10 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_fetch_fireteams(self, obj: crate.Clan):
-        obj.net.request.fetch_my_clan_fireteams = fts = mock.AsyncMock([crate.Fireteam])
+    async def test_fetch_fireteams(self, obj: crates.Clan):
+        obj.net.request.fetch_my_clan_fireteams = fts = mock.AsyncMock(
+            [crates.Fireteam]
+        )
 
         await obj.fetch_fireteams(
             "token",
@@ -399,9 +401,9 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_fetch_conversations(self, obj: crate.Clan):
+    async def test_fetch_conversations(self, obj: crates.Clan):
         obj.net.request.fetch_clan_conversations = mock.AsyncMock(
-            [crate.ClanConversation]
+            [crates.ClanConversation]
         )
 
         convos = await obj.fetch_conversations()
@@ -410,7 +412,7 @@ class TestClan:
         assert convos is obj.net.request.fetch_clan_conversations.return_value
 
     @pytest.mark.asyncio()
-    async def test_add_optional_conversation(self, obj: crate.Clan):
+    async def test_add_optional_conversation(self, obj: crates.Clan):
         obj.net.request.rest.add_optional_conversation = mock.AsyncMock()
 
         await obj.add_optional_conversation("token", name="new chat", security=1)
@@ -422,7 +424,7 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_approve_pending_members(self, obj: crate.Clan):
+    async def test_approve_pending_members(self, obj: crates.Clan):
         obj.net.request.rest.approve_all_pending_group_users = mock.AsyncMock()
 
         await obj.approve_pending_members(
@@ -433,7 +435,7 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_deny_pending_members(self, obj: crate.Clan):
+    async def test_deny_pending_members(self, obj: crates.Clan):
         obj.net.request.rest.deny_all_pending_group_users = mock.AsyncMock()
 
         await obj.deny_pending_members("token")
@@ -442,11 +444,11 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
-    async def test_fetch_clan_members(self, obj: crate.Clan):
-        first_member = mock.Mock(spec_set=crate.ClanMember)
+    async def test_fetch_clan_members(self, obj: crates.Clan):
+        first_member = mock.Mock(spec_set=crates.ClanMember)
         first_member.type = aiobungie.MembershipType.XBOX
 
-        another_member = mock.Mock(spec_set=crate.ClanMember)
+        another_member = mock.Mock(spec_set=crates.ClanMember)
         another_member.type = aiobungie.MembershipType.STEAM
 
         mock_members = mock.Mock(spec_set=[first_member, another_member])
@@ -460,13 +462,13 @@ class TestClan:
 
     # These are never implemented.
     @pytest.mark.asyncio()
-    async def test_fetch_banned_clan_member(self, obj: crate.Clan):
+    async def test_fetch_banned_clan_member(self, obj: crates.Clan):
         ...
 
     @pytest.mark.asyncio()
-    async def test_fetch_pending_clan_member(self, obj: crate.Clan):
+    async def test_fetch_pending_clan_member(self, obj: crates.Clan):
         ...
 
     @pytest.mark.asyncio()
-    async def test_fetch_invited_clan_member(self, obj: crate.Clan):
+    async def test_fetch_invited_clan_member(self, obj: crates.Clan):
         ...

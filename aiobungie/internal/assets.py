@@ -24,6 +24,8 @@
 
 from __future__ import annotations
 
+import logging
+
 import attrs
 
 __all__ = ("Image", "MimeType")
@@ -40,12 +42,11 @@ from aiobungie import url
 
 from . import enums
 from . import helpers
-from . import log
 
 if typing.TYPE_CHECKING:
     from typing_extensions import Self
 
-_LOGGER = log.alloc(name="aiobungie.assets", level=log.DEBUG)
+_LOGGER = logging.getLogger("aiobungie.assets")
 
 
 class MimeType(str, enums.Enum):

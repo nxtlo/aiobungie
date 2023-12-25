@@ -25,14 +25,14 @@ from datetime import datetime
 import pytest
 
 import aiobungie
-from aiobungie import crate
+from aiobungie import crates
 from aiobungie.internal import assets
 
 
 class TestHardLinkedUser:
     @pytest.fixture()
     def model(self):
-        return crate.HardLinkedMembership(
+        return crates.HardLinkedMembership(
             type=aiobungie.MembershipType.STEAM,
             id=9909,
             cross_save_type=aiobungie.MembershipType.STADIA,
@@ -51,18 +51,18 @@ class TestHardLinkedUser:
 class TestUserThemes:
     @pytest.fixture()
     def mod(self):
-        return crate.user.UserThemes(id=1122, name="d2_1", description=None)
+        return crates.user.UserThemes(id=1122, name="d2_1", description=None)
 
     @pytest.fixture()
     def list_objs(self):
         return (
-            crate.user.UserThemes(id=1, name=None, description=None),
-            crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
-            crate.user.UserThemes(id=22, name="Ok", description=None),
+            crates.user.UserThemes(id=1, name=None, description=None),
+            crates.user.UserThemes(id=239, name="theme name", description="D2_11"),
+            crates.user.UserThemes(id=22, name="Ok", description=None),
         )
 
     def test_model_meta(self, mod):
-        assert isinstance(mod, crate.user.UserThemes)
+        assert isinstance(mod, crates.user.UserThemes)
         assert mod is not None
         assert mod.description is None
 
@@ -80,7 +80,7 @@ class TestUserLike:
 class TestBungieUser:
     @pytest.fixture()
     def model(self):
-        return crate.user.BungieUser(
+        return crates.user.BungieUser(
             id=205432,
             name=None,
             created_at=datetime.now(),

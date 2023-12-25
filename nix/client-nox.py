@@ -28,7 +28,7 @@ import os
 try:
     import dotenv
 
-    if cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN"):  # type: ignore
+    if cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN"):
         os.environ["CLIENT_TOKEN"] = cli_key
 except ModuleNotFoundError:
     pass
@@ -38,7 +38,7 @@ except ModuleNotFoundError:
 def client_test(session: nox.Session) -> None:
     session.install("python-dotenv")
     session.install("orjson")
-    if session.env.get("CLIENT_TOKEN") is None:  # type: ignore
+    if session.env.get("CLIENT_TOKEN") is None:
         session.error("CLIENT_TOKEN not found in env variables.")
 
     session.install("-r", "requirements.txt")

@@ -30,7 +30,7 @@ import mock
 import pytest
 
 import aiobungie
-from aiobungie import crate
+from aiobungie import crates
 from aiobungie.internal import assets
 from aiobungie.internal import helpers
 
@@ -38,19 +38,19 @@ from aiobungie.internal import helpers
 class TestDye:
     @pytest.fixture()
     def dye(self):
-        return crate.Dye(channel_hash=123, dye_hash=321)
+        return crates.Dye(channel_hash=123, dye_hash=321)
 
-    def test_dye_hash(self, dye: crate.Dye):
+    def test_dye_hash(self, dye: crates.Dye):
         assert dye.dye_hash == 321
 
-    def test_channel_hash(self, dye: crate.Dye):
+    def test_channel_hash(self, dye: crates.Dye):
         assert dye.channel_hash == 123
 
 
 class TestCustomizationOptions:
     @pytest.fixture()
-    def model(self) -> crate.CustomizationOptions:
-        return crate.CustomizationOptions(
+    def model(self) -> crates.CustomizationOptions:
+        return crates.CustomizationOptions(
             personality=1,
             face=2,
             skin_color=3,
@@ -65,33 +65,33 @@ class TestCustomizationOptions:
             decal_index=4,
         )
 
-    def test_personality(self, model: crate.CustomizationOptions):
+    def test_personality(self, model: crates.CustomizationOptions):
         assert model.personality == 1
 
-    def test_wears_helmet(self, model: crate.CustomizationOptions):
+    def test_wears_helmet(self, model: crates.CustomizationOptions):
         assert model.wear_helmet
 
-    def test_hair_colors(self, model: crate.CustomizationOptions):
+    def test_hair_colors(self, model: crates.CustomizationOptions):
         assert model.hair_colors == [1, 2, 3, 4]
 
 
 class TestMinimalEquipments:
     @pytest.fixture()
-    def equipment(self) -> crate.MinimalEquipments:
-        return crate.MinimalEquipments(
+    def equipment(self) -> crates.MinimalEquipments:
+        return crates.MinimalEquipments(
             net=mock.Mock(),
             item_hash=123,
-            dyes=[mock.Mock(spec_set=crate.Dye), mock.Mock(spec_set=crate.Dye)],
+            dyes=[mock.Mock(spec_set=crates.Dye), mock.Mock(spec_set=crates.Dye)],
         )
 
-    def test_item_hash(self, equipment: crate.MinimalEquipments):
+    def test_item_hash(self, equipment: crates.MinimalEquipments):
         assert equipment.item_hash == 123
 
-    def test_dyes(self, equipment: crate.MinimalEquipments):
+    def test_dyes(self, equipment: crates.MinimalEquipments):
         assert equipment.dyes
 
     @pytest.mark.asyncio()
-    async def test_fetch_my_item(self, equipment: crate.MinimalEquipments) -> None:
+    async def test_fetch_my_item(self, equipment: crates.MinimalEquipments) -> None:
         equipment.net.request.fetch_inventory_item = mock.AsyncMock()
         item = await equipment.fetch_my_item()
 
@@ -103,19 +103,22 @@ class TestMinimalEquipments:
 
 class TestRenderedData:
     @pytest.fixture()
-    def model(self) -> crate.RenderedData:
-        return crate.RenderedData(
+    def model(self) -> crates.RenderedData:
+        return crates.RenderedData(
             net=mock.Mock(),
-            custom_dyes=[mock.Mock(spec_set=crate.Dye), mock.Mock(spec_set=crate.Dye)],
-            customization=mock.Mock(spec_set=crate.CustomizationOptions),
+            custom_dyes=[
+                mock.Mock(spec_set=crates.Dye),
+                mock.Mock(spec_set=crates.Dye),
+            ],
+            customization=mock.Mock(spec_set=crates.CustomizationOptions),
             equipment=[mock.Mock(item_hash=123), mock.Mock(item_hash=321)],
         )
 
-    def test_custom_dyes(self, model: crate.RenderedData):
+    def test_custom_dyes(self, model: crates.RenderedData):
         assert model.custom_dyes
 
     @pytest.mark.asyncio()
-    async def test_fetch_my_items(self, model: crate.RenderedData) -> None:
+    async def test_fetch_my_items(self, model: crates.RenderedData) -> None:
         model.net.request.fetch_inventory_item = mock.AsyncMock()
         helpers.awaits = mock.AsyncMock()
 
@@ -129,35 +132,35 @@ class TestRenderedData:
 
 class TestCharacterProgression:
     @pytest.fixture()
-    def model(self) -> crate.CharacterProgression:
-        return crate.CharacterProgression(
+    def model(self) -> crates.CharacterProgression:
+        return crates.CharacterProgression(
             progressions={0: mock.Mock()},
             factions={1: mock.Mock()},
             milestones={2: mock.Mock()},
             checklists={3: mock.Mock()},
-            seasonal_artifact=mock.Mock(spec=crate.CharacterScopedArtifact),
+            seasonal_artifact=mock.Mock(spec=crates.CharacterScopedArtifact),
             uninstanced_item_objectives={4: [mock.Mock()]},
         )
 
-    def test_progressions(self, model: crate.CharacterProgression) -> None:
+    def test_progressions(self, model: crates.CharacterProgression) -> None:
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "progressions", new={0: mock.Mock()}
         ) as progress:
             assert model.progressions == progress
 
-    def test_factions(self, model: crate.CharacterProgression) -> None:
+    def test_factions(self, model: crates.CharacterProgression) -> None:
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "factions", new={1: mock.Mock()}
         ) as factions:
             assert model.factions == factions
 
-    def test_milestones(self, model: crate.CharacterProgression) -> None:
+    def test_milestones(self, model: crates.CharacterProgression) -> None:
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "milestones", new={2: mock.Mock()}
         ) as milestone:
             assert model.milestones == milestone
 
-    def test_checklists(self, model: crate.CharacterProgression) -> None:
+    def test_checklists(self, model: crates.CharacterProgression) -> None:
         with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
             model, "checklists", new={3: mock.Mock()}
         ) as checklist:
@@ -166,8 +169,8 @@ class TestCharacterProgression:
 
 class TestCharacter:
     @pytest.fixture()
-    def model(self) -> crate.Character:
-        return crate.Character(
+    def model(self) -> crates.Character:
+        return crates.Character(
             net=mock.Mock(),
             id=2110,
             member_id=4321,
@@ -193,38 +196,38 @@ class TestCharacter:
             },
         )
 
-    def test___int__(self, model: crate.Character) -> None:
+    def test___int__(self, model: crates.Character) -> None:
         assert int(model) == model.id
 
-    def test_url(self, model: crate.Character) -> None:
+    def test_url(self, model: crates.Character) -> None:
         assert (
             model.url
             == f"{aiobungie.url.BASE}/en/Gear/{int(model.member_type)}/{model.member_id}/{model.id}"
         )
 
-    def test_stats(self, model: crate.Character) -> None:
+    def test_stats(self, model: crates.Character) -> None:
         assert (
             aiobungie.Stat.MOBILITY in model.stats
             and model.stats[aiobungie.Stat.RECOVERY] == 100
         )
 
-    def test_title_hash(self, model: crate.Character) -> None:
+    def test_title_hash(self, model: crates.Character) -> None:
         assert model.title_hash is None
 
-    def test_emblem(self, model: crate.Character) -> None:
+    def test_emblem(self, model: crates.Character) -> None:
         assert model.emblem == assets.Image(path="emblempath.jpg")
 
-    def test_emblem___str__(self, model: crate.Character) -> None:
+    def test_emblem___str__(self, model: crates.Character) -> None:
         assert str(model.emblem) == str(assets.Image(path="emblempath.jpg"))
 
-    def test_emblem_icon(self, model: crate.Character) -> None:
+    def test_emblem_icon(self, model: crates.Character) -> None:
         assert (
             model.emblem_icon is not None
             and model.emblem_icon.url == assets.Image(path="emblemiconpath.jpg").url
         )
 
     @pytest.mark.asyncio()
-    async def test_fetch_activities(self, model: crate.Character) -> None:
+    async def test_fetch_activities(self, model: crates.Character) -> None:
         model.net.request.fetch_activities = mock.AsyncMock()
         activities = await model.fetch_activities(aiobungie.GameMode.RAID)
         model.net.request.fetch_activities.assert_called_once_with(
@@ -238,7 +241,7 @@ class TestCharacter:
         assert activities is model.net.request.fetch_activities.return_value
 
     @pytest.mark.asyncio()
-    async def test_transfer_item(self, model: crate.Character) -> None:
+    async def test_transfer_item(self, model: crates.Character) -> None:
         model.net.request.rest.transfer_item = mock.AsyncMock()
         await model.transfer_item(
             "token",
@@ -256,7 +259,7 @@ class TestCharacter:
         )
 
     @pytest.mark.asyncio()
-    async def test_pull_item(self, model: crate.Character) -> None:
+    async def test_pull_item(self, model: crates.Character) -> None:
         model.net.request.rest.pull_item = mock.AsyncMock()
         await model.pull_item(
             "token",
@@ -274,7 +277,7 @@ class TestCharacter:
         )
 
     @pytest.mark.asyncio()
-    async def test_equip_item(self, model: crate.Character) -> None:
+    async def test_equip_item(self, model: crates.Character) -> None:
         model.net.request.rest.equip_item = mock.AsyncMock()
         await model.equip_item(
             "token",
@@ -288,7 +291,7 @@ class TestCharacter:
         )
 
     @pytest.mark.asyncio()
-    async def test_equip_items(self, model: crate.Character) -> None:
+    async def test_equip_items(self, model: crates.Character) -> None:
         model.net.request.rest.equip_items = mock.AsyncMock()
         await model.equip_items(
             "token",

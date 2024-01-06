@@ -10,19 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `Iterator.by_ref` method.
-* An option to use `rich` as a log handler.
-* Installing option `rich` and `full` by calling `pip install aiobungie[full | rich]`.
+* Installing option `full` by calling `pip install aiobungie[full]`.
 
 ### Removed
 
 * `traits.Debug` trait.
-* `RESTClient.enable_debugging` method. Instead, Use `debug=true` parameter.
 * The alias `crate` for `crates` is removed. Use `aiobungie.crates` instead.
+* `rest.RequestMethod` enum.
 
 ### Changed
 
 * Object immutability, all objects are now *frozen*.
-* All sequences are now built as tuples instead of list, This can help reduces the size of the allocated bytes
+* All sequences are now built as tuples instead of list, This helps reducing the size of the allocated bytes
 and increases the speed by a little bit since tuples are sized and lists are dynamic, This obviously depends on how
 large the data that has been fetched. But in general tuples are *faster*.
 * Logging an `Iterator` object now doesn't consume the data.
@@ -32,6 +31,7 @@ large the data that has been fetched. But in general tuples are *faster*.
 * The `enable_debugging` parameter renamed to `debug`.
 * You won't need to pass `True` when calling `RESTClient.enable_debug`.
 * You'll be getting deprecation warning on `crates` level helper methods.
+* `RESTClient.enable_debug` renamed to `RESTClient.with_debug` method.
 
 ## [0.2.10](https://github.com/nxtlo/aiobungie/compare/0.2.9...0.2.19) - 2023-12-12
 

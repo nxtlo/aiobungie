@@ -33,8 +33,7 @@ backports-datetime-fromisoformat = { version = "2.0.1", markers = "python_versio
 
 [tool.poetry.extras]
 speedup = ["orjson"]
-rich = ["rich"]
-full = ["orjson", "rich"]
+full = ["orjson"]
 
 [tool.pytest.ini_options]
 xfail_strict = true

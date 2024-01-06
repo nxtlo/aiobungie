@@ -40,7 +40,6 @@ if typing.TYPE_CHECKING:
     from aiobungie import builders
     from aiobungie import client
     from aiobungie import interfaces
-    from aiobungie import rest
     from aiobungie.internal import factory as factory_
 
 
@@ -59,6 +58,10 @@ class Netrunner(typing.Protocol):
     # Access the base client that references this membership.
     external_request = await membership.net.request.fetch_user(…)
     ```
+
+    Implementers
+    ------------
+    * `ClientApp`
     """
 
     __slots__ = ()
@@ -74,7 +77,9 @@ class Serializable(typing.Protocol):
     """Types which can deserialize REST payloads responses
     into a `aiobungie.crates` implementation using the `Serializable.factory` property.
 
-    Only `ClientApp` implement this trait
+    Implementers
+    ------------
+    * `ClientApp`
     """
 
     __slots__ = ()
@@ -91,7 +96,13 @@ class RESTful(typing.Protocol):
     which provides RESTful functionalities.
 
     Only `aiobungie.RESTClient` implement this trait,
-    `ClientApp` may access its RESTClient using `ClientApp.rest` property.
+
+    .. note::
+        `ClientApp` may access its RESTClient using `ClientApp.rest` property.
+
+    Implementer
+    ----------
+    * `aiobungie.RESTClient`
     """
 
     __slots__ = ()
@@ -182,7 +193,7 @@ class RESTful(typing.Protocol):
 
     async def static_request(
         self,
-        method: rest.RequestMethod | str,
+        method: str,
         path: str,
         *,
         auth: str | None = None,
@@ -192,7 +203,7 @@ class RESTful(typing.Protocol):
 
         Parameters
         ----------
-        method : `aiobungie.rest.RequestMethod | str`
+        method : `str`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `str`
             The Bungie endpoint or path.
@@ -217,7 +228,11 @@ class RESTful(typing.Protocol):
 class ClientApp(Netrunner, Serializable, typing.Protocol):
     """Core trait for the standard `aiobungie.Client` implementation.
 
-    This includes all aiobungie traits.
+    This trait includes all aiobungie traits.
+
+    Implementers
+    ------------
+    * `aiobungie.Client`
     """
 
     __slots__ = ()

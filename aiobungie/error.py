@@ -66,10 +66,6 @@ _MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
 }
 
 
-def _determine_membership(membership: str) -> enums.MembershipType:
-    return _MEMBERSHIP_LOOKUP[membership]
-
-
 @attrs.define(auto_exc=True)
 class AiobungieError(RuntimeError):
     """Base class that all other exceptions inherit from."""
@@ -200,7 +196,7 @@ class MembershipTypeError(BadRequest):
 
     # Membership type is wrong!
     except aiobungie.MembershipTypeError as err:
-        correct_membersip = err.into_membership()
+        correct_membership = err.into_membership()
         profile_id = err.membership_id
 
         # Recall the method.
@@ -227,8 +223,8 @@ class MembershipTypeError(BadRequest):
         If value parameter is not provided it will fall back to the required membership.
         """
         if value is None:
-            return _determine_membership(self.required_membership)
-        return _determine_membership(value)
+            return _MEMBERSHIP_LOOKUP[self.required_membership]
+        return _MEMBERSHIP_LOOKUP[value]
 
     def __str__(self) -> str:
         return (

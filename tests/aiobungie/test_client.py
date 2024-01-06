@@ -34,7 +34,7 @@ from tests import config
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    client = aiobungie.Client(token, max_retries=0, debug=True)
+    client = aiobungie.Client(token, max_retries=0, debug="TRACE")
     return client
 
 

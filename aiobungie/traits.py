@@ -30,9 +30,8 @@ from __future__ import annotations
 
 from aiobungie import typedefs
 
-__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
+__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
 
-import pathlib
 import typing
 
 if typing.TYPE_CHECKING:
@@ -41,7 +40,6 @@ if typing.TYPE_CHECKING:
     from aiobungie import builders
     from aiobungie import client
     from aiobungie import interfaces
-    from aiobungie import rest
     from aiobungie.internal import factory as factory_
 
 
@@ -56,10 +54,14 @@ class Netrunner(typing.Protocol):
     ```py
     import aiobungie
 
-    membership = aiobungie.crate.DestinyMembership(…)
+    membership = aiobungie.crates.DestinyMembership(…)
     # Access the base client that references this membership.
     external_request = await membership.net.request.fetch_user(…)
     ```
+
+    Implementers
+    ------------
+    * `ClientApp`
     """
 
     __slots__ = ()
@@ -73,9 +75,11 @@ class Netrunner(typing.Protocol):
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
     """Types which can deserialize REST payloads responses
-    into a `aiobungie.crate` implementation using the `Serializable.factory` property.
+    into a `aiobungie.crates` implementation using the `Serializable.factory` property.
 
-    Only `ClientApp` implement this trait
+    Implementers
+    ------------
+    * `ClientApp`
     """
 
     __slots__ = ()
@@ -87,40 +91,18 @@ class Serializable(typing.Protocol):
 
 
 @typing.runtime_checkable
-class Debug(typing.Protocol):
-    """Objects that are able to enable debugging REST calls."""
-
-    def enable_debugging(
-        self,
-        level: typing.Literal["TRACE"] | bool = False,
-        file: pathlib.Path | str | None = None,
-        /,
-    ) -> None:
-        """Enables debugging for the REST calls.
-
-        Logging Levels
-        --------------
-        * `False`: This will disable logging.
-        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
-
-        Parameters
-        -----------
-        level : `str | bool | int`
-            The level of debugging to enable.
-        file : `pathlib.Path | str | None`
-            The file path to write the debug logs to. If provided.
-        """
-        raise NotImplementedError
-
-
-@typing.runtime_checkable
-class RESTful(Debug, typing.Protocol):
+class RESTful(typing.Protocol):
     """Types which it is possible to interact with the API directly
     which provides RESTful functionalities.
 
     Only `aiobungie.RESTClient` implement this trait,
-    `ClientApp` may access its RESTClient using `ClientApp.rest` property.
+
+    .. note::
+        `ClientApp` may access its RESTClient using `ClientApp.rest` property.
+
+    Implementer
+    ----------
+    * `aiobungie.RESTClient`
     """
 
     __slots__ = ()
@@ -211,7 +193,7 @@ class RESTful(Debug, typing.Protocol):
 
     async def static_request(
         self,
-        method: rest.RequestMethod | str,
+        method: str,
         path: str,
         *,
         auth: str | None = None,
@@ -221,7 +203,7 @@ class RESTful(Debug, typing.Protocol):
 
         Parameters
         ----------
-        method : `aiobungie.rest.RequestMethod | str`
+        method : `str`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `str`
             The Bungie endpoint or path.
@@ -246,7 +228,11 @@ class RESTful(Debug, typing.Protocol):
 class ClientApp(Netrunner, Serializable, typing.Protocol):
     """Core trait for the standard `aiobungie.Client` implementation.
 
-    This includes all aiobungie traits.
+    This trait includes all aiobungie traits.
+
+    Implementers
+    ------------
+    * `aiobungie.Client`
     """
 
     __slots__ = ()

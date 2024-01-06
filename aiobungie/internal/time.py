@@ -47,9 +47,7 @@ def clean_date(iso_date: str, /) -> datetime.datetime:
 
     if _sys.version_info.minor == 10:
         try:
-            from backports.datetime_fromisoformat import (
-                MonkeyPatch,  # pyright: ignore
-            )
+            from backports.datetime_fromisoformat import MonkeyPatch  # pyright: ignore
 
             MonkeyPatch.patch_fromisoformat()  # pyright: ignore[reportUnknownMemberType]
         except ModuleNotFoundError:

@@ -1,4 +1,4 @@
-"""An example on how to soley use aiobungie's factory to deserialize objects directly.
+"""An example on how to solely use aiobungie's factory to deserialize objects directly.
 
 In this example we will use a simple requests client to make the request and deserialize the object using aiobungie.
 """

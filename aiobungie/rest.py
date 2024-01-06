@@ -27,12 +27,7 @@ This client only makes HTTP requests to the API and returns pure JSON objects.
 
 from __future__ import annotations
 
-__all__ = (
-    "RESTClient",
-    "RESTPool",
-    "RequestMethod",
-    "TRACE",
-)
+__all__ = ("RESTClient", "RESTPool", "TRACE")
 
 import asyncio
 import contextlib
@@ -64,7 +59,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import types
 
-_LOG: logging.Logger = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "en",
     "fr",
@@ -80,14 +74,31 @@ _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "zh-cht",
     "zh-chs",
 }
+
+# Client headers.
 _APP_JSON: str = "application/json"
-_RETRY_5XX: set[int] = {500, 502, 503, 504}
 _AUTH_HEADER: str = sys.intern("Authorization")
 _USER_AGENT_HEADERS: str = sys.intern("User-Agent")
 _USER_AGENT: str = (
     f"AiobungieClient (Author: {metadata.__author__}), "
     f"(Version: {metadata.__version__}), (URL: {metadata.__url__})"
 )
+
+# Possible internal error codes.
+_RETRY_5XX: set[int] = {500, 502, 503, 504}
+
+# HTTP methods.
+_GET: typing.Final[str] = "GET"
+_POST: typing.Final[str] = "POST"
+
+# These are Currently unused.
+# _DELETE: typing.Final[str] = "DELETE"
+# _PUT: typing.Final[str] = "PUT"
+# _PATCH: typing.Final[str] = "PATCH"
+
+_HTTP_METHOD = typing.Literal["GET", "DELETE", "POST", "PUT", "PATCH"]
+
+_LOGGER = logging.getLogger("aiobungie.rest")
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.
@@ -99,10 +110,10 @@ You can enable this with the following code
 # or
 >>> logging.basicConfig(level=aiobungie.TRACE)
 # Or
->>> client = aiobungie.RESTClient(..., enable_debug="TRACE")
+>>> client = aiobungie.RESTClient(debug="TRACE")
 # Or if you're using `aiobungie.Client`
->>> client = aiobungie.Client(...)
->>> client.rest.enable_debugging(level=aiobungie.TRACE, file="rest_logs.txt") # optional file
+>>> client = aiobungie.Client()
+>>> client.rest.with_debug(level=aiobungie.TRACE, file="rest_logs.txt")
 """
 
 logging.addLevelName(TRACE, "TRACE")
@@ -168,7 +179,6 @@ def _write_sqlite_bytes(
                     zipped.extractall(".")
 
                     os.rename(file[0], _get_path(file_name, path, sql=True))
-                    _LOG.debug("Finished downloading manifest.")
 
         finally:
             pathlib.Path(tmp.name).unlink(missing_ok=True)
@@ -179,21 +189,6 @@ class _JSONPayload(aiohttp.BytesPayload):
         self, value: typing.Any, dumps: typedefs.Dumps = helpers.dumps
     ) -> None:
         super().__init__(dumps(value), content_type=_APP_JSON, encoding="UTF-8")
-
-
-class RequestMethod(str, enums.Enum):
-    """HTTP request methods enum."""
-
-    GET = "GET"
-    """GET methods."""
-    POST = "POST"
-    """POST methods."""
-    PUT = "PUT"
-    """PUT methods."""
-    PATCH = "PATCH"
-    """PATCH methods."""
-    DELETE = "DELETE"
-    """DELETE methods"""
 
 
 class RESTPool:
@@ -230,7 +225,7 @@ class RESTPool:
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_debugging : `bool | str`
+    debug : `bool | str`
         Whether to enable logging responses or not.
 
     Logging Levels
@@ -268,14 +263,14 @@ class RESTPool:
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
+        debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._client_secret = client_secret
         self._client_id = client_id
         self._token = token
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
-        self._enable_debug = enable_debugging
+        self._enable_debug = debug
         self._client_session = client_session
         self._loads = loads
         self._dumps = dumps
@@ -305,7 +300,7 @@ class RESTPool:
             loads=self._loads,
             dumps=self._dumps,
             max_retries=self._max_retries,
-            enable_debugging=self._enable_debug,
+            debug=self._enable_debug,
             client_session=self._client_session,
         )
 
@@ -347,7 +342,7 @@ class RESTClient(interfaces.RESTInterface):
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_debugging : `bool | str`
+    debug : `bool | str`
         Whether to enable logging responses or not.
 
     Logging Levels
@@ -380,7 +375,7 @@ class RESTClient(interfaces.RESTInterface):
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
+        debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._session = client_session
         self._lock: asyncio.Lock | None = None
@@ -391,8 +386,7 @@ class RESTClient(interfaces.RESTInterface):
         self._dumps = dumps
         self._loads = loads
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
-
-        self._set_debug_level(enable_debugging)
+        self.with_debug(debug)
 
     @property
     def client_id(self) -> int | None:
@@ -428,18 +422,9 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     @typing.final
-    def enable_debugging(
-        self,
-        level: typing.Literal["TRACE"] | bool | int = False,
-        file: pathlib.Path | str | None = None,
-        /,
-    ) -> None:
-        self._set_debug_level(level, file)
-
-    @typing.final
     async def static_request(
         self,
-        method: RequestMethod | str,
+        method: _HTTP_METHOD,
         path: str,
         *,
         auth: str | None = None,
@@ -457,41 +442,66 @@ class RESTClient(interfaces.RESTInterface):
 
         return builders.OAuthURL(client_id=client_id)
 
-    @staticmethod
-    def _set_debug_level(
-        level: typing.Literal["TRACE"] | bool | int = False,
-        file: pathlib.Path | str | None = None,
+    @typing.final
+    def with_debug(
+        self,
+        level: typing.Literal["TRACE"] | bool | int = True,
+        file: str | pathlib.Path | None = None,
     ) -> None:
-        file_handler = logging.FileHandler(file, mode="w") if file else None
+        """Enable debugging for this client with a level. Defaults to `True`.
+
+        Parameters
+        ----------
+        level: `NotRequired[int | bool | typing.Literal["TRACE"] | None]`
+            The level of the logger. This field is not required.
+        file: `pathlib.Path | str | None`
+            An optional file to write the logs into.
+
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
+        """
+        logging.logThreads = False
+        logging.logMultiprocessing = False
+        logging.logProcesses = False
+        logging.captureWarnings(True)
+
+        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
+
+        file_handler = (logging.FileHandler(file),) if file else None
         if level == "TRACE" or level == TRACE:
             logging.basicConfig(
-                level=TRACE, handlers=[file_handler] if file_handler else None
+                level=TRACE, format=format, stream=sys.stdout, handlers=file_handler
             )
 
-        elif level:
+        elif level is True:
             logging.basicConfig(
-                level=logging.DEBUG, handlers=[file_handler] if file_handler else None
+                level=logging.DEBUG,
+                format=format,
+                stream=sys.stdout,
+                handlers=file_handler,
             )
 
     async def _request(
         self,
-        method: RequestMethod | str,
+        method: _HTTP_METHOD,
         route: str,
         *,
         base: bool = False,
         oauth2: bool = False,
         auth: str | None = None,
-        unwrapping: typing.Literal["json", "read"] = "json",
+        unwrap_bytes: bool = False,
         json: collections.Mapping[str, typing.Any] | None = None,
         data: collections.Mapping[str, typing.Any] | None = None,
         params: collections.Mapping[str, typing.Any] | None = None,
-        headers: dict[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
         assert self._session is not None
 
         retries: int = 0
-        headers = headers or {}
+        headers: collections.MutableMapping[str, typing.Any] = {}
 
         headers[_USER_AGENT_HEADERS] = _USER_AGENT
         headers["X-API-KEY"] = self._token
@@ -506,6 +516,10 @@ class RESTClient(interfaces.RESTInterface):
             endpoint = endpoint + url.REST_EP
 
         if oauth2:
+            assert self._client_id
+            assert self._client_secret
+            headers["client_secret"] = self._client_secret
+
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             endpoint = endpoint + url.TOKEN_EP
 
@@ -515,8 +529,9 @@ class RESTClient(interfaces.RESTInterface):
         if json:
             headers["Content-Type"] = _APP_JSON
 
+        stack = contextlib.AsyncExitStack()
         while True:
-            async with (stack := contextlib.AsyncExitStack()):
+            try:
                 await stack.enter_async_context(self._lock)
 
                 # We make the request here.
@@ -530,7 +545,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000
 
-                _LOG.debug(
+                _LOGGER.debug(
                     "%s %s %s Time %.4fms",
                     method,
                     f"{endpoint}/{route}",
@@ -540,62 +555,104 @@ class RESTClient(interfaces.RESTInterface):
 
                 await self._handle_ratelimit(response, method, route)
 
-                if response.status == http.HTTPStatus.NO_CONTENT:
-                    return None
+            except aiohttp.ClientConnectionError as exc:
+                if retries >= self._max_retries:
+                    raise error.HTTPError(
+                        str(exc),
+                        http.HTTPStatus.SERVICE_UNAVAILABLE,
+                    )
+                backoff_ = backoff.ExponentialBackOff(maximum=8)
 
-                if 300 > response.status >= 200:
-                    if unwrapping == "read":
-                        # We need to read the bytes for the manifest response.
-                        return await response.read()
+                timer = next(backoff_)
+                _LOGGER.warning(
+                    "Client received a connection error <%s> Retrying in %.2fs. Remaining retries: %s",
+                    type(exc).__qualname__,
+                    timer,
+                    self._max_retries - retries,
+                )
+                retries += 1
+                await asyncio.sleep(timer)
+                continue
 
-                    if response.content_type == _APP_JSON:
-                        # json_data = self._loads(await response.read())
-                        json_data = self._loads(await response.read())
+            finally:
+                await stack.aclose()
 
-                        _LOG.debug(
-                            "%s %s %s Time %.4fms",
-                            method,
-                            f"{endpoint}/{route}",
-                            f"{response.status} {response.reason}",
-                            response_time,
-                        )
+            if response.status == http.HTTPStatus.NO_CONTENT:
+                return None
 
-                        if _LOG.isEnabledFor(TRACE):
-                            _LOG.log(
-                                TRACE,
-                                "%s",
-                                error.stringify_http_message(
-                                    dict(response.headers) | headers
-                                ),
-                            )
+            # Handle the successful response.
+            if 300 > response.status >= 200:
+                if unwrap_bytes:
+                    # We need to read the bytes for the manifest response.
+                    return await response.read()
 
-                        # Return the response.
-                        # auth responses are not inside a Response object.
-                        if oauth2:
-                            return json_data
-
-                        # The reason we have a type ignore is because the actual response type
-                        # is within this `Response` key.
-                        return json_data["Response"]  # type: ignore
-
-                if (
-                    response.status in _RETRY_5XX and retries < self._max_retries  # noqa: W503
-                ):
-                    backoff_ = backoff.ExponentialBackOff(maximum=6)
-                    sleep_time = next(backoff_)
-                    _LOG.warning(
-                        "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
-                        response.status,
-                        response.reason,
-                        sleep_time,
-                        self._max_retries - retries,
+                # Bungie get funky and return HTML instead of JSON when making an authorized
+                # request with a dummy access token. We could technically read the page content
+                # but that's Bungie's fault for not returning a JSON response.
+                if response.content_type != _APP_JSON:
+                    raise error.HTTPError(
+                        message=f"Expected JSON response, Got {response.content_type}, "
+                        f"{response.real_url.human_repr()}",
+                        http_status=http.HTTPStatus(response.status),
                     )
 
-                    retries += 1
-                    await asyncio.sleep(sleep_time)
-                    continue
+                json_data = self._loads(await response.read())
 
-                raise await error.raise_error(response)
+                _LOGGER.debug(
+                    "%s %s %s Time %.4fms",
+                    method,
+                    f"{endpoint}/{route}",
+                    f"{response.status} {response.reason}",
+                    response_time,
+                )
+
+                if _LOGGER.isEnabledFor(TRACE):
+                    _LOGGER.log(
+                        TRACE,
+                        "%s",
+                        error.stringify_headers(dict(response.headers)),
+                    )
+
+                    details: collections.MutableMapping[str, typing.Any] = {}
+                    if json:
+                        details["json"] = json
+
+                    if data:
+                        details["data"] = data
+
+                    if params:
+                        details["params"] = params
+
+                    if details:
+                        _LOGGER.log(TRACE, "%s", error.stringify_headers(details))
+
+                # Return the response.
+                # auth responses are not inside a Response object.
+                if oauth2:
+                    return json_data
+
+                # The reason we have a type ignore is because the actual response type
+                # is within this `Response` key.
+                return json_data["Response"]  # type: ignore
+
+            if (
+                response.status in _RETRY_5XX and retries < self._max_retries  # noqa: W503
+            ):
+                backoff_ = backoff.ExponentialBackOff(maximum=6)
+                sleep_time = next(backoff_)
+                _LOGGER.warning(
+                    "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
+                    response.status,
+                    response.reason,
+                    sleep_time,
+                    self._max_retries - retries,
+                )
+
+                retries += 1
+                await asyncio.sleep(sleep_time)
+                continue
+
+            raise await error.panic(response)
 
     async def __aenter__(self) -> RESTClient:
         self.open()
@@ -641,7 +698,7 @@ class RESTClient(interfaces.RESTInterface):
                 )
 
             # We sleep for a little bit to avoid funky behavior.
-            _LOG.warning(
+            _LOGGER.warning(
                 "We're being ratelimited, Method %s Route %s. Sleeping for %.2fs.",
                 method,
                 route,
@@ -652,16 +709,6 @@ class RESTClient(interfaces.RESTInterface):
             continue
 
     async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
-        if not isinstance(self._client_secret, (str, int)):
-            raise TypeError(
-                "Expected (str, int) for client secret "
-                f"but got {type(self._client_secret).__name__}"
-            )
-
-        headers = {
-            "client_secret": self._client_secret,
-        }
-
         data = {
             "grant_type": "authorization_code",
             "code": code,
@@ -669,20 +716,13 @@ class RESTClient(interfaces.RESTInterface):
             "client_secret": self._client_secret,
         }
 
-        response = await self._request(
-            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
-        )
+        response = await self._request(_POST, "", data=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
     async def refresh_access_token(
         self, refresh_token: str, /
     ) -> builders.OAuth2Response:
-        if not isinstance(self._client_secret, (int, str)):
-            raise TypeError(
-                f"Expected (str, int) for client secret but got {type(self._client_secret).__name__}"
-            )
-
         data = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
@@ -690,19 +730,17 @@ class RESTClient(interfaces.RESTInterface):
             "client_secret": self._client_secret,
         }
 
-        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
+        response = await self._request(_POST, "", data=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
     async def fetch_bungie_user(self, id: int) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"User/GetBungieNetUserById/{id}/"
-        )
+        resp = await self._request(_GET, f"User/GetBungieNetUserById/{id}/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_user_themes(self) -> typedefs.JSONArray:
-        resp = await self._request(RequestMethod.GET, "User/GetAvailableThemes/")
+        resp = await self._request(_GET, "User/GetAvailableThemes/")
         assert isinstance(resp, list)
         return resp
 
@@ -712,9 +750,7 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.MembershipType | int = enums.MembershipType.NONE,
         /,
     ) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"User/GetMembershipsById/{id}/{int(type)}"
-        )
+        resp = await self._request(_GET, f"User/GetMembershipsById/{id}/{int(type)}")
         assert isinstance(resp, dict)
         return resp
 
@@ -726,7 +762,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> typedefs.JSONArray:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
             json={"displayName": name, "displayNameCode": code},
         )
@@ -735,7 +771,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def search_users(self, name: str, /) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             "User/Search/GlobalName/0",
             json={"displayNamePrefix": name},
         )
@@ -745,9 +781,7 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_clan_from_id(
         self, id: int, /, access_token: str | None = None
     ) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"GroupV2/{id}", auth=access_token
-        )
+        resp = await self._request(_GET, f"GroupV2/{id}", auth=access_token)
         assert isinstance(resp, dict)
         return resp
 
@@ -760,27 +794,23 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
+            _GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
         )
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_clan_admins(self, clan_id: int, /) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/"
-        )
+        resp = await self._request(_GET, f"GroupV2/{clan_id}/AdminsAndFounder/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_clan_conversations(self, clan_id: int, /) -> typedefs.JSONArray:
-        resp = await self._request(
-            RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
-        )
+        resp = await self._request(_GET, f"GroupV2/{clan_id}/OptionalConversations/")
         assert isinstance(resp, list)
         return resp
 
     async def fetch_application(self, appid: int, /) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, f"App/Application/{appid}")
+        resp = await self._request(_GET, f"App/Application/{appid}")
         assert isinstance(resp, dict)
         return resp
 
@@ -794,7 +824,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
         response = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
             f"Character/{character_id}/?components={collector}",
             auth=auth,
@@ -813,7 +843,7 @@ class RESTClient(interfaces.RESTInterface):
         limit: int = 1,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Account/"
             f"{member_id}/Character/{character_id}/Stats/Activities"
             f"/?mode={int(mode)}&count={limit}&page={page}",
@@ -823,7 +853,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_vendor_sales(self) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/Vendors/?components={int(enums.ComponentType.VENDOR_SALES)}",
         )
         assert isinstance(resp, dict)
@@ -838,7 +868,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
         response = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(type)}/Profile/{membership_id}/?components={collector}",
             auth=auth,
         )
@@ -846,9 +876,7 @@ class RESTClient(interfaces.RESTInterface):
         return response
 
     async def fetch_entity(self, type: str, hash: int) -> typedefs.JSONObject:
-        response = await self._request(
-            RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
-        )
+        response = await self._request(_GET, route=f"Destiny2/Manifest/{type}/{hash}")
         assert isinstance(response, dict)
         return response
 
@@ -872,7 +900,7 @@ class RESTClient(interfaces.RESTInterface):
         group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
         assert isinstance(resp, dict)
@@ -888,7 +916,7 @@ class RESTClient(interfaces.RESTInterface):
         group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
         assert isinstance(resp, dict)
@@ -903,7 +931,7 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.MembershipType | int = enums.MembershipType.NONE,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"/GroupV2/{clan_id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
         assert isinstance(resp, dict)
@@ -916,7 +944,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
         assert isinstance(resp, dict)
@@ -926,7 +954,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, membership_id: int, /
     ) -> typedefs.JSONArray:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"User/GetCredentialTypesForTargetAccount/{membership_id}",
             auth=access_token,
         )
@@ -953,7 +981,7 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
         resp = await self._request(
-            RequestMethod.POST, "Destiny2/Actions/Items/InsertSocketPlug", json=body
+            _POST, "Destiny2/Actions/Items/InsertSocketPlug", json=body
         )
         assert isinstance(resp, dict)
         return resp
@@ -977,7 +1005,7 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/InsertSocketPlugFree",
             json=body,
             auth=access_token,
@@ -1001,7 +1029,7 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/SetLockState",
             json=body,
             auth=access_token,
@@ -1025,7 +1053,7 @@ class RESTClient(interfaces.RESTInterface):
             "membership_type": int(membership_type),
         }
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/SetTrackedState",
             json=body,
             auth=access_token,
@@ -1034,7 +1062,7 @@ class RESTClient(interfaces.RESTInterface):
         return response
 
     async def fetch_manifest_path(self) -> typedefs.JSONObject:
-        path = await self._request(RequestMethod.GET, "Destiny2/Manifest")
+        path = await self._request(_GET, "Destiny2/Manifest")
         assert isinstance(path, dict)
         return path
 
@@ -1043,9 +1071,9 @@ class RESTClient(interfaces.RESTInterface):
 
         content = await self.fetch_manifest_path()
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             content["mobileWorldContentPaths"][language],
-            unwrapping="read",
+            unwrap_bytes=True,
             base=True,
         )
         assert isinstance(resp, bytes)
@@ -1063,7 +1091,7 @@ class RESTClient(interfaces.RESTInterface):
 
         if complete_path.exists() and force:
             if force:
-                _LOG.info(
+                _LOGGER.info(
                     f"Found manifest in {complete_path!s}. Forcing to Re-Download."
                 )
                 complete_path.unlink(missing_ok=True)
@@ -1078,11 +1106,12 @@ class RESTClient(interfaces.RESTInterface):
                     "To force download, set the `force` parameter to `True`."
                 )
 
-        _LOG.info(f"Downloading manifest. Location: {complete_path!s}")
+        _LOGGER.info(f"Downloading manifest. Location: {complete_path!s}")
         data_bytes = await self.read_manifest_bytes(language)
         await asyncio.get_running_loop().run_in_executor(
             None, _write_sqlite_bytes, data_bytes, path, name
         )
+        _LOGGER.info("Finished downloading manifest.")
         return _get_path(name, path, sql=True)
 
     async def download_json_manifest(
@@ -1092,15 +1121,15 @@ class RESTClient(interfaces.RESTInterface):
         language: str = "en",
     ) -> pathlib.Path:
         _ensure_manifest_language(language)
-
+        #
         full_path = _get_path(file_name, path)
-        _LOG.info(f"Downloading manifest JSON to {full_path!r}...")
+        _LOGGER.info(f"Downloading manifest JSON to {full_path!r}...")
 
         content = await self.fetch_manifest_path()
         json_bytes = await self._request(
-            RequestMethod.GET,
+            _GET,
             content["jsonWorldContentPaths"][language],
-            unwrapping="read",
+            unwrap_bytes=True,
             base=True,
         )
 
@@ -1108,7 +1137,7 @@ class RESTClient(interfaces.RESTInterface):
         await asyncio.get_running_loop().run_in_executor(
             None, _write_json_bytes, json_bytes, file_name, path
         )
-        _LOG.info("Finished downloading manifest JSON.")
+        _LOGGER.info("Finished downloading manifest JSON.")
         return full_path
 
     async def fetch_manifest_version(self) -> str:
@@ -1124,21 +1153,19 @@ class RESTClient(interfaces.RESTInterface):
         all: bool = False,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_clan_banners(self) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/"
-        )
+        resp = await self._request(_GET, "Destiny2/Clan/ClanBannerDictionary/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_public_milestones(self) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, "Destiny2/Milestones/")
+        resp = await self._request(_GET, "Destiny2/Milestones/")
         assert isinstance(resp, dict)
         return resp
 
@@ -1147,7 +1174,7 @@ class RESTClient(interfaces.RESTInterface):
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
+            _GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
         )
         assert isinstance(resp, dict)
         return resp
@@ -1156,7 +1183,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, /
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             "User/GetMembershipsForCurrentUser/",
             auth=access_token,
         )
@@ -1178,7 +1205,7 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/EquipItem/",
             json=payload,
             auth=access_token,
@@ -1198,7 +1225,7 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
         await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/EquipItems/",
             json=payload,
             auth=access_token,
@@ -1217,7 +1244,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> None:
         payload = {"comment": str(comment), "length": length}
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
             json=payload,
             auth=access_token,
@@ -1232,7 +1259,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> None:
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
             auth=access_token,
         )
@@ -1246,7 +1273,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
             auth=access_token,
         )
@@ -1297,7 +1324,7 @@ class RESTClient(interfaces.RESTInterface):
             payload["membershipOption"] = int(membership_option)
 
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Edit",
             json=payload,
             auth=access_token,
@@ -1324,7 +1351,7 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
             auth=access_token,
@@ -1332,7 +1359,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_friends(self, access_token: str, /) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             "Social/Friends/",
             auth=access_token,
         )
@@ -1341,7 +1368,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_friend_requests(self, access_token: str, /) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             "Social/Friends/Requests",
             auth=access_token,
         )
@@ -1350,14 +1377,14 @@ class RESTClient(interfaces.RESTInterface):
 
     async def accept_friend_request(self, access_token: str, /, member_id: int) -> None:
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Social/Friends/Requests/Accept/{member_id}",
             auth=access_token,
         )
 
     async def send_friend_request(self, access_token: str, /, member_id: int) -> None:
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Social/Friends/Add/{member_id}",
             auth=access_token,
         )
@@ -1366,14 +1393,14 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, /, member_id: int
     ) -> None:
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Social/Friends/Requests/Decline/{member_id}",
             auth=access_token,
         )
 
     async def remove_friend(self, access_token: str, /, member_id: int) -> None:
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Social/Friends/Remove/{member_id}",
             auth=access_token,
         )
@@ -1381,7 +1408,7 @@ class RESTClient(interfaces.RESTInterface):
     async def remove_friend_request(self, access_token: str, /, member_id: int) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Social/Friends/Requests/Remove/{member_id}",
             auth=access_token,
         )
@@ -1395,7 +1422,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/ApproveAll",
             auth=access_token,
             json={"message": str(message)},
@@ -1411,7 +1438,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/DenyAll",
             auth=access_token,
             json={"message": str(message)},
@@ -1429,7 +1456,7 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {"chatName": str(name), "chatSecurity": security}
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/OptionalConversations/Add",
             json=payload,
             auth=access_token,
@@ -1453,7 +1480,7 @@ class RESTClient(interfaces.RESTInterface):
             "chatSecurity": security,
         }
         await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
             json=payload,
             auth=access_token,
@@ -1481,7 +1508,7 @@ class RESTClient(interfaces.RESTInterface):
             "transferToVault": vault,
         }
         await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/TransferItem",
             json=payload,
             auth=access_token,
@@ -1509,7 +1536,7 @@ class RESTClient(interfaces.RESTInterface):
             "transferToVault": vault,
         }
         await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Items/PullFromPostmaster",
             json=payload,
             auth=access_token,
@@ -1526,7 +1553,7 @@ class RESTClient(interfaces.RESTInterface):
         slots_filter: int = 0,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
         )
         assert isinstance(resp, dict)
@@ -1546,7 +1573,7 @@ class RESTClient(interfaces.RESTInterface):
         slots_filter: int = 0,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
             json={"langFilter": str(language)},
             auth=access_token,
@@ -1558,7 +1585,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, fireteam_id: int, group_id: int
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
             auth=access_token,
         )
@@ -1579,7 +1606,7 @@ class RESTClient(interfaces.RESTInterface):
         payload = {"groupFilter": filtered, "langFilter": str(language)}
 
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
             json=payload,
             auth=access_token,
@@ -1591,7 +1618,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, group_id: int, /
     ) -> int:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
             auth=access_token,
         )
@@ -1600,7 +1627,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_post_activity(self, instance_id: int, /) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
+            _GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
         assert isinstance(resp, dict)
         return resp
@@ -1609,7 +1636,7 @@ class RESTClient(interfaces.RESTInterface):
         self, name: str, entity_type: str, *, page: int = 0
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/Armory/Search/{entity_type}/{name}/",
             json={"page": page},
         )
@@ -1623,7 +1650,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",
         )
         assert isinstance(resp, dict)
@@ -1639,33 +1666,29 @@ class RESTClient(interfaces.RESTInterface):
         collector = _collect_components(components)
 
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/Item/{item_id}/?components={collector}",
         )
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_clan_weekly_rewards(self, clan_id: int, /) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"Destiny2/Clan/{clan_id}/WeeklyRewardState/"
-        )
+        resp = await self._request(_GET, f"Destiny2/Clan/{clan_id}/WeeklyRewardState/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_available_locales(self) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, "Destiny2/Manifest/DestinyLocaleDefinition/"
-        )
+        resp = await self._request(_GET, "Destiny2/Manifest/DestinyLocaleDefinition/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_common_settings(self) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, "Settings")
+        resp = await self._request(_GET, "Settings")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_user_systems_overrides(self) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, "UserSystemOverrides")
+        resp = await self._request(_GET, "UserSystemOverrides")
         assert isinstance(resp, dict)
         return resp
 
@@ -1673,7 +1696,7 @@ class RESTClient(interfaces.RESTInterface):
         self, *, include_streaming: bool = False
     ) -> typedefs.JSONArray:
         resp = await self._request(
-            RequestMethod.GET, f"GlobalAlerts/?includestreaming={include_streaming}"
+            _GET, f"GlobalAlerts/?includestreaming={include_streaming}"
         )
         assert isinstance(resp, list)
         return resp
@@ -1697,7 +1720,7 @@ class RESTClient(interfaces.RESTInterface):
             body["characterId"] = character_id
 
         resp = await self._request(
-            RequestMethod.POST, "Destiny2/Awa/Initialize", json=body, auth=access_token
+            _POST, "Destiny2/Awa/Initialize", json=body, auth=access_token
         )
         assert isinstance(resp, dict)
         return resp
@@ -1706,7 +1729,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, correlation_id: str, /
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"Destiny2/Awa/GetActionToken/{correlation_id}",
             auth=access_token,
         )
@@ -1723,7 +1746,7 @@ class RESTClient(interfaces.RESTInterface):
         body = {"selection": selection, "correlationId": correlation_id, "nonce": nonce}
 
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Awa/AwaProvideAuthorizationResult",
             json=body,
             auth=access_token,
@@ -1751,7 +1774,7 @@ class RESTClient(interfaces.RESTInterface):
             route = route + f"&filter={filter}"
 
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             route,
             auth=access_token,
         )
@@ -1770,7 +1793,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typedefs.JSONObject:
         components_ = _collect_components(components)
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             (
                 f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
                 f"/Character/{character_id}/Vendors/{vendor_hash}/?components={components_}"
@@ -1791,7 +1814,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typedefs.JSONObject:
         end_date, start_date = time.parse_date_range(end, start)
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"App/ApiUsage/{application_id}/?end={end_date}&start={start_date}",
             auth=access_token,
         )
@@ -1799,12 +1822,12 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_bungie_applications(self) -> typedefs.JSONArray:
-        resp = await self._request(RequestMethod.GET, "App/FirstParty")
+        resp = await self._request(_GET, "App/FirstParty")
         assert isinstance(resp, list)
         return resp
 
     async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, f"Content/GetContentType/{type}/")
+        resp = await self._request(_GET, f"Content/GetContentType/{type}/")
         assert isinstance(resp, dict)
         return resp
 
@@ -1812,7 +1835,7 @@ class RESTClient(interfaces.RESTInterface):
         self, id: int, locale: str, /, *, head: bool = False
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Content/GetContentById/{id}/{locale}/",
             json={"head": head},
         )
@@ -1823,7 +1846,7 @@ class RESTClient(interfaces.RESTInterface):
         self, locale: str, tag: str, type: str, *, head: bool = False
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Content/GetContentByTagAndType/{tag}/{type}/{locale}/",
             json={"head": head},
         )
@@ -1851,7 +1874,7 @@ class RESTClient(interfaces.RESTInterface):
             "source": source,
         }
 
-        resp = await self._request(RequestMethod.GET, "Content/Search", params=body)
+        resp = await self._request(_GET, "Content/Search", params=body)
         assert isinstance(resp, dict)
         return resp
 
@@ -1866,7 +1889,7 @@ class RESTClient(interfaces.RESTInterface):
         body: typedefs.JSONObject = {"currentpage": page or 1}
 
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Content/SearchContentByTagAndType/{tag}/{type}/{locale}/",
             params=body,
         )
@@ -1876,9 +1899,7 @@ class RESTClient(interfaces.RESTInterface):
     async def search_help_articles(
         self, text: str, size: str, /
     ) -> typedefs.JSONObject:
-        resp = await self._request(
-            RequestMethod.GET, f"Content/SearchHelpArticles/{text}/{size}/"
-        )
+        resp = await self._request(_GET, f"Content/SearchHelpArticles/{text}/{size}/")
         assert isinstance(resp, dict)
         return resp
 
@@ -1900,7 +1921,7 @@ class RESTClient(interfaces.RESTInterface):
             params["tagstring"] = tag_filter
 
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetTopicsPaged/{page or 0}/0/{group}/{sort!s}/{date_filter}/{category_filter}/",
             params=params,
         )
@@ -1917,7 +1938,7 @@ class RESTClient(interfaces.RESTInterface):
         locales: collections.Iterable[str] | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetCoreTopicsPaged/{page or 0}"
             f"/{sort!s}/{date_filter}/{category_filter}/?locales={','.join(locales) if locales else 'en'}",
         )
@@ -1936,7 +1957,7 @@ class RESTClient(interfaces.RESTInterface):
         show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetPostsThreadedPaged/{parent_post}/{page}/"
             f"{page_size}/{reply_size}/{parent_post_id}/{root_thread_mode}/{sort_mode}/",
             json={"showbanned": show_banned},
@@ -1955,7 +1976,7 @@ class RESTClient(interfaces.RESTInterface):
         show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetPostsThreadedPagedFromChild/{child_id}/"
             f"{page}/{page_size}/{reply_size}/{root_thread_mode}/{sort_mode}/",
             json={"showbanned": show_banned},
@@ -1967,7 +1988,7 @@ class RESTClient(interfaces.RESTInterface):
         self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetPostAndParent/{child_id}/",
             json={"showbanned": show_banned},
         )
@@ -1978,7 +1999,7 @@ class RESTClient(interfaces.RESTInterface):
         self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Forum/GetPostAndParentAwaitingApproval/{child_id}/",
             json={"showbanned": show_banned},
         )
@@ -1986,9 +2007,7 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_topic_for_content(self, content_id: int, /) -> int:
-        resp = await self._request(
-            RequestMethod.GET, f"Forum/GetTopicForContent/{content_id}/"
-        )
+        resp = await self._request(_GET, f"Forum/GetTopicForContent/{content_id}/")
         assert isinstance(resp, int)
         return resp
 
@@ -1996,7 +2015,7 @@ class RESTClient(interfaces.RESTInterface):
         self, partial_tag: str, /
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             "Forum/GetForumTagSuggestions/",
             json={"partialtag": partial_tag},
         )
@@ -2004,12 +2023,12 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, f"Forum/Poll/{topic_id}/")
+        resp = await self._request(_GET, f"Forum/Poll/{topic_id}/")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray:
-        resp = await self._request(RequestMethod.POST, "Forum/Recruit/Summaries/")
+        resp = await self._request(_POST, "Forum/Recruit/Summaries/")
         assert isinstance(resp, list)
         return resp
 
@@ -2022,7 +2041,7 @@ class RESTClient(interfaces.RESTInterface):
         group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONArray:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/Recommended/{int(group_type)}/{date_range}/",
             auth=access_token,
         )
@@ -2030,7 +2049,7 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_available_avatars(self) -> collections.Mapping[str, int]:
-        resp = await self._request(RequestMethod.GET, "GroupV2/GetAvailableAvatars/")
+        resp = await self._request(_GET, "GroupV2/GetAvailableAvatars/")
         assert isinstance(resp, dict)
         return resp
 
@@ -2041,7 +2060,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> bool:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/GetUserClanInviteSetting/{int(membership_type)}/",
             auth=access_token,
         )
@@ -2052,7 +2071,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, group_id: int, /, *, page: int = 1
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/{group_id}/Banned/?currentpage={page}",
             auth=access_token,
         )
@@ -2063,7 +2082,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, group_id: int, /, *, current_page: int = 1
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/{group_id}/Members/Pending/?currentpage={current_page}",
             auth=access_token,
         )
@@ -2074,7 +2093,7 @@ class RESTClient(interfaces.RESTInterface):
         self, access_token: str, group_id: int, /, *, current_page: int = 1
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"GroupV2/{group_id}/Members/InvitedIndividuals/?currentpage={current_page}",
             auth=access_token,
         )
@@ -2092,7 +2111,7 @@ class RESTClient(interfaces.RESTInterface):
         message: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/IndividualInvite/{int(membership_type)}/{membership_id}/",
             auth=access_token,
             json={"message": str(message)},
@@ -2109,7 +2128,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.POST,
+            _POST,
             f"GroupV2/{group_id}/Members/IndividualInviteCancel/{int(membership_type)}/{membership_id}/",
             auth=access_token,
         )
@@ -2117,7 +2136,7 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_historical_definition(self) -> typedefs.JSONObject:
-        resp = await self._request(RequestMethod.GET, "Destiny2/Stats/Definition/")
+        resp = await self._request(_GET, "Destiny2/Stats/Definition/")
         assert isinstance(resp, dict)
         return resp
 
@@ -2135,7 +2154,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typedefs.JSONObject:
         end, start = time.parse_date_range(day_end, day_start)
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/",
             json={
                 "dayend": end,
@@ -2155,7 +2174,7 @@ class RESTClient(interfaces.RESTInterface):
         groups: collections.Sequence[enums.StatsGroupType | int],
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Stats/",
             json={"groups": [str(int(group)) for group in groups]},
         )
@@ -2170,7 +2189,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> typedefs.JSONObject:
         resp = await self._request(
-            RequestMethod.GET,
+            _GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/"
             f"Character/{character_id}/Stats/AggregateActivityStats/",
         )
@@ -2186,7 +2205,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> None:
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Loadouts/EquipLoadout/",
             json={
                 "loadoutIndex": loadout_index,
@@ -2210,7 +2229,7 @@ class RESTClient(interfaces.RESTInterface):
         name_hash: int | None = None,
     ) -> None:
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Loadouts/SnapshotLoadout/",
             auth=access_token,
             json={
@@ -2237,7 +2256,7 @@ class RESTClient(interfaces.RESTInterface):
         name_hash: int | None = None,
     ) -> None:
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Loadouts/UpdateLoadoutIdentifiers/",
             auth=access_token,
             json={
@@ -2260,7 +2279,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: enums.MembershipType | int,
     ) -> None:
         response = await self._request(
-            RequestMethod.POST,
+            _POST,
             "Destiny2/Actions/Loadouts/ClearLoadout/",
             json={
                 "loadoutIndex": loadout_index,

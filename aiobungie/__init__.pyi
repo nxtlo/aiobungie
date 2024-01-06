@@ -35,5 +35,4 @@ from .metadata import __license__ as __license__
 from .metadata import __url__ as __url__
 from .metadata import __version__ as __version__
 
-crate = crates
 __all__: Incomplete

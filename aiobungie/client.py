@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import milestones
     from aiobungie.crates import profile
 
-_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
+_LOGGER = logging.getLogger("aiobungie.client")
 
 
 class Client(traits.ClientApp):
@@ -90,6 +90,8 @@ class Client(traits.ClientApp):
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    debug: `"TRACE" | bool | int`
+        The level of logging to enable.
     """
 
     __slots__ = ("_rest", "_factory")
@@ -102,12 +104,14 @@ class Client(traits.ClientApp):
         client_secret: str | None = None,
         client_id: int | None = None,
         max_retries: int = 4,
+        debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._rest = rest_.RESTClient(
             token,
             client_secret=client_secret,
             client_id=client_id,
             max_retries=max_retries,
+            debug=debug,
         )
 
         self._factory = factory_.Factory(self)
@@ -140,7 +144,7 @@ class Client(traits.ClientApp):
             raise RuntimeError(f"Failed to run {fn!s}") from exc
 
         except KeyboardInterrupt:
-            _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
+            _LOGGER.warning("Unexpected Keyboard interrupt. Exiting.")
 
     # * User methods.
 
@@ -197,7 +201,7 @@ class Client(traits.ClientApp):
 
         Parameters
         ----------
-        name : `buildins.str`
+        name : `str`
             The user name.
 
         Returns

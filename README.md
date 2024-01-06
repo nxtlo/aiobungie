@@ -1,19 +1,21 @@
 # aiobungie
+
 A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python.
 
-# Installing
+## Installing
 
 Currently Python 3.10, 3.11 and 3.12 are supported.
 
 Stable release.
 
 ```sh
-$ pip install aiobungie
+pip install aiobungie
 ```
 
 Development via github master.
+
 ```sh
-$ pip install git+https://github.com/nxtlo/aiobungie@master
+pip install git+https://github.com/nxtlo/aiobungie@master
 ```
 
 ## Quick Example
@@ -57,18 +59,20 @@ client.run(main())
 ```
 
 ## RESTful clients
+
 aiobungie also provides a stand-alone `RESTClient` / `RESTPool` which's what `Client` built on top of, These clients just provide a lower-level abstraction.
 
 A key note is that any `Client` based user can access the `RESTClient` instance bound to it with `.rest` property.
 
 ### Key Features
+
 * Lower level, allows to read and deserialize the JSON objects yourself.
 * `RESTClient`s do not turn response payloads into one of `aiobungie.crates` object.
 * RESTful, You can use this as your REST API client in backend directly.
 * Both `Manifest` and `OAuth` methods are usable directly.
 
-
 ### Example
+
 ```py
 import aiobungie
 import asyncio
@@ -99,27 +103,34 @@ asyncio.run(main())
 ```
 
 ## Dependancies
+
 * aiohttp
 * attrs
 * `backports.datetime_fromisoformat`, required for `Python 3.10` only.
 
-### Speedups - Optional
-Additionally, If you have [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
-installed they will be used as the default JSON parser.
+### Features
 
-Just install `pip install aiobungie[speedup]` like this.
+aiobungie features are extra dependencies that replaces the standard library with either faster/neater pkgs.
 
-They provide faster json serialization and de-serialization than the standard Python JSON pkg.
+* `speedup`
+This will include and uses [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
+as the default `json` parser. They provide faster json serialization and de-serialization than the standard Python JSON pkg.
+* `full`: This will include all of the features above.
+
+For installing the specified feature, type `pip install aiobungie[feature-name]`
 
 ## Contributing
+
 Please read this [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)
 
 ## Related Projects
+
 If you have used aiobungie and want to show your work, Feel free to Open a PR including it.
 
-* [Fated](https://github.com/nxtlo/Fated/blob/master/core/components/destiny.py): My Discord BOT for testing purposes.
+* [Fated](https://github.com/nxtlo/Fated/blob/master/core/components/destiny.py): A Discord BOT that uses aiobungie.
 
 ## Useful Resources
+
 * Discord Username: `vfate`
 * aiobungie Documentation: [Here](https://nxtlo.github.io/aiobungie/).
 * BungieAPI Discord: [Here](https://discord.gg/vP7VC7TKUG)
@@ -127,4 +138,5 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 * Bungie Developer Portal: [Here](https://www.bungie.net/en/Application)
 
 ### Additional information
+
 If you have any question you can either open a blank issue, open a new github discussion, or just tag me in BungieAPI discord server.

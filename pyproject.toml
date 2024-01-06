@@ -33,6 +33,7 @@ backports-datetime-fromisoformat = { version = "2.0.1", markers = "python_versio
 
 [tool.poetry.extras]
 speedup = ["orjson"]
+full = ["orjson"]
 
 [tool.pytest.ini_options]
 xfail_strict = true
@@ -67,7 +68,7 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-# Assume Python 3.8
+# Assume Python 3.12
 target-version = "py312"
 
 [tool.ruff.lint]
@@ -99,7 +100,7 @@ line-ending = "auto"
 include = ["aiobungie", "examples"]
 exclude = ["**/__init__.py", "aiobungie/internal/enums.py"]
 pythonVersion = "3.12"
-reportUnnecessaryTypeIgnoreComment = "warning" # backports needs to be ignored on Py 3.10
+reportUnnecessaryTypeIgnoreComment = "warning"              # backports needs to be ignored on Py 3.10
 reportMissingTypeStubs = "none"
 # This will always cause warnings above license.
 reportIncompatibleVariableOverride = "none"
@@ -116,7 +117,7 @@ reportUnknownVariableType = "warning"
 reportMissingModuleSource = "error"
 reportMissingParameterType = "error"
 reportMissingTypeArgument = "error"
-reportGeneralTypeIssues = "information"
+reportGeneralTypeIssues = "error"
 reportPrivateUsage = "error"
 reportIncompatibleMethodOverride = "none"
 reportUnusedVariable = "error"

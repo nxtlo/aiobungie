@@ -151,4 +151,6 @@ jobs:
           poetry-version: 1.7.1
 
       - name: Publish
-        run: poetry publish --build -p ${{ secrets.PYPY_TOKEN }} -u ${{ secrets.PYPY_USER }}
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPY_TOKEN }}
+          poetry publish --build

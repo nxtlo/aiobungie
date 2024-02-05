@@ -280,6 +280,16 @@ class RateLimitedError(HTTPError):
 async def panic(response: aiohttp.ClientResponse) -> HTTPError:
     """Immediately raise an exception based on the response."""
 
+    # Bungie get funky and return HTML instead of JSON when making an authorized
+    # request with a dummy access token. We could technically read the page content
+    # but that's Bungie's fault for not returning a JSON response.
+    if response.content_type != "application/json":
+        raise HTTPError(
+            message=f"Expected JSON response, Got {response.content_type}, "
+            f"{response.real_url.human_repr()}",
+            http_status=http.HTTPStatus(response.status),
+        )
+
     body: collections.Mapping[str, typing.Any] = helpers.loads(await response.read())  # type: ignore
     message: str = body.get("Message", "UNDEFINED_MESSAGE")
     error_status: str = body.get("ErrorStatus", "UNDEFINED_ERROR_STATUS")

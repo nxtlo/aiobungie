@@ -778,7 +778,6 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    @helpers.unstable
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:
@@ -1773,6 +1772,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    @helpers.unstable
     async def set_item_lock_state(
         self,
         access_token: str,

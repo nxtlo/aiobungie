@@ -30,8 +30,6 @@ __all__ = ("FactoryInterface",)
 import abc
 import typing
 
-from aiobungie.internal import helpers
-
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
@@ -872,7 +870,6 @@ class FactoryInterface(abc.ABC):
     # Milestones.
 
     @abc.abstractmethod
-    @helpers.unstable
     def deserialize_public_milestone_content(
         self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneContent:

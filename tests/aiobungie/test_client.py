@@ -34,7 +34,7 @@ from tests import config
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    client = aiobungie.Client(token, max_retries=0, debug="TRACE")
+    client = aiobungie.Client(token, max_retries=0, debug=True)
     return client
 
 
@@ -342,6 +342,7 @@ class TestMeta:
 
     # FIXME: There's currently a problem with this API route from Bungie's side
     # where it returns an HTML not found page.
+    # @staticmethod
     # async def test_set_item_lock_state():
     #     try:
     #         await client.rest.set_item_lock_state("my-token", True, 123, 123, 1)
@@ -351,10 +352,10 @@ class TestMeta:
 
     # * Milestone methods
     # FIXME: Uncomment this when it get stabilized.
-    # @staticmethod
-    # async def test_public_milestones_content():
-    #     cb = await client.fetch_public_milestone_content(4253138191)
-    #     assert isinstance(cb, aiobungie.crates.MilestoneContent)
+    @staticmethod
+    async def test_public_milestones_content():
+        cb = await client.fetch_public_milestone_content(4253138191)
+        assert isinstance(cb, aiobungie.crates.MilestoneContent)
 
     # * Fireteam methods.
     @staticmethod

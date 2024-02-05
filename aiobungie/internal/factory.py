@@ -46,7 +46,6 @@ from aiobungie.crates import season
 from aiobungie.crates import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 from aiobungie.internal import iterators
 from aiobungie.internal import time
 
@@ -1996,7 +1995,6 @@ class Factory(interfaces.FactoryInterface):
             banner_obj = ()
         return banner_obj
 
-    @helpers.unstable
     def deserialize_public_milestone_content(
         self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneContent:

@@ -1243,7 +1243,6 @@ class Client(traits.ClientApp):
 
     # Milestones
 
-    @helpers.unstable
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> milestones.MilestoneContent:
@@ -1260,5 +1259,5 @@ class Client(traits.ClientApp):
             A milestone content object.
         """
         ...
-        # _resp = await self.rest.fetch_public_milestone_content(milestone_hash)
-        # return self.factory.deserialize_public_milestone_content(resp)
+        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
+        return self.factory.deserialize_public_milestone_content(resp)

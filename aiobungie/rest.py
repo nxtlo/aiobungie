@@ -361,6 +361,7 @@ class RESTClient(interfaces.RESTInterface):
         "_client_id",
         "_metadata",
         "_dumps",
+        "_print",
         "_loads",
     )
 
@@ -385,6 +386,7 @@ class RESTClient(interfaces.RESTInterface):
         self._max_retries = max_retries
         self._dumps = dumps
         self._loads = loads
+        self._print = False
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self.with_debug(debug)
 
@@ -1013,6 +1015,7 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
+    @helpers.unstable
     async def set_item_lock_state(
         self,
         access_token: str,
@@ -1022,6 +1025,7 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> int:
+        self._print = True
         body = {
             "state": state,
             "itemId": item_id,
@@ -1169,7 +1173,6 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
-    @helpers.unstable
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:

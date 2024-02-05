@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.10...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.11...HEAD)
+
+
+## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 
 ### Added
 
@@ -25,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 and increases the speed by a little bit since tuples are sized and lists are dynamic, This obviously depends on how
 large the data that has been fetched. But in general tuples are *faster*.
 * Logging an `Iterator` object now doesn't consume the data.
-* `fetch_public_milestone_content` and `deserialize_public_milestone_content` are currently unstable.
+* `set_item_lock_state` is currently unstable due to Bungie returning HTML.
 * `ClanMember.current_user_memberships` is now nullable.
 * Optimized factory deserialization methods.
 * The `enable_debugging` parameter renamed to `debug`.

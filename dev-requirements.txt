@@ -13,5 +13,5 @@ python-dotenv~=1.0.1
 # Format - Type checking.
 ruff~=0.2.2
 isort~=5.13.2
-pyright~=1.1.350
+pyright~=1.1.351
 codespell~=2.2.6

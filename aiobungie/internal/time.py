@@ -37,7 +37,7 @@ import time as _time
 
 
 def from_timestamp(
-    timer: int | float, tz: datetime.timezone = datetime.UTC, /
+    timer: int | float, tz: datetime.timezone = datetime.timezone.utc, /
 ) -> datetime.datetime:
     """Converts a timestamp to `datetime.datetime`"""
     return datetime.datetime.fromtimestamp(timer, tz=tz)

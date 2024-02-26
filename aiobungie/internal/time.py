@@ -36,9 +36,11 @@ import sys as _sys
 import time as _time
 
 
-def from_timestamp(timer: int | float, /) -> datetime.datetime:
+def from_timestamp(
+    timer: int | float, tz: datetime.timezone = datetime.UTC, /
+) -> datetime.datetime:
     """Converts a timestamp to `datetime.datetime`"""
-    return datetime.datetime.utcfromtimestamp(timer)
+    return datetime.datetime.fromtimestamp(timer, tz=tz)
 
 
 def clean_date(iso_date: str, /) -> datetime.datetime:

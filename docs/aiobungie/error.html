@@ -309,50 +309,50 @@
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="k">class</span> <span class="nc">AiobungieError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="sd">&quot;&quot;&quot;Base class that all other exceptions inherit from.&quot;&quot;&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class that all other exceptions inherit from.&quot;&quot;&quot;</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="k">class</span> <span class="nc">HTTPError</span><span class="p">(</span><span class="n">AiobungieError</span><span class="p">):</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>    <span class="sd">&quot;&quot;&quot;Base HTTP request errors exception.&quot;&quot;&quot;</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base HTTP request errors exception.&quot;&quot;&quot;</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="sd">&quot;&quot;&quot;The error message.&quot;&quot;&quot;</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The error message.&quot;&quot;&quot;</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
 </span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="sd">&quot;&quot;&quot;The response status.&quot;&quot;&quot;</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response status.&quot;&quot;&quot;</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="k">class</span> <span class="nc">HTTPException</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="sd">&quot;&quot;&quot;An in-depth HTTP exception that&#39;s raised with more information.&quot;&quot;&quot;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An in-depth HTTP exception that&#39;s raised with more information.&quot;&quot;&quot;</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="n">error_code</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="sd">&quot;&quot;&quot;The returned Bungie error status code.&quot;&quot;&quot;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned Bungie error status code.&quot;&quot;&quot;</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="n">throttle_seconds</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="sd">&quot;&quot;&quot;The Bungie response throttle seconds.&quot;&quot;&quot;</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bungie response throttle seconds.&quot;&quot;&quot;</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie short error status describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie short error status describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="n">message_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="sd">&quot;&quot;&quot;A dict of string key, value that includes each cause of the error</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A dict of string key, value that includes each cause of the error</span>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    to a message describes information about that error.</span>
 </span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
@@ -365,17 +365,17 @@
 </span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">status_name</span><span class="si">}</span><span class="s2">: &quot;</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span>
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="s2">            http_status: </span><span class="si">{</span><span class="n">status_value</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="s2">            message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">            error_status: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_status</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="s2">            url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="s2">            message_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message_data</span><span class="si">}</span><span class="s2"></span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="s2">            message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">            error_status: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="s2">            url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="s2">            message_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message_data</span><span class="si">}</span>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="s2">        &quot;&quot;&quot;</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>        <span class="p">)</span>
 </span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>
 </span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
 </span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="k">class</span> <span class="nc">Forbidden</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="sd">&quot;&quot;&quot;Exception that&#39;s raised for when status code 403 occurs.&quot;&quot;&quot;</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception that&#39;s raised for when status code 403 occurs.&quot;&quot;&quot;</span>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -384,7 +384,7 @@
 </span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="k">class</span> <span class="nc">NotFound</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="sd">&quot;&quot;&quot;Raised when an unknown resource was not found.&quot;&quot;&quot;</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an unknown resource was not found.&quot;&quot;&quot;</span>
 </span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -393,7 +393,7 @@
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a><span class="k">class</span> <span class="nc">Unauthorized</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="sd">&quot;&quot;&quot;An exception that&#39;s raised when trying to make unauthorized call to a resource and it returns 404.&quot;&quot;&quot;</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An exception that&#39;s raised when trying to make unauthorized call to a resource and it returns 404.&quot;&quot;&quot;</span>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -402,16 +402,16 @@
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a><span class="k">class</span> <span class="nc">BadRequest</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="sd">&quot;&quot;&quot;An exception raised when requesting a resource with the provided data is wrong.&quot;&quot;&quot;</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An exception raised when requesting a resource with the provided data is wrong.&quot;&quot;&quot;</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>
 </span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>    <span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
 </span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -420,7 +420,7 @@
 </span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="k">class</span> <span class="nc">MembershipTypeError</span><span class="p">(</span><span class="n">BadRequest</span><span class="p">):</span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>    <span class="sd">&quot;&quot;&quot;A bad request error raised when passing wrong membership to the request.</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A bad request error raised when passing wrong membership to the request.</span>
 </span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="sd">    Those fields are useful since it returns the correct membership and id which can be used</span>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="sd">    to make the request again with those fields.</span>
@@ -450,16 +450,16 @@
 </span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>
 </span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>    <span class="n">membership_type</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>    <span class="sd">&quot;&quot;&quot;The errored membership type passed to the request.&quot;&quot;&quot;</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The errored membership type passed to the request.&quot;&quot;&quot;</span>
 </span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>
 </span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>    <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>    <span class="sd">&quot;&quot;&quot;The errored user&#39;s membership id.&quot;&quot;&quot;</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The errored user&#39;s membership id.&quot;&quot;&quot;</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>
 </span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>    <span class="n">required_membership</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>    <span class="sd">&quot;&quot;&quot;The required correct membership for errored user.&quot;&quot;&quot;</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The required correct membership for errored user.&quot;&quot;&quot;</span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>
 </span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="k">def</span> <span class="nf">into_membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">:</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>        <span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">        If value parameter is not provided it will fall back to the required membership.</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -469,7 +469,7 @@
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>
 </span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>            <span class="sa">f</span><span class="s2">&quot;Expected membership: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>            <span class="sa">f</span><span class="s2">&quot;Expected membership: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
 </span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>            <span class="sa">f</span><span class="s2">&quot;But got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2"> for id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="p">)</span>
 </span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>
@@ -479,34 +479,34 @@
 </span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>
 </span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="k">class</span> <span class="nc">InternalServerError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>    <span class="sd">&quot;&quot;&quot;Raised for 5xx internal server errors.&quot;&quot;&quot;</span>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised for 5xx internal server errors.&quot;&quot;&quot;</span>
 </span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>
 </span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>
 </span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a><span class="k">class</span> <span class="nc">ResponseError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>    <span class="sd">&quot;&quot;&quot;Exception for other HTTP response errors.&quot;&quot;&quot;</span>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception for other HTTP response errors.&quot;&quot;&quot;</span>
 </span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>
 </span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>
 </span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a><span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>    <span class="sd">&quot;&quot;&quot;Raised when too many request status code is returned.&quot;&quot;&quot;</span>
+</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when too many request status code is returned.&quot;&quot;&quot;</span>
 </span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>
 </span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">TOO_MANY_REQUESTS</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
 </span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>    <span class="p">)</span>
-</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>    <span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
+</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
 </span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>
 </span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span>
-</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>
 </span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>
 </span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>    <span class="n">retry_after</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
-</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>    <span class="sd">&quot;&quot;&quot;The amount of seconds you need to wait before retrying to requests.&quot;&quot;&quot;</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The amount of seconds you need to wait before retrying to requests.&quot;&quot;&quot;</span>
 </span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>
 </span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="L-269"><a href="#L-269"><span class="linenos">269</span></a>
 </span><span id="L-270"><a href="#L-270"><span class="linenos">270</span></a>    <span class="c1"># Type Ignore: attrs provide a `.default` setter on its attribs to allow</span>
 </span><span id="L-271"><a href="#L-271"><span class="linenos">271</span></a>    <span class="c1"># changing the default value.</span>
@@ -519,7 +519,7 @@
 </span><span id="L-278"><a href="#L-278"><span class="linenos">278</span></a>
 </span><span id="L-279"><a href="#L-279"><span class="linenos">279</span></a>
 </span><span id="L-280"><a href="#L-280"><span class="linenos">280</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">panic</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTTPError</span><span class="p">:</span>
-</span><span id="L-281"><a href="#L-281"><span class="linenos">281</span></a>    <span class="sd">&quot;&quot;&quot;Immediately raise an exception based on the response.&quot;&quot;&quot;</span>
+</span><span id="L-281"><a href="#L-281"><span class="linenos">281</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Immediately raise an exception based on the response.&quot;&quot;&quot;</span>
 </span><span id="L-282"><a href="#L-282"><span class="linenos">282</span></a>
 </span><span id="L-283"><a href="#L-283"><span class="linenos">283</span></a>    <span class="c1"># Bungie get funky and return HTML instead of JSON when making an authorized</span>
 </span><span id="L-284"><a href="#L-284"><span class="linenos">284</span></a>    <span class="c1"># request with a dummy access token. We could technically read the page content</span>
@@ -594,7 +594,7 @@
 </span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a>                <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
 </span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a>                <span class="n">url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">),</span>
 </span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a>            <span class="p">)</span>
-</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a>        <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a>        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
 </span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a>            <span class="n">status</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
 </span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a>
 </span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a>            <span class="k">if</span> <span class="mi">400</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
@@ -712,7 +712,7 @@
     <a class="headerlink" href="#AiobungieError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AiobungieError-70"><a href="#AiobungieError-70"><span class="linenos">70</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="AiobungieError-71"><a href="#AiobungieError-71"><span class="linenos">71</span></a><span class="k">class</span> <span class="nc">AiobungieError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
-</span><span id="AiobungieError-72"><a href="#AiobungieError-72"><span class="linenos">72</span></a>    <span class="sd">&quot;&quot;&quot;Base class that all other exceptions inherit from.&quot;&quot;&quot;</span>
+</span><span id="AiobungieError-72"><a href="#AiobungieError-72"><span class="linenos">72</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class that all other exceptions inherit from.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -745,6 +745,7 @@
                                 <dl>
                                     <div><dt>builtins.BaseException</dt>
                                 <dd id="AiobungieError.with_traceback" class="function">with_traceback</dd>
+                <dd id="AiobungieError.add_note" class="function">add_note</dd>
                 <dd id="AiobungieError.args" class="variable">args</dd>
 
             </div>
@@ -765,7 +766,7 @@
     <a class="headerlink" href="#NotFound"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="NotFound-145"><a href="#NotFound-145"><span class="linenos">145</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="NotFound-146"><a href="#NotFound-146"><span class="linenos">146</span></a><span class="k">class</span> <span class="nc">NotFound</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="NotFound-147"><a href="#NotFound-147"><span class="linenos">147</span></a>    <span class="sd">&quot;&quot;&quot;Raised when an unknown resource was not found.&quot;&quot;&quot;</span>
+</span><span id="NotFound-147"><a href="#NotFound-147"><span class="linenos">147</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an unknown resource was not found.&quot;&quot;&quot;</span>
 </span><span id="NotFound-148"><a href="#NotFound-148"><span class="linenos">148</span></a>
 </span><span id="NotFound-149"><a href="#NotFound-149"><span class="linenos">149</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="NotFound-150"><a href="#NotFound-150"><span class="linenos">150</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -835,6 +836,7 @@
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="NotFound.with_traceback" class="function">with_traceback</dd>
+                <dd id="NotFound.add_note" class="function">add_note</dd>
                 <dd id="NotFound.args" class="variable">args</dd>
 
             </div>
@@ -855,34 +857,34 @@
     <a class="headerlink" href="#HTTPException"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="HTTPException-86"><a href="#HTTPException-86"><span class="linenos"> 86</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="HTTPException-87"><a href="#HTTPException-87"><span class="linenos"> 87</span></a><span class="k">class</span> <span class="nc">HTTPException</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="HTTPException-88"><a href="#HTTPException-88"><span class="linenos"> 88</span></a>    <span class="sd">&quot;&quot;&quot;An in-depth HTTP exception that&#39;s raised with more information.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-88"><a href="#HTTPException-88"><span class="linenos"> 88</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An in-depth HTTP exception that&#39;s raised with more information.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-89"><a href="#HTTPException-89"><span class="linenos"> 89</span></a>
 </span><span id="HTTPException-90"><a href="#HTTPException-90"><span class="linenos"> 90</span></a>    <span class="n">error_code</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="HTTPException-91"><a href="#HTTPException-91"><span class="linenos"> 91</span></a>    <span class="sd">&quot;&quot;&quot;The returned Bungie error status code.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-91"><a href="#HTTPException-91"><span class="linenos"> 91</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned Bungie error status code.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-92"><a href="#HTTPException-92"><span class="linenos"> 92</span></a>
 </span><span id="HTTPException-93"><a href="#HTTPException-93"><span class="linenos"> 93</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span>
-</span><span id="HTTPException-94"><a href="#HTTPException-94"><span class="linenos"> 94</span></a>    <span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-94"><a href="#HTTPException-94"><span class="linenos"> 94</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-95"><a href="#HTTPException-95"><span class="linenos"> 95</span></a>
 </span><span id="HTTPException-96"><a href="#HTTPException-96"><span class="linenos"> 96</span></a>    <span class="n">throttle_seconds</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="HTTPException-97"><a href="#HTTPException-97"><span class="linenos"> 97</span></a>    <span class="sd">&quot;&quot;&quot;The Bungie response throttle seconds.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-97"><a href="#HTTPException-97"><span class="linenos"> 97</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bungie response throttle seconds.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-98"><a href="#HTTPException-98"><span class="linenos"> 98</span></a>
 </span><span id="HTTPException-99"><a href="#HTTPException-99"><span class="linenos"> 99</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span id="HTTPException-100"><a href="#HTTPException-100"><span class="linenos">100</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-100"><a href="#HTTPException-100"><span class="linenos">100</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-101"><a href="#HTTPException-101"><span class="linenos">101</span></a>
 </span><span id="HTTPException-102"><a href="#HTTPException-102"><span class="linenos">102</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="HTTPException-103"><a href="#HTTPException-103"><span class="linenos">103</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-103"><a href="#HTTPException-103"><span class="linenos">103</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-104"><a href="#HTTPException-104"><span class="linenos">104</span></a>
 </span><span id="HTTPException-105"><a href="#HTTPException-105"><span class="linenos">105</span></a>    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="HTTPException-106"><a href="#HTTPException-106"><span class="linenos">106</span></a>    <span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-106"><a href="#HTTPException-106"><span class="linenos">106</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-107"><a href="#HTTPException-107"><span class="linenos">107</span></a>
 </span><span id="HTTPException-108"><a href="#HTTPException-108"><span class="linenos">108</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="HTTPException-109"><a href="#HTTPException-109"><span class="linenos">109</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-109"><a href="#HTTPException-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-110"><a href="#HTTPException-110"><span class="linenos">110</span></a>
 </span><span id="HTTPException-111"><a href="#HTTPException-111"><span class="linenos">111</span></a>    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="HTTPException-112"><a href="#HTTPException-112"><span class="linenos">112</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie short error status describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="HTTPException-112"><a href="#HTTPException-112"><span class="linenos">112</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie short error status describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="HTTPException-113"><a href="#HTTPException-113"><span class="linenos">113</span></a>
 </span><span id="HTTPException-114"><a href="#HTTPException-114"><span class="linenos">114</span></a>    <span class="n">message_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-</span><span id="HTTPException-115"><a href="#HTTPException-115"><span class="linenos">115</span></a>    <span class="sd">&quot;&quot;&quot;A dict of string key, value that includes each cause of the error</span>
+</span><span id="HTTPException-115"><a href="#HTTPException-115"><span class="linenos">115</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A dict of string key, value that includes each cause of the error</span>
 </span><span id="HTTPException-116"><a href="#HTTPException-116"><span class="linenos">116</span></a><span class="sd">    to a message describes information about that error.</span>
 </span><span id="HTTPException-117"><a href="#HTTPException-117"><span class="linenos">117</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="HTTPException-118"><a href="#HTTPException-118"><span class="linenos">118</span></a>
@@ -895,10 +897,10 @@
 </span><span id="HTTPException-125"><a href="#HTTPException-125"><span class="linenos">125</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">status_name</span><span class="si">}</span><span class="s2">: &quot;</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span>
 </span><span id="HTTPException-126"><a href="#HTTPException-126"><span class="linenos">126</span></a>            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="HTTPException-127"><a href="#HTTPException-127"><span class="linenos">127</span></a><span class="s2">            http_status: </span><span class="si">{</span><span class="n">status_value</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="HTTPException-128"><a href="#HTTPException-128"><span class="linenos">128</span></a><span class="s2">            message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="HTTPException-129"><a href="#HTTPException-129"><span class="linenos">129</span></a><span class="s2">            error_status: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_status</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="HTTPException-130"><a href="#HTTPException-130"><span class="linenos">130</span></a><span class="s2">            url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="k">else</span> <span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
-</span><span id="HTTPException-131"><a href="#HTTPException-131"><span class="linenos">131</span></a><span class="s2">            message_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message_data</span><span class="si">}</span><span class="s2"></span>
+</span><span id="HTTPException-128"><a href="#HTTPException-128"><span class="linenos">128</span></a><span class="s2">            message: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="HTTPException-129"><a href="#HTTPException-129"><span class="linenos">129</span></a><span class="s2">            error_status: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">error_status</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="HTTPException-130"><a href="#HTTPException-130"><span class="linenos">130</span></a><span class="s2">            url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;UNDEFINED&#39;</span><span class="si">}</span><span class="s2">,</span>
+</span><span id="HTTPException-131"><a href="#HTTPException-131"><span class="linenos">131</span></a><span class="s2">            message_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message_data</span><span class="si">}</span>
 </span><span id="HTTPException-132"><a href="#HTTPException-132"><span class="linenos">132</span></a><span class="s2">        &quot;&quot;&quot;</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 </span><span id="HTTPException-133"><a href="#HTTPException-133"><span class="linenos">133</span></a>        <span class="p">)</span>
 </span></pre></div>
@@ -1060,6 +1062,7 @@ to a message describes information about that error.</p>
                                 <dl>
                                     <div><dt>builtins.BaseException</dt>
                                 <dd id="HTTPException.with_traceback" class="function">with_traceback</dd>
+                <dd id="HTTPException.add_note" class="function">add_note</dd>
                 <dd id="HTTPException.args" class="variable">args</dd>
 
             </div>
@@ -1080,7 +1083,7 @@ to a message describes information about that error.</p>
     <a class="headerlink" href="#MembershipTypeError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MembershipTypeError-181"><a href="#MembershipTypeError-181"><span class="linenos">181</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="MembershipTypeError-182"><a href="#MembershipTypeError-182"><span class="linenos">182</span></a><span class="k">class</span> <span class="nc">MembershipTypeError</span><span class="p">(</span><span class="n">BadRequest</span><span class="p">):</span>
-</span><span id="MembershipTypeError-183"><a href="#MembershipTypeError-183"><span class="linenos">183</span></a>    <span class="sd">&quot;&quot;&quot;A bad request error raised when passing wrong membership to the request.</span>
+</span><span id="MembershipTypeError-183"><a href="#MembershipTypeError-183"><span class="linenos">183</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A bad request error raised when passing wrong membership to the request.</span>
 </span><span id="MembershipTypeError-184"><a href="#MembershipTypeError-184"><span class="linenos">184</span></a>
 </span><span id="MembershipTypeError-185"><a href="#MembershipTypeError-185"><span class="linenos">185</span></a><span class="sd">    Those fields are useful since it returns the correct membership and id which can be used</span>
 </span><span id="MembershipTypeError-186"><a href="#MembershipTypeError-186"><span class="linenos">186</span></a><span class="sd">    to make the request again with those fields.</span>
@@ -1110,16 +1113,16 @@ to a message describes information about that error.</p>
 </span><span id="MembershipTypeError-210"><a href="#MembershipTypeError-210"><span class="linenos">210</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="MembershipTypeError-211"><a href="#MembershipTypeError-211"><span class="linenos">211</span></a>
 </span><span id="MembershipTypeError-212"><a href="#MembershipTypeError-212"><span class="linenos">212</span></a>    <span class="n">membership_type</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="MembershipTypeError-213"><a href="#MembershipTypeError-213"><span class="linenos">213</span></a>    <span class="sd">&quot;&quot;&quot;The errored membership type passed to the request.&quot;&quot;&quot;</span>
+</span><span id="MembershipTypeError-213"><a href="#MembershipTypeError-213"><span class="linenos">213</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The errored membership type passed to the request.&quot;&quot;&quot;</span>
 </span><span id="MembershipTypeError-214"><a href="#MembershipTypeError-214"><span class="linenos">214</span></a>
 </span><span id="MembershipTypeError-215"><a href="#MembershipTypeError-215"><span class="linenos">215</span></a>    <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="MembershipTypeError-216"><a href="#MembershipTypeError-216"><span class="linenos">216</span></a>    <span class="sd">&quot;&quot;&quot;The errored user&#39;s membership id.&quot;&quot;&quot;</span>
+</span><span id="MembershipTypeError-216"><a href="#MembershipTypeError-216"><span class="linenos">216</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The errored user&#39;s membership id.&quot;&quot;&quot;</span>
 </span><span id="MembershipTypeError-217"><a href="#MembershipTypeError-217"><span class="linenos">217</span></a>
 </span><span id="MembershipTypeError-218"><a href="#MembershipTypeError-218"><span class="linenos">218</span></a>    <span class="n">required_membership</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="MembershipTypeError-219"><a href="#MembershipTypeError-219"><span class="linenos">219</span></a>    <span class="sd">&quot;&quot;&quot;The required correct membership for errored user.&quot;&quot;&quot;</span>
+</span><span id="MembershipTypeError-219"><a href="#MembershipTypeError-219"><span class="linenos">219</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The required correct membership for errored user.&quot;&quot;&quot;</span>
 </span><span id="MembershipTypeError-220"><a href="#MembershipTypeError-220"><span class="linenos">220</span></a>
 </span><span id="MembershipTypeError-221"><a href="#MembershipTypeError-221"><span class="linenos">221</span></a>    <span class="k">def</span> <span class="nf">into_membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">:</span>
-</span><span id="MembershipTypeError-222"><a href="#MembershipTypeError-222"><span class="linenos">222</span></a>        <span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
+</span><span id="MembershipTypeError-222"><a href="#MembershipTypeError-222"><span class="linenos">222</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
 </span><span id="MembershipTypeError-223"><a href="#MembershipTypeError-223"><span class="linenos">223</span></a>
 </span><span id="MembershipTypeError-224"><a href="#MembershipTypeError-224"><span class="linenos">224</span></a><span class="sd">        If value parameter is not provided it will fall back to the required membership.</span>
 </span><span id="MembershipTypeError-225"><a href="#MembershipTypeError-225"><span class="linenos">225</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -1129,7 +1132,7 @@ to a message describes information about that error.</p>
 </span><span id="MembershipTypeError-229"><a href="#MembershipTypeError-229"><span class="linenos">229</span></a>
 </span><span id="MembershipTypeError-230"><a href="#MembershipTypeError-230"><span class="linenos">230</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="MembershipTypeError-231"><a href="#MembershipTypeError-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="MembershipTypeError-232"><a href="#MembershipTypeError-232"><span class="linenos">232</span></a>            <span class="sa">f</span><span class="s2">&quot;Expected membership: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
+</span><span id="MembershipTypeError-232"><a href="#MembershipTypeError-232"><span class="linenos">232</span></a>            <span class="sa">f</span><span class="s2">&quot;Expected membership: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
 </span><span id="MembershipTypeError-233"><a href="#MembershipTypeError-233"><span class="linenos">233</span></a>            <span class="sa">f</span><span class="s2">&quot;But got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">into_membership</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2"> for id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span id="MembershipTypeError-234"><a href="#MembershipTypeError-234"><span class="linenos">234</span></a>        <span class="p">)</span>
 </span><span id="MembershipTypeError-235"><a href="#MembershipTypeError-235"><span class="linenos">235</span></a>
@@ -1248,7 +1251,7 @@ to make the request again with those fields.</p>
     </div>
     <a class="headerlink" href="#MembershipTypeError.into_membership"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MembershipTypeError.into_membership-221"><a href="#MembershipTypeError.into_membership-221"><span class="linenos">221</span></a>    <span class="k">def</span> <span class="nf">into_membership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">:</span>
-</span><span id="MembershipTypeError.into_membership-222"><a href="#MembershipTypeError.into_membership-222"><span class="linenos">222</span></a>        <span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
+</span><span id="MembershipTypeError.into_membership-222"><a href="#MembershipTypeError.into_membership-222"><span class="linenos">222</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the required membership from `str` into `aiobungie.Membership` type.</span>
 </span><span id="MembershipTypeError.into_membership-223"><a href="#MembershipTypeError.into_membership-223"><span class="linenos">223</span></a>
 </span><span id="MembershipTypeError.into_membership-224"><a href="#MembershipTypeError.into_membership-224"><span class="linenos">224</span></a><span class="sd">        If value parameter is not provided it will fall back to the required membership.</span>
 </span><span id="MembershipTypeError.into_membership-225"><a href="#MembershipTypeError.into_membership-225"><span class="linenos">225</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -1281,6 +1284,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="MembershipTypeError.with_traceback" class="function">with_traceback</dd>
+                <dd id="MembershipTypeError.add_note" class="function">add_note</dd>
                 <dd id="MembershipTypeError.args" class="variable">args</dd>
 
             </div>
@@ -1301,7 +1305,7 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#Forbidden"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Forbidden-136"><a href="#Forbidden-136"><span class="linenos">136</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="Forbidden-137"><a href="#Forbidden-137"><span class="linenos">137</span></a><span class="k">class</span> <span class="nc">Forbidden</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="Forbidden-138"><a href="#Forbidden-138"><span class="linenos">138</span></a>    <span class="sd">&quot;&quot;&quot;Exception that&#39;s raised for when status code 403 occurs.&quot;&quot;&quot;</span>
+</span><span id="Forbidden-138"><a href="#Forbidden-138"><span class="linenos">138</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception that&#39;s raised for when status code 403 occurs.&quot;&quot;&quot;</span>
 </span><span id="Forbidden-139"><a href="#Forbidden-139"><span class="linenos">139</span></a>
 </span><span id="Forbidden-140"><a href="#Forbidden-140"><span class="linenos">140</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="Forbidden-141"><a href="#Forbidden-141"><span class="linenos">141</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -1371,6 +1375,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="Forbidden.with_traceback" class="function">with_traceback</dd>
+                <dd id="Forbidden.add_note" class="function">add_note</dd>
                 <dd id="Forbidden.args" class="variable">args</dd>
 
             </div>
@@ -1391,7 +1396,7 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#Unauthorized"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Unauthorized-154"><a href="#Unauthorized-154"><span class="linenos">154</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="Unauthorized-155"><a href="#Unauthorized-155"><span class="linenos">155</span></a><span class="k">class</span> <span class="nc">Unauthorized</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="Unauthorized-156"><a href="#Unauthorized-156"><span class="linenos">156</span></a>    <span class="sd">&quot;&quot;&quot;An exception that&#39;s raised when trying to make unauthorized call to a resource and it returns 404.&quot;&quot;&quot;</span>
+</span><span id="Unauthorized-156"><a href="#Unauthorized-156"><span class="linenos">156</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An exception that&#39;s raised when trying to make unauthorized call to a resource and it returns 404.&quot;&quot;&quot;</span>
 </span><span id="Unauthorized-157"><a href="#Unauthorized-157"><span class="linenos">157</span></a>
 </span><span id="Unauthorized-158"><a href="#Unauthorized-158"><span class="linenos">158</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="Unauthorized-159"><a href="#Unauthorized-159"><span class="linenos">159</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -1461,6 +1466,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="Unauthorized.with_traceback" class="function">with_traceback</dd>
+                <dd id="Unauthorized.add_note" class="function">add_note</dd>
                 <dd id="Unauthorized.args" class="variable">args</dd>
 
             </div>
@@ -1481,7 +1487,7 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#ResponseError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ResponseError-245"><a href="#ResponseError-245"><span class="linenos">245</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="ResponseError-246"><a href="#ResponseError-246"><span class="linenos">246</span></a><span class="k">class</span> <span class="nc">ResponseError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="ResponseError-247"><a href="#ResponseError-247"><span class="linenos">247</span></a>    <span class="sd">&quot;&quot;&quot;Exception for other HTTP response errors.&quot;&quot;&quot;</span>
+</span><span id="ResponseError-247"><a href="#ResponseError-247"><span class="linenos">247</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception for other HTTP response errors.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -1535,6 +1541,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="ResponseError.with_traceback" class="function">with_traceback</dd>
+                <dd id="ResponseError.add_note" class="function">add_note</dd>
                 <dd id="ResponseError.args" class="variable">args</dd>
 
             </div>
@@ -1555,24 +1562,24 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#RateLimitedError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="RateLimitedError-250"><a href="#RateLimitedError-250"><span class="linenos">250</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="RateLimitedError-251"><a href="#RateLimitedError-251"><span class="linenos">251</span></a><span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="RateLimitedError-252"><a href="#RateLimitedError-252"><span class="linenos">252</span></a>    <span class="sd">&quot;&quot;&quot;Raised when too many request status code is returned.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-252"><a href="#RateLimitedError-252"><span class="linenos">252</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when too many request status code is returned.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-253"><a href="#RateLimitedError-253"><span class="linenos">253</span></a>
 </span><span id="RateLimitedError-254"><a href="#RateLimitedError-254"><span class="linenos">254</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="RateLimitedError-255"><a href="#RateLimitedError-255"><span class="linenos">255</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">TOO_MANY_REQUESTS</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
 </span><span id="RateLimitedError-256"><a href="#RateLimitedError-256"><span class="linenos">256</span></a>    <span class="p">)</span>
-</span><span id="RateLimitedError-257"><a href="#RateLimitedError-257"><span class="linenos">257</span></a>    <span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-257"><a href="#RateLimitedError-257"><span class="linenos">257</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The request response http status.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-258"><a href="#RateLimitedError-258"><span class="linenos">258</span></a>
 </span><span id="RateLimitedError-259"><a href="#RateLimitedError-259"><span class="linenos">259</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span>
-</span><span id="RateLimitedError-260"><a href="#RateLimitedError-260"><span class="linenos">260</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-260"><a href="#RateLimitedError-260"><span class="linenos">260</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-261"><a href="#RateLimitedError-261"><span class="linenos">261</span></a>
 </span><span id="RateLimitedError-262"><a href="#RateLimitedError-262"><span class="linenos">262</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="RateLimitedError-263"><a href="#RateLimitedError-263"><span class="linenos">263</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-263"><a href="#RateLimitedError-263"><span class="linenos">263</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-264"><a href="#RateLimitedError-264"><span class="linenos">264</span></a>
 </span><span id="RateLimitedError-265"><a href="#RateLimitedError-265"><span class="linenos">265</span></a>    <span class="n">retry_after</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
-</span><span id="RateLimitedError-266"><a href="#RateLimitedError-266"><span class="linenos">266</span></a>    <span class="sd">&quot;&quot;&quot;The amount of seconds you need to wait before retrying to requests.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-266"><a href="#RateLimitedError-266"><span class="linenos">266</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The amount of seconds you need to wait before retrying to requests.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-267"><a href="#RateLimitedError-267"><span class="linenos">267</span></a>
 </span><span id="RateLimitedError-268"><a href="#RateLimitedError-268"><span class="linenos">268</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="RateLimitedError-269"><a href="#RateLimitedError-269"><span class="linenos">269</span></a>    <span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
+</span><span id="RateLimitedError-269"><a href="#RateLimitedError-269"><span class="linenos">269</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bungie human readable message describes the cause of the error.&quot;&quot;&quot;</span>
 </span><span id="RateLimitedError-270"><a href="#RateLimitedError-270"><span class="linenos">270</span></a>
 </span><span id="RateLimitedError-271"><a href="#RateLimitedError-271"><span class="linenos">271</span></a>    <span class="c1"># Type Ignore: attrs provide a `.default` setter on its attribs to allow</span>
 </span><span id="RateLimitedError-272"><a href="#RateLimitedError-272"><span class="linenos">272</span></a>    <span class="c1"># changing the default value.</span>
@@ -1684,6 +1691,7 @@ to make the request again with those fields.</p>
                                 <dl>
                                     <div><dt>builtins.BaseException</dt>
                                 <dd id="RateLimitedError.with_traceback" class="function">with_traceback</dd>
+                <dd id="RateLimitedError.add_note" class="function">add_note</dd>
                 <dd id="RateLimitedError.args" class="variable">args</dd>
 
             </div>
@@ -1704,7 +1712,7 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#InternalServerError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="InternalServerError-240"><a href="#InternalServerError-240"><span class="linenos">240</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="InternalServerError-241"><a href="#InternalServerError-241"><span class="linenos">241</span></a><span class="k">class</span> <span class="nc">InternalServerError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-</span><span id="InternalServerError-242"><a href="#InternalServerError-242"><span class="linenos">242</span></a>    <span class="sd">&quot;&quot;&quot;Raised for 5xx internal server errors.&quot;&quot;&quot;</span>
+</span><span id="InternalServerError-242"><a href="#InternalServerError-242"><span class="linenos">242</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised for 5xx internal server errors.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -1758,6 +1766,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="InternalServerError.with_traceback" class="function">with_traceback</dd>
+                <dd id="InternalServerError.add_note" class="function">add_note</dd>
                 <dd id="InternalServerError.args" class="variable">args</dd>
 
             </div>
@@ -1778,13 +1787,13 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#HTTPError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="HTTPError-75"><a href="#HTTPError-75"><span class="linenos">75</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="HTTPError-76"><a href="#HTTPError-76"><span class="linenos">76</span></a><span class="k">class</span> <span class="nc">HTTPError</span><span class="p">(</span><span class="n">AiobungieError</span><span class="p">):</span>
-</span><span id="HTTPError-77"><a href="#HTTPError-77"><span class="linenos">77</span></a>    <span class="sd">&quot;&quot;&quot;Base HTTP request errors exception.&quot;&quot;&quot;</span>
+</span><span id="HTTPError-77"><a href="#HTTPError-77"><span class="linenos">77</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base HTTP request errors exception.&quot;&quot;&quot;</span>
 </span><span id="HTTPError-78"><a href="#HTTPError-78"><span class="linenos">78</span></a>
 </span><span id="HTTPError-79"><a href="#HTTPError-79"><span class="linenos">79</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="HTTPError-80"><a href="#HTTPError-80"><span class="linenos">80</span></a>    <span class="sd">&quot;&quot;&quot;The error message.&quot;&quot;&quot;</span>
+</span><span id="HTTPError-80"><a href="#HTTPError-80"><span class="linenos">80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The error message.&quot;&quot;&quot;</span>
 </span><span id="HTTPError-81"><a href="#HTTPError-81"><span class="linenos">81</span></a>
 </span><span id="HTTPError-82"><a href="#HTTPError-82"><span class="linenos">82</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span>
-</span><span id="HTTPError-83"><a href="#HTTPError-83"><span class="linenos">83</span></a>    <span class="sd">&quot;&quot;&quot;The response status.&quot;&quot;&quot;</span>
+</span><span id="HTTPError-83"><a href="#HTTPError-83"><span class="linenos">83</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response status.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -1845,6 +1854,7 @@ to make the request again with those fields.</p>
                                 <dl>
                                     <div><dt>builtins.BaseException</dt>
                                 <dd id="HTTPError.with_traceback" class="function">with_traceback</dd>
+                <dd id="HTTPError.add_note" class="function">add_note</dd>
                 <dd id="HTTPError.args" class="variable">args</dd>
 
             </div>
@@ -1865,16 +1875,16 @@ to make the request again with those fields.</p>
     <a class="headerlink" href="#BadRequest"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="BadRequest-163"><a href="#BadRequest-163"><span class="linenos">163</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="BadRequest-164"><a href="#BadRequest-164"><span class="linenos">164</span></a><span class="k">class</span> <span class="nc">BadRequest</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-</span><span id="BadRequest-165"><a href="#BadRequest-165"><span class="linenos">165</span></a>    <span class="sd">&quot;&quot;&quot;An exception raised when requesting a resource with the provided data is wrong.&quot;&quot;&quot;</span>
+</span><span id="BadRequest-165"><a href="#BadRequest-165"><span class="linenos">165</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An exception raised when requesting a resource with the provided data is wrong.&quot;&quot;&quot;</span>
 </span><span id="BadRequest-166"><a href="#BadRequest-166"><span class="linenos">166</span></a>
 </span><span id="BadRequest-167"><a href="#BadRequest-167"><span class="linenos">167</span></a>    <span class="n">url</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span id="BadRequest-168"><a href="#BadRequest-168"><span class="linenos">168</span></a>    <span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
+</span><span id="BadRequest-168"><a href="#BadRequest-168"><span class="linenos">168</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The URL/endpoint caused this error.&quot;&quot;&quot;</span>
 </span><span id="BadRequest-169"><a href="#BadRequest-169"><span class="linenos">169</span></a>
 </span><span id="BadRequest-170"><a href="#BadRequest-170"><span class="linenos">170</span></a>    <span class="n">body</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="BadRequest-171"><a href="#BadRequest-171"><span class="linenos">171</span></a>    <span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
+</span><span id="BadRequest-171"><a href="#BadRequest-171"><span class="linenos">171</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response body.&quot;&quot;&quot;</span>
 </span><span id="BadRequest-172"><a href="#BadRequest-172"><span class="linenos">172</span></a>
 </span><span id="BadRequest-173"><a href="#BadRequest-173"><span class="linenos">173</span></a>    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="BadRequest-174"><a href="#BadRequest-174"><span class="linenos">174</span></a>    <span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
+</span><span id="BadRequest-174"><a href="#BadRequest-174"><span class="linenos">174</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The response headers.&quot;&quot;&quot;</span>
 </span><span id="BadRequest-175"><a href="#BadRequest-175"><span class="linenos">175</span></a>
 </span><span id="BadRequest-176"><a href="#BadRequest-176"><span class="linenos">176</span></a>    <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
 </span><span id="BadRequest-177"><a href="#BadRequest-177"><span class="linenos">177</span></a>        <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -1972,6 +1982,7 @@ to make the request again with those fields.</p>
             </div>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="BadRequest.with_traceback" class="function">with_traceback</dd>
+                <dd id="BadRequest.add_note" class="function">add_note</dd>
                 <dd id="BadRequest.args" class="variable">args</dd>
 
             </div>
@@ -1990,7 +2001,7 @@ to make the request again with those fields.</p>
     </div>
     <a class="headerlink" href="#panic"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="panic-281"><a href="#panic-281"><span class="linenos">281</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">panic</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTTPError</span><span class="p">:</span>
-</span><span id="panic-282"><a href="#panic-282"><span class="linenos">282</span></a>    <span class="sd">&quot;&quot;&quot;Immediately raise an exception based on the response.&quot;&quot;&quot;</span>
+</span><span id="panic-282"><a href="#panic-282"><span class="linenos">282</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Immediately raise an exception based on the response.&quot;&quot;&quot;</span>
 </span><span id="panic-283"><a href="#panic-283"><span class="linenos">283</span></a>
 </span><span id="panic-284"><a href="#panic-284"><span class="linenos">284</span></a>    <span class="c1"># Bungie get funky and return HTML instead of JSON when making an authorized</span>
 </span><span id="panic-285"><a href="#panic-285"><span class="linenos">285</span></a>    <span class="c1"># request with a dummy access token. We could technically read the page content</span>
@@ -2065,7 +2076,7 @@ to make the request again with those fields.</p>
 </span><span id="panic-354"><a href="#panic-354"><span class="linenos">354</span></a>                <span class="n">headers</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
 </span><span id="panic-355"><a href="#panic-355"><span class="linenos">355</span></a>                <span class="n">url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">),</span>
 </span><span id="panic-356"><a href="#panic-356"><span class="linenos">356</span></a>            <span class="p">)</span>
-</span><span id="panic-357"><a href="#panic-357"><span class="linenos">357</span></a>        <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+</span><span id="panic-357"><a href="#panic-357"><span class="linenos">357</span></a>        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
 </span><span id="panic-358"><a href="#panic-358"><span class="linenos">358</span></a>            <span class="n">status</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
 </span><span id="panic-359"><a href="#panic-359"><span class="linenos">359</span></a>
 </span><span id="panic-360"><a href="#panic-360"><span class="linenos">360</span></a>            <span class="k">if</span> <span class="mi">400</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>

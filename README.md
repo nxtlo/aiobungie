@@ -1,12 +1,12 @@
 # aiobungie
 
-A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python.
+A statically typed, asynchronous API wrapper that supports Bungie's REST API for Python 3.
 
 ## Installing
 
 Currently Python 3.10, 3.11 and 3.12 are supported.
 
-Stable release.
+Latest Release using `pip`.
 
 ```sh
 pip install aiobungie
@@ -20,7 +20,7 @@ pip install git+https://github.com/nxtlo/aiobungie@master
 
 ## Quick Example
 
-See [Examples for advance usage.](https://github.com/nxtlo/aiobungie/tree/master/examples)
+See [Examples for advance usage](https://github.com/nxtlo/aiobungie/tree/master/examples)
 
 ```py
 import aiobungie
@@ -31,28 +31,11 @@ async def main() -> None:
     # Fetch a Destiny 2 character passing a component.
     # This includes Equipments, Inventory, Records, etc.
     async with client.rest:
-        my_warlock = await client.fetch_character(
-            member_id=4611686018484639825,
-            membership_type=aiobungie.MembershipType.STEAM,
-            character_id=2305843009444904605,
-            components=[aiobungie.ComponentType.CHARACTER_EQUIPMENT],
-        )
-        # Other components will be populated when passed to `components=[...]`
-        # Otherwise will be `None`
-
-        # Make sure the component is fetched.
-        assert my_warlock.equipment is not None
-
-        # Get the first item equipped on this character.
-        item = my_warlock.equipment[0]
-        print(item.hash, item.location)
-
-        # Fetch this item, Note that this performs an HTTP request.
-        # Alternatively, You can use the manifest here instead.
-        # See examples folder for more information.
-        item = await client.fetch_inventory_item(item.hash)
-        print(item.name, item.type_and_tier_name)
-        # Prints: Izanagi's Burden Exotic Sniper Rifle
+        users = await client.search_users("Fate")
+        for user in users:
+            # Print all Destiny 2 memberships for this user.
+            print(user.memberships)
+            
 
 # You can either run it using the client or just asyncio.run(main())
 client.run(main())
@@ -64,12 +47,12 @@ aiobungie also provides a stand-alone `RESTClient` / `RESTPool` which's what `Cl
 
 A key note is that any `Client` based user can access the `RESTClient` instance bound to it with `.rest` property.
 
-### Key Features
+### Key features
 
 * Lower level, allows to read and deserialize the JSON objects yourself.
 * `RESTClient`s do not turn response payloads into one of `aiobungie.crates` object.
 * RESTful, You can use this as your REST API client in backend directly.
-* Both `Manifest` and `OAuth` methods are usable directly.
+* Both manifest and OAuth2 methods are usable directly.
 
 ### Example
 
@@ -78,7 +61,7 @@ import aiobungie
 import asyncio
 
 # Single REST client connection.
-client = aiobungie.RESTClient("...")
+client = aiobungie.RESTClient("YOUR_API_KEY")
 
 async def main() -> None:
     async with client:
@@ -102,7 +85,7 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-## Dependancies
+## Dependencies
 
 * aiohttp
 * attrs
@@ -137,6 +120,6 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 * Official Bungie Documentation: [Here](https://bungie-net.github.io/multi/index.html)
 * Bungie Developer Portal: [Here](https://www.bungie.net/en/Application)
 
-### Additional information
+## Additional information
 
 If you have any question you can either open a blank issue, open a new github discussion, or just tag me in BungieAPI discord server.

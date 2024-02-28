@@ -20,10 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic implementations of aiobungie client crates.
+"""aiobungie crates are a collections of dataclasses which represents a fetched result from the API, specifically using `aiobungie.Client`.
 
-These crates are used to organize the flow and how things stracture
-for functional usage for the Bungie API objects.
+This client uses the standard `aiobungie.Factory` entity factory which deserializes raw JSON payloads into a `crate`, aka a `dataclass` respectively.
 """
 
 from __future__ import annotations

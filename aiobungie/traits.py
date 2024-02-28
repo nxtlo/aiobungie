@@ -145,6 +145,14 @@ class RESTful(typing.Protocol):
         """Returns `True` if the REST client is alive and `False` otherwise."""
         raise NotImplementedError
 
+    @typing.overload
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
+        ...
+
+    @typing.overload
+    def build_oauth2_url(self) -> builders.OAuthURL | None:
+        ...
+
     def build_oauth2_url(
         self, client_id: int | None = None
     ) -> builders.OAuthURL | None:

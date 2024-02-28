@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Objects that helps building entities to be sent/received to/from the API."""
+"""Utilities for building entities to be sent/received to/from the API."""
 
 from __future__ import annotations
 

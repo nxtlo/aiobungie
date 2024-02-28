@@ -1378,7 +1378,7 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="nd">@property</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1399,7 +1399,7 @@
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="k">class</span> <span class="nc">Flag</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="c1"># Needs to type this here for mypy</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="n">_value_</span><span class="p">:</span> <span class="nb">int</span>
@@ -1442,94 +1442,94 @@
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
 </span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>    <span class="n">DSC</span> <span class="o">=</span> <span class="mi">910380154</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>    <span class="sd">&quot;&quot;&quot;Deep Stone Crypt&quot;&quot;&quot;</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Deep Stone Crypt&quot;&quot;&quot;</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="n">LW</span> <span class="o">=</span> <span class="mi">2122313384</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="sd">&quot;&quot;&quot;Last Wish&quot;&quot;&quot;</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Last Wish&quot;&quot;&quot;</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="n">VOG</span> <span class="o">=</span> <span class="mi">3881495763</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="sd">&quot;&quot;&quot;Normal Valut of Glass&quot;&quot;&quot;</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Valut of Glass&quot;&quot;&quot;</span>
 </span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>    <span class="n">GOS</span> <span class="o">=</span> <span class="mi">3458480158</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="sd">&quot;&quot;&quot;Garden Of Salvation&quot;&quot;&quot;</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Garden Of Salvation&quot;&quot;&quot;</span>
 </span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>
 </span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="n">NORMAL_PRESAGE</span> <span class="o">=</span> <span class="mi">2124066889</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="sd">&quot;&quot;&quot;Normal Presage&quot;&quot;&quot;</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Presage&quot;&quot;&quot;</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="n">MASTER_PRESAGE</span> <span class="o">=</span> <span class="mi">4212753278</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="sd">&quot;&quot;&quot;Master Presage&quot;&quot;&quot;</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Master Presage&quot;&quot;&quot;</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>    <span class="n">HARBINGER</span> <span class="o">=</span> <span class="mi">1738383283</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="sd">&quot;&quot;&quot;Harbinger&quot;&quot;&quot;</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Harbinger&quot;&quot;&quot;</span>
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="n">PROPHECY</span> <span class="o">=</span> <span class="mi">4148187374</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="sd">&quot;&quot;&quot;Prophecy&quot;&quot;&quot;</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Prophecy&quot;&quot;&quot;</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="n">MASTER_POH</span> <span class="o">=</span> <span class="mi">785700673</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="sd">&quot;&quot;&quot;Master Pit of Heresy?&quot;&quot;&quot;</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Master Pit of Heresy?&quot;&quot;&quot;</span>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>    <span class="n">LEGEND_POH</span> <span class="o">=</span> <span class="mi">785700678</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    <span class="sd">&quot;&quot;&quot;Legend Pit of Heresy?&quot;&quot;&quot;</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Legend Pit of Heresy?&quot;&quot;&quot;</span>
 </span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>    <span class="n">POH</span> <span class="o">=</span> <span class="mi">1375089621</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>    <span class="sd">&quot;&quot;&quot;Normal Pit of Heresy.&quot;&quot;&quot;</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Pit of Heresy.&quot;&quot;&quot;</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>    <span class="n">SHATTERED</span> <span class="o">=</span> <span class="mi">2032534090</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>    <span class="sd">&quot;&quot;&quot;Shattered Throne&quot;&quot;&quot;</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Shattered Throne&quot;&quot;&quot;</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>    <span class="n">GOA_LEGEND</span> <span class="o">=</span> <span class="mi">4078656646</span>
-</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>    <span class="sd">&quot;&quot;&quot;Grasp of Avarice legend.&quot;&quot;&quot;</span>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Grasp of Avarice legend.&quot;&quot;&quot;</span>
 </span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>
 </span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>    <span class="n">GOA_MASTER</span> <span class="o">=</span> <span class="mi">3774021532</span>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>    <span class="sd">&quot;&quot;&quot;Grasp of Avarice master.&quot;&quot;&quot;</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Grasp of Avarice master.&quot;&quot;&quot;</span>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>
 </span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>
 </span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>    <span class="sd">&quot;&quot;&quot;Unknown space&quot;&quot;&quot;</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown space&quot;&quot;&quot;</span>
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>
 </span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="n">EARTH</span> <span class="o">=</span> <span class="mi">3747705955</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="sd">&quot;&quot;&quot;Earth&quot;&quot;&quot;</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Earth&quot;&quot;&quot;</span>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>    <span class="n">DREAMING_CITY</span> <span class="o">=</span> <span class="mi">2877881518</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>    <span class="sd">&quot;&quot;&quot;The Dreaming city.&quot;&quot;&quot;</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Dreaming city.&quot;&quot;&quot;</span>
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>    <span class="n">NESSUS</span> <span class="o">=</span> <span class="mi">3526908984</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>    <span class="sd">&quot;&quot;&quot;Nessus&quot;&quot;&quot;</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Nessus&quot;&quot;&quot;</span>
 </span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>    <span class="n">MOON</span> <span class="o">=</span> <span class="mi">3325508439</span>
-</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>    <span class="sd">&quot;&quot;&quot;The Moon&quot;&quot;&quot;</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Moon&quot;&quot;&quot;</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>    <span class="n">COSMODROME</span> <span class="o">=</span> <span class="mi">3990611421</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>    <span class="sd">&quot;&quot;&quot;The Cosmodrome&quot;&quot;&quot;</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Cosmodrome&quot;&quot;&quot;</span>
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>    <span class="n">TANGLED_SHORE</span> <span class="o">=</span> <span class="mi">3821439926</span>
-</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>    <span class="sd">&quot;&quot;&quot;The Tangled Shore&quot;&quot;&quot;</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Tangled Shore&quot;&quot;&quot;</span>
 </span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>
 </span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>    <span class="n">VENUS</span> <span class="o">=</span> <span class="mi">3871070152</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>    <span class="sd">&quot;&quot;&quot;Venus&quot;&quot;&quot;</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Venus&quot;&quot;&quot;</span>
 </span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>
 </span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>    <span class="n">EAZ</span> <span class="o">=</span> <span class="mi">541863059</span>  <span class="c1"># Exclusive event.</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>    <span class="sd">&quot;&quot;&quot;European Aerial Zone&quot;&quot;&quot;</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;European Aerial Zone&quot;&quot;&quot;</span>
 </span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>
 </span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>    <span class="n">EUROPA</span> <span class="o">=</span> <span class="mi">1729879943</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>    <span class="sd">&quot;&quot;&quot;Europa&quot;&quot;&quot;</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Europa&quot;&quot;&quot;</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>
 </span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>
 </span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
 </span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="n">ORBIT</span> <span class="o">=</span> <span class="mi">2961497387</span>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>    <span class="n">SOCIAL</span> <span class="o">=</span> <span class="mi">4151112093</span>
@@ -1539,7 +1539,7 @@
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>
 </span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>    <span class="n">ZAVALA</span> <span class="o">=</span> <span class="mi">69482069</span>
 </span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>    <span class="n">XUR</span> <span class="o">=</span> <span class="mi">2190858386</span>
@@ -1547,28 +1547,28 @@
 </span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>    <span class="n">SPIDER</span> <span class="o">=</span> <span class="mi">863940356</span>
 </span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>    <span class="n">SHAXX</span> <span class="o">=</span> <span class="mi">3603221665</span>
 </span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>    <span class="n">KADI</span> <span class="o">=</span> <span class="mi">529635856</span>
-</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>    <span class="sd">&quot;&quot;&quot;Postmaster exo.&quot;&quot;&quot;</span>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Postmaster exo.&quot;&quot;&quot;</span>
 </span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>    <span class="n">YUNA</span> <span class="o">=</span> <span class="mi">1796504621</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>    <span class="sd">&quot;&quot;&quot;Asia servers only.&quot;&quot;&quot;</span>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Asia servers only.&quot;&quot;&quot;</span>
 </span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>    <span class="n">EVERVERSE</span> <span class="o">=</span> <span class="mi">3361454721</span>
 </span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>    <span class="n">AMANDA</span> <span class="o">=</span> <span class="mi">460529231</span>
-</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>    <span class="sd">&quot;&quot;&quot;Amanda holiday&quot;&quot;&quot;</span>
+</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Amanda holiday&quot;&quot;&quot;</span>
 </span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>    <span class="n">CROW</span> <span class="o">=</span> <span class="mi">3611983588</span>
 </span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>    <span class="n">HAWTHORNE</span> <span class="o">=</span> <span class="mi">3347378076</span>
 </span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>    <span class="n">ADA1</span> <span class="o">=</span> <span class="mi">350061650</span>
 </span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>    <span class="n">DRIFTER</span> <span class="o">=</span> <span class="mi">248695599</span>
 </span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>    <span class="n">IKORA</span> <span class="o">=</span> <span class="mi">1976548992</span>
 </span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>    <span class="n">SAINT</span> <span class="o">=</span> <span class="mi">765357505</span>
-</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>    <span class="sd">&quot;&quot;&quot;Saint-14&quot;&quot;&quot;</span>
+</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Saint-14&quot;&quot;&quot;</span>
 </span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>    <span class="n">ERIS_MORN</span> <span class="o">=</span> <span class="mi">1616085565</span>
 </span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>    <span class="n">SHAW_HAWN</span> <span class="o">=</span> <span class="mi">1816541247</span>
-</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>    <span class="sd">&quot;&quot;&quot;COSMODROME Guy&quot;&quot;&quot;</span>
+</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;COSMODROME Guy&quot;&quot;&quot;</span>
 </span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>    <span class="n">VARIKS</span> <span class="o">=</span> <span class="mi">2531198101</span>
 </span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>
 </span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>
 </span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>
 </span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>    <span class="n">STORY</span> <span class="o">=</span> <span class="mi">2</span>
@@ -1657,7 +1657,7 @@
 </span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a>
 </span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a><span class="k">class</span> <span class="nc">ComponentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 profile Components.&quot;&quot;&quot;</span>
+</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 profile Components.&quot;&quot;&quot;</span>
 </span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a>
 </span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a>
@@ -1671,13 +1671,13 @@
 </span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a>        <span class="n">PROFILE_CURRENCIES</span><span class="p">,</span>
 </span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a>        <span class="n">PROFILE_PROGRESSION</span><span class="p">,</span>
 </span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a>    <span class="p">)</span>
-</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a>    <span class="sd">&quot;&quot;&quot;All profile components.&quot;&quot;&quot;</span>
+</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All profile components.&quot;&quot;&quot;</span>
 </span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a>
 </span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a>    <span class="n">VENDORS</span> <span class="o">=</span> <span class="mi">400</span>
 </span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a>    <span class="n">VENDOR_SALES</span> <span class="o">=</span> <span class="mi">402</span>
 </span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a>    <span class="n">VENDOR_RECEIPTS</span> <span class="o">=</span> <span class="mi">101</span>
 </span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a>    <span class="n">ALL_VENDORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">VENDORS</span><span class="p">,</span> <span class="n">VENDOR_RECEIPTS</span><span class="p">,</span> <span class="n">VENDOR_SALES</span><span class="p">)</span>
-</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a>    <span class="sd">&quot;&quot;&quot;All vendor components.&quot;&quot;&quot;</span>
+</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All vendor components.&quot;&quot;&quot;</span>
 </span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a>
 </span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a>    <span class="c1"># Items</span>
 </span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a>    <span class="n">ITEM_INSTANCES</span> <span class="o">=</span> <span class="mi">300</span>
@@ -1703,7 +1703,7 @@
 </span><span id="L-391"><a href="#L-391"><span class="linenos">391</span></a>        <span class="n">ITEM_TALENT_GRINDS</span><span class="p">,</span>
 </span><span id="L-392"><a href="#L-392"><span class="linenos">392</span></a>        <span class="n">ITEM_REUSABLE_PLUGS</span><span class="p">,</span>
 </span><span id="L-393"><a href="#L-393"><span class="linenos">393</span></a>    <span class="p">)</span>
-</span><span id="L-394"><a href="#L-394"><span class="linenos">394</span></a>    <span class="sd">&quot;&quot;&quot;All item components.&quot;&quot;&quot;</span>
+</span><span id="L-394"><a href="#L-394"><span class="linenos">394</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All item components.&quot;&quot;&quot;</span>
 </span><span id="L-395"><a href="#L-395"><span class="linenos">395</span></a>
 </span><span id="L-396"><a href="#L-396"><span class="linenos">396</span></a>    <span class="n">PLATFORM_SILVER</span> <span class="o">=</span> <span class="mi">105</span>
 </span><span id="L-397"><a href="#L-397"><span class="linenos">397</span></a>    <span class="n">KIOSKS</span> <span class="o">=</span> <span class="mi">500</span>
@@ -1735,7 +1735,7 @@
 </span><span id="L-423"><a href="#L-423"><span class="linenos">423</span></a>        <span class="n">CHARACTER_LOADOUTS</span><span class="p">,</span>
 </span><span id="L-424"><a href="#L-424"><span class="linenos">424</span></a>        <span class="n">RECORDS</span><span class="p">,</span>
 </span><span id="L-425"><a href="#L-425"><span class="linenos">425</span></a>    <span class="p">)</span>
-</span><span id="L-426"><a href="#L-426"><span class="linenos">426</span></a>    <span class="sd">&quot;&quot;&quot;All character components.&quot;&quot;&quot;</span>
+</span><span id="L-426"><a href="#L-426"><span class="linenos">426</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All character components.&quot;&quot;&quot;</span>
 </span><span id="L-427"><a href="#L-427"><span class="linenos">427</span></a>
 </span><span id="L-428"><a href="#L-428"><span class="linenos">428</span></a>    <span class="c1"># Ignores: We those are iterables, They&#39;re tuples.</span>
 </span><span id="L-429"><a href="#L-429"><span class="linenos">429</span></a>    <span class="n">ALL</span> <span class="o">=</span> <span class="p">(</span>
@@ -1755,12 +1755,12 @@
 </span><span id="L-443"><a href="#L-443"><span class="linenos">443</span></a>        <span class="n">TRANSITORY</span><span class="p">,</span>
 </span><span id="L-444"><a href="#L-444"><span class="linenos">444</span></a>        <span class="n">CRAFTABLES</span><span class="p">,</span>
 </span><span id="L-445"><a href="#L-445"><span class="linenos">445</span></a>    <span class="p">)</span>
-</span><span id="L-446"><a href="#L-446"><span class="linenos">446</span></a>    <span class="sd">&quot;&quot;&quot;ALl components included.&quot;&quot;&quot;</span>
+</span><span id="L-446"><a href="#L-446"><span class="linenos">446</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;ALl components included.&quot;&quot;&quot;</span>
 </span><span id="L-447"><a href="#L-447"><span class="linenos">447</span></a>
 </span><span id="L-448"><a href="#L-448"><span class="linenos">448</span></a>
 </span><span id="L-449"><a href="#L-449"><span class="linenos">449</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-450"><a href="#L-450"><span class="linenos">450</span></a><span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-451"><a href="#L-451"><span class="linenos">451</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
+</span><span id="L-451"><a href="#L-451"><span class="linenos">451</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
 </span><span id="L-452"><a href="#L-452"><span class="linenos">452</span></a>
 </span><span id="L-453"><a href="#L-453"><span class="linenos">453</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-454"><a href="#L-454"><span class="linenos">454</span></a>    <span class="n">XBOX</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1776,7 +1776,7 @@
 </span><span id="L-464"><a href="#L-464"><span class="linenos">464</span></a>
 </span><span id="L-465"><a href="#L-465"><span class="linenos">465</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-466"><a href="#L-466"><span class="linenos">466</span></a><span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-467"><a href="#L-467"><span class="linenos">467</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
+</span><span id="L-467"><a href="#L-467"><span class="linenos">467</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
 </span><span id="L-468"><a href="#L-468"><span class="linenos">468</span></a>
 </span><span id="L-469"><a href="#L-469"><span class="linenos">469</span></a>    <span class="n">TITAN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-470"><a href="#L-470"><span class="linenos">470</span></a>    <span class="n">HUNTER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1786,7 +1786,7 @@
 </span><span id="L-474"><a href="#L-474"><span class="linenos">474</span></a>
 </span><span id="L-475"><a href="#L-475"><span class="linenos">475</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-476"><a href="#L-476"><span class="linenos">476</span></a><span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-477"><a href="#L-477"><span class="linenos">477</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
+</span><span id="L-477"><a href="#L-477"><span class="linenos">477</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
 </span><span id="L-478"><a href="#L-478"><span class="linenos">478</span></a>
 </span><span id="L-479"><a href="#L-479"><span class="linenos">479</span></a>    <span class="n">MALE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-480"><a href="#L-480"><span class="linenos">480</span></a>    <span class="n">FEMALE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1795,7 +1795,7 @@
 </span><span id="L-483"><a href="#L-483"><span class="linenos">483</span></a>
 </span><span id="L-484"><a href="#L-484"><span class="linenos">484</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-485"><a href="#L-485"><span class="linenos">485</span></a><span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-486"><a href="#L-486"><span class="linenos">486</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
+</span><span id="L-486"><a href="#L-486"><span class="linenos">486</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
 </span><span id="L-487"><a href="#L-487"><span class="linenos">487</span></a>
 </span><span id="L-488"><a href="#L-488"><span class="linenos">488</span></a>    <span class="n">HUMAN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-489"><a href="#L-489"><span class="linenos">489</span></a>    <span class="n">AWOKEN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1805,7 +1805,7 @@
 </span><span id="L-493"><a href="#L-493"><span class="linenos">493</span></a>
 </span><span id="L-494"><a href="#L-494"><span class="linenos">494</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-495"><a href="#L-495"><span class="linenos">495</span></a><span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-496"><a href="#L-496"><span class="linenos">496</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
+</span><span id="L-496"><a href="#L-496"><span class="linenos">496</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
 </span><span id="L-497"><a href="#L-497"><span class="linenos">497</span></a>
 </span><span id="L-498"><a href="#L-498"><span class="linenos">498</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a>    <span class="n">TUTORIAL</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1817,7 +1817,7 @@
 </span><span id="L-505"><a href="#L-505"><span class="linenos">505</span></a>
 </span><span id="L-506"><a href="#L-506"><span class="linenos">506</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-507"><a href="#L-507"><span class="linenos">507</span></a><span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
+</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
 </span><span id="L-509"><a href="#L-509"><span class="linenos">509</span></a>
 </span><span id="L-510"><a href="#L-510"><span class="linenos">510</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-511"><a href="#L-511"><span class="linenos">511</span></a>    <span class="n">MOBILITY</span> <span class="o">=</span> <span class="mi">2996146975</span>
@@ -1831,7 +1831,7 @@
 </span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a>
 </span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a><span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a>    <span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
+</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
 </span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a>
 </span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a>    <span class="n">KINETIC</span> <span class="o">=</span> <span class="mi">1498876634</span>
@@ -1841,7 +1841,7 @@
 </span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>
 </span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a><span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a>    <span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
+</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
 </span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a>
 </span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a>    <span class="n">KINETIC</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1849,13 +1849,13 @@
 </span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a>    <span class="n">SOLAR</span> <span class="o">=</span> <span class="mi">3</span>
 </span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a>    <span class="n">VOID</span> <span class="o">=</span> <span class="mi">4</span>
 </span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a>    <span class="n">RAID</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a>    <span class="sd">&quot;&quot;&quot;This is a special damage type reserved for some raid activity encounters.&quot;&quot;&quot;</span>
+</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a special damage type reserved for some raid activity encounters.&quot;&quot;&quot;</span>
 </span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a>    <span class="n">STASIS</span> <span class="o">=</span> <span class="mi">6</span>
 </span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a>
 </span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a>
 </span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a><span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a>    <span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
+</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
 </span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a>
 </span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a>    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1888,7 +1888,7 @@
 </span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>
 </span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a><span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
+</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
 </span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>
 </span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>    <span class="n">AUTORIFLE</span> <span class="o">=</span> <span class="mi">6</span>
@@ -1920,7 +1920,7 @@
 </span><span id="L-608"><a href="#L-608"><span class="linenos">608</span></a>
 </span><span id="L-609"><a href="#L-609"><span class="linenos">609</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-610"><a href="#L-610"><span class="linenos">610</span></a><span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
+</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
 </span><span id="L-612"><a href="#L-612"><span class="linenos">612</span></a>
 </span><span id="L-613"><a href="#L-613"><span class="linenos">613</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-614"><a href="#L-614"><span class="linenos">614</span></a>    <span class="n">BASIC</span> <span class="o">=</span> <span class="mi">3340296461</span>
@@ -1932,7 +1932,7 @@
 </span><span id="L-620"><a href="#L-620"><span class="linenos">620</span></a>
 </span><span id="L-621"><a href="#L-621"><span class="linenos">621</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-622"><a href="#L-622"><span class="linenos">622</span></a><span class="k">class</span> <span class="nc">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-623"><a href="#L-623"><span class="linenos">623</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
+</span><span id="L-623"><a href="#L-623"><span class="linenos">623</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
 </span><span id="L-624"><a href="#L-624"><span class="linenos">624</span></a>
 </span><span id="L-625"><a href="#L-625"><span class="linenos">625</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-626"><a href="#L-626"><span class="linenos">626</span></a>    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1945,7 +1945,7 @@
 </span><span id="L-633"><a href="#L-633"><span class="linenos">633</span></a>
 </span><span id="L-634"><a href="#L-634"><span class="linenos">634</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-635"><a href="#L-635"><span class="linenos">635</span></a><span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-636"><a href="#L-636"><span class="linenos">636</span></a>    <span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
+</span><span id="L-636"><a href="#L-636"><span class="linenos">636</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
 </span><span id="L-637"><a href="#L-637"><span class="linenos">637</span></a>
 </span><span id="L-638"><a href="#L-638"><span class="linenos">638</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-639"><a href="#L-639"><span class="linenos">639</span></a>    <span class="n">PRIMARY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1955,7 +1955,7 @@
 </span><span id="L-643"><a href="#L-643"><span class="linenos">643</span></a>
 </span><span id="L-644"><a href="#L-644"><span class="linenos">644</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-645"><a href="#L-645"><span class="linenos">645</span></a><span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-646"><a href="#L-646"><span class="linenos">646</span></a>    <span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
+</span><span id="L-646"><a href="#L-646"><span class="linenos">646</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
 </span><span id="L-647"><a href="#L-647"><span class="linenos">647</span></a>
 </span><span id="L-648"><a href="#L-648"><span class="linenos">648</span></a>    <span class="n">GENERAL</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-649"><a href="#L-649"><span class="linenos">649</span></a>    <span class="n">CLAN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1963,7 +1963,7 @@
 </span><span id="L-651"><a href="#L-651"><span class="linenos">651</span></a>
 </span><span id="L-652"><a href="#L-652"><span class="linenos">652</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-653"><a href="#L-653"><span class="linenos">653</span></a><span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-654"><a href="#L-654"><span class="linenos">654</span></a>    <span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
+</span><span id="L-654"><a href="#L-654"><span class="linenos">654</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
 </span><span id="L-655"><a href="#L-655"><span class="linenos">655</span></a>
 </span><span id="L-656"><a href="#L-656"><span class="linenos">656</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-657"><a href="#L-657"><span class="linenos">657</span></a>    <span class="n">XUID</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1982,7 +1982,7 @@
 </span><span id="L-670"><a href="#L-670"><span class="linenos">670</span></a>
 </span><span id="L-671"><a href="#L-671"><span class="linenos">671</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-672"><a href="#L-672"><span class="linenos">672</span></a><span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-673"><a href="#L-673"><span class="linenos">673</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
+</span><span id="L-673"><a href="#L-673"><span class="linenos">673</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
 </span><span id="L-674"><a href="#L-674"><span class="linenos">674</span></a>
 </span><span id="L-675"><a href="#L-675"><span class="linenos">675</span></a>    <span class="n">OFFLINE_OR_UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-676"><a href="#L-676"><span class="linenos">676</span></a>    <span class="n">ONLINE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1990,7 +1990,7 @@
 </span><span id="L-678"><a href="#L-678"><span class="linenos">678</span></a>
 </span><span id="L-679"><a href="#L-679"><span class="linenos">679</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-680"><a href="#L-680"><span class="linenos">680</span></a><span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-681"><a href="#L-681"><span class="linenos">681</span></a>    <span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
+</span><span id="L-681"><a href="#L-681"><span class="linenos">681</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
 </span><span id="L-682"><a href="#L-682"><span class="linenos">682</span></a>
 </span><span id="L-683"><a href="#L-683"><span class="linenos">683</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-684"><a href="#L-684"><span class="linenos">684</span></a>    <span class="n">FRIEND</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2000,7 +2000,7 @@
 </span><span id="L-688"><a href="#L-688"><span class="linenos">688</span></a>
 </span><span id="L-689"><a href="#L-689"><span class="linenos">689</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-690"><a href="#L-690"><span class="linenos">690</span></a><span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-691"><a href="#L-691"><span class="linenos">691</span></a>    <span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
+</span><span id="L-691"><a href="#L-691"><span class="linenos">691</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
 </span><span id="L-692"><a href="#L-692"><span class="linenos">692</span></a>
 </span><span id="L-693"><a href="#L-693"><span class="linenos">693</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-694"><a href="#L-694"><span class="linenos">694</span></a>    <span class="n">BEGINNER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2012,7 +2012,7 @@
 </span><span id="L-700"><a href="#L-700"><span class="linenos">700</span></a>
 </span><span id="L-701"><a href="#L-701"><span class="linenos">701</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-702"><a href="#L-702"><span class="linenos">702</span></a><span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-703"><a href="#L-703"><span class="linenos">703</span></a>    <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
+</span><span id="L-703"><a href="#L-703"><span class="linenos">703</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
 </span><span id="L-704"><a href="#L-704"><span class="linenos">704</span></a>
 </span><span id="L-705"><a href="#L-705"><span class="linenos">705</span></a>    <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-706"><a href="#L-706"><span class="linenos">706</span></a>    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2021,7 +2021,7 @@
 </span><span id="L-709"><a href="#L-709"><span class="linenos">709</span></a>
 </span><span id="L-710"><a href="#L-710"><span class="linenos">710</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-711"><a href="#L-711"><span class="linenos">711</span></a><span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-712"><a href="#L-712"><span class="linenos">712</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
+</span><span id="L-712"><a href="#L-712"><span class="linenos">712</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
 </span><span id="L-713"><a href="#L-713"><span class="linenos">713</span></a>
 </span><span id="L-714"><a href="#L-714"><span class="linenos">714</span></a>    <span class="n">NOT_BOUND</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-715"><a href="#L-715"><span class="linenos">715</span></a>    <span class="n">BOUND_TO_CHARACTER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2031,7 +2031,7 @@
 </span><span id="L-719"><a href="#L-719"><span class="linenos">719</span></a>
 </span><span id="L-720"><a href="#L-720"><span class="linenos">720</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-721"><a href="#L-721"><span class="linenos">721</span></a><span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-722"><a href="#L-722"><span class="linenos">722</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
+</span><span id="L-722"><a href="#L-722"><span class="linenos">722</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
 </span><span id="L-723"><a href="#L-723"><span class="linenos">723</span></a>
 </span><span id="L-724"><a href="#L-724"><span class="linenos">724</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-725"><a href="#L-725"><span class="linenos">725</span></a>    <span class="n">INVENTORY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2042,35 +2042,35 @@
 </span><span id="L-730"><a href="#L-730"><span class="linenos">730</span></a>
 </span><span id="L-731"><a href="#L-731"><span class="linenos">731</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-732"><a href="#L-732"><span class="linenos">732</span></a><span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="L-733"><a href="#L-733"><span class="linenos">733</span></a>    <span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
+</span><span id="L-733"><a href="#L-733"><span class="linenos">733</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
 </span><span id="L-734"><a href="#L-734"><span class="linenos">734</span></a>
 </span><span id="L-735"><a href="#L-735"><span class="linenos">735</span></a>    <span class="n">CAN_TRANSFER</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-736"><a href="#L-736"><span class="linenos">736</span></a>    <span class="sd">&quot;&quot;&quot;The item can be transferred.&quot;&quot;&quot;</span>
+</span><span id="L-736"><a href="#L-736"><span class="linenos">736</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The item can be transferred.&quot;&quot;&quot;</span>
 </span><span id="L-737"><a href="#L-737"><span class="linenos">737</span></a>    <span class="n">IS_EQUIPPED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
-</span><span id="L-738"><a href="#L-738"><span class="linenos">738</span></a>    <span class="sd">&quot;&quot;&quot;You can&#39;t transfer since the item is equipped.&quot;&quot;&quot;</span>
+</span><span id="L-738"><a href="#L-738"><span class="linenos">738</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;You can&#39;t transfer since the item is equipped.&quot;&quot;&quot;</span>
 </span><span id="L-739"><a href="#L-739"><span class="linenos">739</span></a>    <span class="n">NOT_TRASNFERRABLE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
-</span><span id="L-740"><a href="#L-740"><span class="linenos">740</span></a>    <span class="sd">&quot;&quot;&quot;This item can not be transferred.&quot;&quot;&quot;</span>
+</span><span id="L-740"><a href="#L-740"><span class="linenos">740</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;This item can not be transferred.&quot;&quot;&quot;</span>
 </span><span id="L-741"><a href="#L-741"><span class="linenos">741</span></a>    <span class="n">COULD_BE_TRANSFERRED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
-</span><span id="L-742"><a href="#L-742"><span class="linenos">742</span></a>    <span class="sd">&quot;&quot;&quot;You can transfer the item. But the place you&#39;re trying to put it at has no space for it.&quot;&quot;&quot;</span>
+</span><span id="L-742"><a href="#L-742"><span class="linenos">742</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;You can transfer the item. But the place you&#39;re trying to put it at has no space for it.&quot;&quot;&quot;</span>
 </span><span id="L-743"><a href="#L-743"><span class="linenos">743</span></a>
 </span><span id="L-744"><a href="#L-744"><span class="linenos">744</span></a>
 </span><span id="L-745"><a href="#L-745"><span class="linenos">745</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-746"><a href="#L-746"><span class="linenos">746</span></a><span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="L-747"><a href="#L-747"><span class="linenos">747</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
+</span><span id="L-747"><a href="#L-747"><span class="linenos">747</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
 </span><span id="L-748"><a href="#L-748"><span class="linenos">748</span></a>
 </span><span id="L-749"><a href="#L-749"><span class="linenos">749</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-750"><a href="#L-750"><span class="linenos">750</span></a>    <span class="n">LOCKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 </span><span id="L-751"><a href="#L-751"><span class="linenos">751</span></a>    <span class="n">TRACKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
 </span><span id="L-752"><a href="#L-752"><span class="linenos">752</span></a>    <span class="n">MASTERWORKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
 </span><span id="L-753"><a href="#L-753"><span class="linenos">753</span></a>    <span class="n">CRAFTED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
-</span><span id="L-754"><a href="#L-754"><span class="linenos">754</span></a>    <span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
+</span><span id="L-754"><a href="#L-754"><span class="linenos">754</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
 </span><span id="L-755"><a href="#L-755"><span class="linenos">755</span></a>    <span class="n">HIGHLITED_OBJECTIVE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span>
-</span><span id="L-756"><a href="#L-756"><span class="linenos">756</span></a>    <span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
+</span><span id="L-756"><a href="#L-756"><span class="linenos">756</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
 </span><span id="L-757"><a href="#L-757"><span class="linenos">757</span></a>
 </span><span id="L-758"><a href="#L-758"><span class="linenos">758</span></a>
 </span><span id="L-759"><a href="#L-759"><span class="linenos">759</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-760"><a href="#L-760"><span class="linenos">760</span></a><span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-761"><a href="#L-761"><span class="linenos">761</span></a>    <span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
+</span><span id="L-761"><a href="#L-761"><span class="linenos">761</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
 </span><span id="L-762"><a href="#L-762"><span class="linenos">762</span></a>
 </span><span id="L-763"><a href="#L-763"><span class="linenos">763</span></a>    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-764"><a href="#L-764"><span class="linenos">764</span></a>    <span class="n">CLAN_AND_FRIENDS</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2081,35 +2081,35 @@
 </span><span id="L-769"><a href="#L-769"><span class="linenos">769</span></a>
 </span><span id="L-770"><a href="#L-770"><span class="linenos">770</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-771"><a href="#L-771"><span class="linenos">771</span></a><span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="L-772"><a href="#L-772"><span class="linenos">772</span></a>    <span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
+</span><span id="L-772"><a href="#L-772"><span class="linenos">772</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
 </span><span id="L-773"><a href="#L-773"><span class="linenos">773</span></a>
 </span><span id="L-774"><a href="#L-774"><span class="linenos">774</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-775"><a href="#L-775"><span class="linenos">775</span></a>    <span class="n">MATCHMAKING</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 </span><span id="L-776"><a href="#L-776"><span class="linenos">776</span></a>    <span class="n">LOADING</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
 </span><span id="L-777"><a href="#L-777"><span class="linenos">777</span></a>    <span class="n">SOLO</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
-</span><span id="L-778"><a href="#L-778"><span class="linenos">778</span></a>    <span class="sd">&quot;&quot;&quot;The activity is required to be played solo.&quot;&quot;&quot;</span>
+</span><span id="L-778"><a href="#L-778"><span class="linenos">778</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The activity is required to be played solo.&quot;&quot;&quot;</span>
 </span><span id="L-779"><a href="#L-779"><span class="linenos">779</span></a>    <span class="n">INTERNAL_REASONS</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
-</span><span id="L-780"><a href="#L-780"><span class="linenos">780</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-780"><a href="#L-780"><span class="linenos">780</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-781"><a href="#L-781"><span class="linenos">781</span></a><span class="sd">    The user can&#39;t be joined for one of a variety of internal reasons.</span>
 </span><span id="L-782"><a href="#L-782"><span class="linenos">782</span></a><span class="sd">    Basically, the game can&#39;t let you join at this time,</span>
 </span><span id="L-783"><a href="#L-783"><span class="linenos">783</span></a><span class="sd">    but for reasons that aren&#39;t under the control of this user</span>
 </span><span id="L-784"><a href="#L-784"><span class="linenos">784</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-785"><a href="#L-785"><span class="linenos">785</span></a>    <span class="n">DISALLOWED_BY_GAME_STATE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span>
-</span><span id="L-786"><a href="#L-786"><span class="linenos">786</span></a>    <span class="sd">&quot;&quot;&quot;The user&#39;s current activity/quest/other transitory game state is preventing joining.&quot;&quot;&quot;</span>
+</span><span id="L-786"><a href="#L-786"><span class="linenos">786</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The user&#39;s current activity/quest/other transitory game state is preventing joining.&quot;&quot;&quot;</span>
 </span><span id="L-787"><a href="#L-787"><span class="linenos">787</span></a>    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="mi">32768</span>
-</span><span id="L-788"><a href="#L-788"><span class="linenos">788</span></a>    <span class="sd">&quot;&quot;&quot;The user appears offline.&quot;&quot;&quot;</span>
+</span><span id="L-788"><a href="#L-788"><span class="linenos">788</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The user appears offline.&quot;&quot;&quot;</span>
 </span><span id="L-789"><a href="#L-789"><span class="linenos">789</span></a>
 </span><span id="L-790"><a href="#L-790"><span class="linenos">790</span></a>
 </span><span id="L-791"><a href="#L-791"><span class="linenos">791</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-792"><a href="#L-792"><span class="linenos">792</span></a><span class="k">class</span> <span class="nc">StatsGroupType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-793"><a href="#L-793"><span class="linenos">793</span></a>    <span class="sd">&quot;&quot;&quot;Bungie historical group stats type enum.&quot;&quot;&quot;</span>
+</span><span id="L-793"><a href="#L-793"><span class="linenos">793</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Bungie historical group stats type enum.&quot;&quot;&quot;</span>
 </span><span id="L-794"><a href="#L-794"><span class="linenos">794</span></a>
 </span><span id="L-795"><a href="#L-795"><span class="linenos">795</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-796"><a href="#L-796"><span class="linenos">796</span></a>    <span class="n">GENERAL</span> <span class="o">=</span> <span class="mi">1</span>
 </span><span id="L-797"><a href="#L-797"><span class="linenos">797</span></a>    <span class="n">WEAPONS</span> <span class="o">=</span> <span class="mi">2</span>
 </span><span id="L-798"><a href="#L-798"><span class="linenos">798</span></a>    <span class="n">MEDALS</span> <span class="o">=</span> <span class="mi">3</span>
 </span><span id="L-799"><a href="#L-799"><span class="linenos">799</span></a>    <span class="n">REVERSED_GROUPS</span> <span class="o">=</span> <span class="mi">100</span>
-</span><span id="L-800"><a href="#L-800"><span class="linenos">800</span></a>    <span class="sd">&quot;&quot;&quot;This is purely to serve as the dividing line between filterable and un-filterable groups.</span>
+</span><span id="L-800"><a href="#L-800"><span class="linenos">800</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;This is purely to serve as the dividing line between filterable and un-filterable groups.</span>
 </span><span id="L-801"><a href="#L-801"><span class="linenos">801</span></a><span class="sd">    Below this number is a group you can pass as a filter.</span>
 </span><span id="L-802"><a href="#L-802"><span class="linenos">802</span></a><span class="sd">    Above it are groups used in very specific circumstances and not relevant for filtering.</span>
 </span><span id="L-803"><a href="#L-803"><span class="linenos">803</span></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -2121,7 +2121,7 @@
 </span><span id="L-809"><a href="#L-809"><span class="linenos">809</span></a>
 </span><span id="L-810"><a href="#L-810"><span class="linenos">810</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="L-811"><a href="#L-811"><span class="linenos">811</span></a><span class="k">class</span> <span class="nc">PeriodType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-812"><a href="#L-812"><span class="linenos">812</span></a>    <span class="sd">&quot;&quot;&quot;Bungie historical group stats period type enum.&quot;&quot;&quot;</span>
+</span><span id="L-812"><a href="#L-812"><span class="linenos">812</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Bungie historical group stats period type enum.&quot;&quot;&quot;</span>
 </span><span id="L-813"><a href="#L-813"><span class="linenos">813</span></a>
 </span><span id="L-814"><a href="#L-814"><span class="linenos">814</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-815"><a href="#L-815"><span class="linenos">815</span></a>    <span class="n">DAILY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2143,7 +2143,7 @@
     </div>
     <a class="headerlink" href="#Enum"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Enum-69"><a href="#Enum-69"><span class="linenos">69</span></a><span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="Enum-70"><a href="#Enum-70"><span class="linenos">70</span></a>    <span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
+</span><span id="Enum-70"><a href="#Enum-70"><span class="linenos">70</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
 </span><span id="Enum-71"><a href="#Enum-71"><span class="linenos">71</span></a>
 </span><span id="Enum-72"><a href="#Enum-72"><span class="linenos">72</span></a>    <span class="nd">@property</span>
 </span><span id="Enum-73"><a href="#Enum-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -2221,7 +2221,7 @@
     </div>
     <a class="headerlink" href="#Flag"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Flag-90"><a href="#Flag-90"><span class="linenos"> 90</span></a><span class="k">class</span> <span class="nc">Flag</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="Flag-91"><a href="#Flag-91"><span class="linenos"> 91</span></a>    <span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
+</span><span id="Flag-91"><a href="#Flag-91"><span class="linenos"> 91</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
 </span><span id="Flag-92"><a href="#Flag-92"><span class="linenos"> 92</span></a>
 </span><span id="Flag-93"><a href="#Flag-93"><span class="linenos"> 93</span></a>    <span class="c1"># Needs to type this here for mypy</span>
 </span><span id="Flag-94"><a href="#Flag-94"><span class="linenos"> 94</span></a>    <span class="n">_value_</span><span class="p">:</span> <span class="nb">int</span>
@@ -2325,7 +2325,7 @@
     <a class="headerlink" href="#GameMode"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="GameMode-258"><a href="#GameMode-258"><span class="linenos">258</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="GameMode-259"><a href="#GameMode-259"><span class="linenos">259</span></a><span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="GameMode-260"><a href="#GameMode-260"><span class="linenos">260</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="GameMode-260"><a href="#GameMode-260"><span class="linenos">260</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="GameMode-261"><a href="#GameMode-261"><span class="linenos">261</span></a>
 </span><span id="GameMode-262"><a href="#GameMode-262"><span class="linenos">262</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="GameMode-263"><a href="#GameMode-263"><span class="linenos">263</span></a>    <span class="n">STORY</span> <span class="o">=</span> <span class="mi">2</span>
@@ -3428,6 +3428,7 @@
                 <dd id="GameMode.to_bytes" class="function">to_bytes</dd>
                 <dd id="GameMode.from_bytes" class="function">from_bytes</dd>
                 <dd id="GameMode.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="GameMode.is_integer" class="function">is_integer</dd>
                 <dd id="GameMode.real" class="variable">real</dd>
                 <dd id="GameMode.imag" class="variable">imag</dd>
                 <dd id="GameMode.numerator" class="variable">numerator</dd>
@@ -3451,7 +3452,7 @@
     <a class="headerlink" href="#MembershipType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MembershipType-450"><a href="#MembershipType-450"><span class="linenos">450</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="MembershipType-451"><a href="#MembershipType-451"><span class="linenos">451</span></a><span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="MembershipType-452"><a href="#MembershipType-452"><span class="linenos">452</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
+</span><span id="MembershipType-452"><a href="#MembershipType-452"><span class="linenos">452</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
 </span><span id="MembershipType-453"><a href="#MembershipType-453"><span class="linenos">453</span></a>
 </span><span id="MembershipType-454"><a href="#MembershipType-454"><span class="linenos">454</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="MembershipType-455"><a href="#MembershipType-455"><span class="linenos">455</span></a>    <span class="n">XBOX</span> <span class="o">=</span> <span class="mi">1</span>
@@ -3605,6 +3606,7 @@
                 <dd id="MembershipType.to_bytes" class="function">to_bytes</dd>
                 <dd id="MembershipType.from_bytes" class="function">from_bytes</dd>
                 <dd id="MembershipType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="MembershipType.is_integer" class="function">is_integer</dd>
                 <dd id="MembershipType.real" class="variable">real</dd>
                 <dd id="MembershipType.imag" class="variable">imag</dd>
                 <dd id="MembershipType.numerator" class="variable">numerator</dd>
@@ -3628,7 +3630,7 @@
     <a class="headerlink" href="#Class"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Class-466"><a href="#Class-466"><span class="linenos">466</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Class-467"><a href="#Class-467"><span class="linenos">467</span></a><span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Class-468"><a href="#Class-468"><span class="linenos">468</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
+</span><span id="Class-468"><a href="#Class-468"><span class="linenos">468</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
 </span><span id="Class-469"><a href="#Class-469"><span class="linenos">469</span></a>
 </span><span id="Class-470"><a href="#Class-470"><span class="linenos">470</span></a>    <span class="n">TITAN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Class-471"><a href="#Class-471"><span class="linenos">471</span></a>    <span class="n">HUNTER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -3704,6 +3706,7 @@
                 <dd id="Class.to_bytes" class="function">to_bytes</dd>
                 <dd id="Class.from_bytes" class="function">from_bytes</dd>
                 <dd id="Class.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Class.is_integer" class="function">is_integer</dd>
                 <dd id="Class.real" class="variable">real</dd>
                 <dd id="Class.imag" class="variable">imag</dd>
                 <dd id="Class.numerator" class="variable">numerator</dd>
@@ -3727,7 +3730,7 @@
     <a class="headerlink" href="#MilestoneType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MilestoneType-495"><a href="#MilestoneType-495"><span class="linenos">495</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="MilestoneType-496"><a href="#MilestoneType-496"><span class="linenos">496</span></a><span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="MilestoneType-497"><a href="#MilestoneType-497"><span class="linenos">497</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
+</span><span id="MilestoneType-497"><a href="#MilestoneType-497"><span class="linenos">497</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
 </span><span id="MilestoneType-498"><a href="#MilestoneType-498"><span class="linenos">498</span></a>
 </span><span id="MilestoneType-499"><a href="#MilestoneType-499"><span class="linenos">499</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="MilestoneType-500"><a href="#MilestoneType-500"><span class="linenos">500</span></a>    <span class="n">TUTORIAL</span> <span class="o">=</span> <span class="mi">1</span>
@@ -3829,6 +3832,7 @@
                 <dd id="MilestoneType.to_bytes" class="function">to_bytes</dd>
                 <dd id="MilestoneType.from_bytes" class="function">from_bytes</dd>
                 <dd id="MilestoneType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="MilestoneType.is_integer" class="function">is_integer</dd>
                 <dd id="MilestoneType.real" class="variable">real</dd>
                 <dd id="MilestoneType.imag" class="variable">imag</dd>
                 <dd id="MilestoneType.numerator" class="variable">numerator</dd>
@@ -3852,7 +3856,7 @@
     <a class="headerlink" href="#Race"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Race-485"><a href="#Race-485"><span class="linenos">485</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Race-486"><a href="#Race-486"><span class="linenos">486</span></a><span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Race-487"><a href="#Race-487"><span class="linenos">487</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
+</span><span id="Race-487"><a href="#Race-487"><span class="linenos">487</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
 </span><span id="Race-488"><a href="#Race-488"><span class="linenos">488</span></a>
 </span><span id="Race-489"><a href="#Race-489"><span class="linenos">489</span></a>    <span class="n">HUMAN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Race-490"><a href="#Race-490"><span class="linenos">490</span></a>    <span class="n">AWOKEN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -3928,6 +3932,7 @@
                 <dd id="Race.to_bytes" class="function">to_bytes</dd>
                 <dd id="Race.from_bytes" class="function">from_bytes</dd>
                 <dd id="Race.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Race.is_integer" class="function">is_integer</dd>
                 <dd id="Race.real" class="variable">real</dd>
                 <dd id="Race.imag" class="variable">imag</dd>
                 <dd id="Race.numerator" class="variable">numerator</dd>
@@ -3951,7 +3956,7 @@
     <a class="headerlink" href="#Vendor"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Vendor-229"><a href="#Vendor-229"><span class="linenos">229</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Vendor-230"><a href="#Vendor-230"><span class="linenos">230</span></a><span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Vendor-231"><a href="#Vendor-231"><span class="linenos">231</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="Vendor-231"><a href="#Vendor-231"><span class="linenos">231</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="Vendor-232"><a href="#Vendor-232"><span class="linenos">232</span></a>
 </span><span id="Vendor-233"><a href="#Vendor-233"><span class="linenos">233</span></a>    <span class="n">ZAVALA</span> <span class="o">=</span> <span class="mi">69482069</span>
 </span><span id="Vendor-234"><a href="#Vendor-234"><span class="linenos">234</span></a>    <span class="n">XUR</span> <span class="o">=</span> <span class="mi">2190858386</span>
@@ -3959,22 +3964,22 @@
 </span><span id="Vendor-236"><a href="#Vendor-236"><span class="linenos">236</span></a>    <span class="n">SPIDER</span> <span class="o">=</span> <span class="mi">863940356</span>
 </span><span id="Vendor-237"><a href="#Vendor-237"><span class="linenos">237</span></a>    <span class="n">SHAXX</span> <span class="o">=</span> <span class="mi">3603221665</span>
 </span><span id="Vendor-238"><a href="#Vendor-238"><span class="linenos">238</span></a>    <span class="n">KADI</span> <span class="o">=</span> <span class="mi">529635856</span>
-</span><span id="Vendor-239"><a href="#Vendor-239"><span class="linenos">239</span></a>    <span class="sd">&quot;&quot;&quot;Postmaster exo.&quot;&quot;&quot;</span>
+</span><span id="Vendor-239"><a href="#Vendor-239"><span class="linenos">239</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Postmaster exo.&quot;&quot;&quot;</span>
 </span><span id="Vendor-240"><a href="#Vendor-240"><span class="linenos">240</span></a>    <span class="n">YUNA</span> <span class="o">=</span> <span class="mi">1796504621</span>
-</span><span id="Vendor-241"><a href="#Vendor-241"><span class="linenos">241</span></a>    <span class="sd">&quot;&quot;&quot;Asia servers only.&quot;&quot;&quot;</span>
+</span><span id="Vendor-241"><a href="#Vendor-241"><span class="linenos">241</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Asia servers only.&quot;&quot;&quot;</span>
 </span><span id="Vendor-242"><a href="#Vendor-242"><span class="linenos">242</span></a>    <span class="n">EVERVERSE</span> <span class="o">=</span> <span class="mi">3361454721</span>
 </span><span id="Vendor-243"><a href="#Vendor-243"><span class="linenos">243</span></a>    <span class="n">AMANDA</span> <span class="o">=</span> <span class="mi">460529231</span>
-</span><span id="Vendor-244"><a href="#Vendor-244"><span class="linenos">244</span></a>    <span class="sd">&quot;&quot;&quot;Amanda holiday&quot;&quot;&quot;</span>
+</span><span id="Vendor-244"><a href="#Vendor-244"><span class="linenos">244</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Amanda holiday&quot;&quot;&quot;</span>
 </span><span id="Vendor-245"><a href="#Vendor-245"><span class="linenos">245</span></a>    <span class="n">CROW</span> <span class="o">=</span> <span class="mi">3611983588</span>
 </span><span id="Vendor-246"><a href="#Vendor-246"><span class="linenos">246</span></a>    <span class="n">HAWTHORNE</span> <span class="o">=</span> <span class="mi">3347378076</span>
 </span><span id="Vendor-247"><a href="#Vendor-247"><span class="linenos">247</span></a>    <span class="n">ADA1</span> <span class="o">=</span> <span class="mi">350061650</span>
 </span><span id="Vendor-248"><a href="#Vendor-248"><span class="linenos">248</span></a>    <span class="n">DRIFTER</span> <span class="o">=</span> <span class="mi">248695599</span>
 </span><span id="Vendor-249"><a href="#Vendor-249"><span class="linenos">249</span></a>    <span class="n">IKORA</span> <span class="o">=</span> <span class="mi">1976548992</span>
 </span><span id="Vendor-250"><a href="#Vendor-250"><span class="linenos">250</span></a>    <span class="n">SAINT</span> <span class="o">=</span> <span class="mi">765357505</span>
-</span><span id="Vendor-251"><a href="#Vendor-251"><span class="linenos">251</span></a>    <span class="sd">&quot;&quot;&quot;Saint-14&quot;&quot;&quot;</span>
+</span><span id="Vendor-251"><a href="#Vendor-251"><span class="linenos">251</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Saint-14&quot;&quot;&quot;</span>
 </span><span id="Vendor-252"><a href="#Vendor-252"><span class="linenos">252</span></a>    <span class="n">ERIS_MORN</span> <span class="o">=</span> <span class="mi">1616085565</span>
 </span><span id="Vendor-253"><a href="#Vendor-253"><span class="linenos">253</span></a>    <span class="n">SHAW_HAWN</span> <span class="o">=</span> <span class="mi">1816541247</span>
-</span><span id="Vendor-254"><a href="#Vendor-254"><span class="linenos">254</span></a>    <span class="sd">&quot;&quot;&quot;COSMODROME Guy&quot;&quot;&quot;</span>
+</span><span id="Vendor-254"><a href="#Vendor-254"><span class="linenos">254</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;COSMODROME Guy&quot;&quot;&quot;</span>
 </span><span id="Vendor-255"><a href="#Vendor-255"><span class="linenos">255</span></a>    <span class="n">VARIKS</span> <span class="o">=</span> <span class="mi">2531198101</span>
 </span></pre></div>
 
@@ -4224,6 +4229,7 @@
                 <dd id="Vendor.to_bytes" class="function">to_bytes</dd>
                 <dd id="Vendor.from_bytes" class="function">from_bytes</dd>
                 <dd id="Vendor.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Vendor.is_integer" class="function">is_integer</dd>
                 <dd id="Vendor.real" class="variable">real</dd>
                 <dd id="Vendor.imag" class="variable">imag</dd>
                 <dd id="Vendor.numerator" class="variable">numerator</dd>
@@ -4247,19 +4253,19 @@
     <a class="headerlink" href="#Raid"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Raid-132"><a href="#Raid-132"><span class="linenos">132</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Raid-133"><a href="#Raid-133"><span class="linenos">133</span></a><span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Raid-134"><a href="#Raid-134"><span class="linenos">134</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="Raid-134"><a href="#Raid-134"><span class="linenos">134</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="Raid-135"><a href="#Raid-135"><span class="linenos">135</span></a>
 </span><span id="Raid-136"><a href="#Raid-136"><span class="linenos">136</span></a>    <span class="n">DSC</span> <span class="o">=</span> <span class="mi">910380154</span>
-</span><span id="Raid-137"><a href="#Raid-137"><span class="linenos">137</span></a>    <span class="sd">&quot;&quot;&quot;Deep Stone Crypt&quot;&quot;&quot;</span>
+</span><span id="Raid-137"><a href="#Raid-137"><span class="linenos">137</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Deep Stone Crypt&quot;&quot;&quot;</span>
 </span><span id="Raid-138"><a href="#Raid-138"><span class="linenos">138</span></a>
 </span><span id="Raid-139"><a href="#Raid-139"><span class="linenos">139</span></a>    <span class="n">LW</span> <span class="o">=</span> <span class="mi">2122313384</span>
-</span><span id="Raid-140"><a href="#Raid-140"><span class="linenos">140</span></a>    <span class="sd">&quot;&quot;&quot;Last Wish&quot;&quot;&quot;</span>
+</span><span id="Raid-140"><a href="#Raid-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Last Wish&quot;&quot;&quot;</span>
 </span><span id="Raid-141"><a href="#Raid-141"><span class="linenos">141</span></a>
 </span><span id="Raid-142"><a href="#Raid-142"><span class="linenos">142</span></a>    <span class="n">VOG</span> <span class="o">=</span> <span class="mi">3881495763</span>
-</span><span id="Raid-143"><a href="#Raid-143"><span class="linenos">143</span></a>    <span class="sd">&quot;&quot;&quot;Normal Valut of Glass&quot;&quot;&quot;</span>
+</span><span id="Raid-143"><a href="#Raid-143"><span class="linenos">143</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Valut of Glass&quot;&quot;&quot;</span>
 </span><span id="Raid-144"><a href="#Raid-144"><span class="linenos">144</span></a>
 </span><span id="Raid-145"><a href="#Raid-145"><span class="linenos">145</span></a>    <span class="n">GOS</span> <span class="o">=</span> <span class="mi">3458480158</span>
-</span><span id="Raid-146"><a href="#Raid-146"><span class="linenos">146</span></a>    <span class="sd">&quot;&quot;&quot;Garden Of Salvation&quot;&quot;&quot;</span>
+</span><span id="Raid-146"><a href="#Raid-146"><span class="linenos">146</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Garden Of Salvation&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -4338,6 +4344,7 @@
                 <dd id="Raid.to_bytes" class="function">to_bytes</dd>
                 <dd id="Raid.from_bytes" class="function">from_bytes</dd>
                 <dd id="Raid.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Raid.is_integer" class="function">is_integer</dd>
                 <dd id="Raid.real" class="variable">real</dd>
                 <dd id="Raid.imag" class="variable">imag</dd>
                 <dd id="Raid.numerator" class="variable">numerator</dd>
@@ -4361,37 +4368,37 @@
     <a class="headerlink" href="#Dungeon"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Dungeon-149"><a href="#Dungeon-149"><span class="linenos">149</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Dungeon-150"><a href="#Dungeon-150"><span class="linenos">150</span></a><span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Dungeon-151"><a href="#Dungeon-151"><span class="linenos">151</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="Dungeon-151"><a href="#Dungeon-151"><span class="linenos">151</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="Dungeon-152"><a href="#Dungeon-152"><span class="linenos">152</span></a>
 </span><span id="Dungeon-153"><a href="#Dungeon-153"><span class="linenos">153</span></a>    <span class="n">NORMAL_PRESAGE</span> <span class="o">=</span> <span class="mi">2124066889</span>
-</span><span id="Dungeon-154"><a href="#Dungeon-154"><span class="linenos">154</span></a>    <span class="sd">&quot;&quot;&quot;Normal Presage&quot;&quot;&quot;</span>
+</span><span id="Dungeon-154"><a href="#Dungeon-154"><span class="linenos">154</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Presage&quot;&quot;&quot;</span>
 </span><span id="Dungeon-155"><a href="#Dungeon-155"><span class="linenos">155</span></a>
 </span><span id="Dungeon-156"><a href="#Dungeon-156"><span class="linenos">156</span></a>    <span class="n">MASTER_PRESAGE</span> <span class="o">=</span> <span class="mi">4212753278</span>
-</span><span id="Dungeon-157"><a href="#Dungeon-157"><span class="linenos">157</span></a>    <span class="sd">&quot;&quot;&quot;Master Presage&quot;&quot;&quot;</span>
+</span><span id="Dungeon-157"><a href="#Dungeon-157"><span class="linenos">157</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Master Presage&quot;&quot;&quot;</span>
 </span><span id="Dungeon-158"><a href="#Dungeon-158"><span class="linenos">158</span></a>
 </span><span id="Dungeon-159"><a href="#Dungeon-159"><span class="linenos">159</span></a>    <span class="n">HARBINGER</span> <span class="o">=</span> <span class="mi">1738383283</span>
-</span><span id="Dungeon-160"><a href="#Dungeon-160"><span class="linenos">160</span></a>    <span class="sd">&quot;&quot;&quot;Harbinger&quot;&quot;&quot;</span>
+</span><span id="Dungeon-160"><a href="#Dungeon-160"><span class="linenos">160</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Harbinger&quot;&quot;&quot;</span>
 </span><span id="Dungeon-161"><a href="#Dungeon-161"><span class="linenos">161</span></a>
 </span><span id="Dungeon-162"><a href="#Dungeon-162"><span class="linenos">162</span></a>    <span class="n">PROPHECY</span> <span class="o">=</span> <span class="mi">4148187374</span>
-</span><span id="Dungeon-163"><a href="#Dungeon-163"><span class="linenos">163</span></a>    <span class="sd">&quot;&quot;&quot;Prophecy&quot;&quot;&quot;</span>
+</span><span id="Dungeon-163"><a href="#Dungeon-163"><span class="linenos">163</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Prophecy&quot;&quot;&quot;</span>
 </span><span id="Dungeon-164"><a href="#Dungeon-164"><span class="linenos">164</span></a>
 </span><span id="Dungeon-165"><a href="#Dungeon-165"><span class="linenos">165</span></a>    <span class="n">MASTER_POH</span> <span class="o">=</span> <span class="mi">785700673</span>
-</span><span id="Dungeon-166"><a href="#Dungeon-166"><span class="linenos">166</span></a>    <span class="sd">&quot;&quot;&quot;Master Pit of Heresy?&quot;&quot;&quot;</span>
+</span><span id="Dungeon-166"><a href="#Dungeon-166"><span class="linenos">166</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Master Pit of Heresy?&quot;&quot;&quot;</span>
 </span><span id="Dungeon-167"><a href="#Dungeon-167"><span class="linenos">167</span></a>
 </span><span id="Dungeon-168"><a href="#Dungeon-168"><span class="linenos">168</span></a>    <span class="n">LEGEND_POH</span> <span class="o">=</span> <span class="mi">785700678</span>
-</span><span id="Dungeon-169"><a href="#Dungeon-169"><span class="linenos">169</span></a>    <span class="sd">&quot;&quot;&quot;Legend Pit of Heresy?&quot;&quot;&quot;</span>
+</span><span id="Dungeon-169"><a href="#Dungeon-169"><span class="linenos">169</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Legend Pit of Heresy?&quot;&quot;&quot;</span>
 </span><span id="Dungeon-170"><a href="#Dungeon-170"><span class="linenos">170</span></a>
 </span><span id="Dungeon-171"><a href="#Dungeon-171"><span class="linenos">171</span></a>    <span class="n">POH</span> <span class="o">=</span> <span class="mi">1375089621</span>
-</span><span id="Dungeon-172"><a href="#Dungeon-172"><span class="linenos">172</span></a>    <span class="sd">&quot;&quot;&quot;Normal Pit of Heresy.&quot;&quot;&quot;</span>
+</span><span id="Dungeon-172"><a href="#Dungeon-172"><span class="linenos">172</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal Pit of Heresy.&quot;&quot;&quot;</span>
 </span><span id="Dungeon-173"><a href="#Dungeon-173"><span class="linenos">173</span></a>
 </span><span id="Dungeon-174"><a href="#Dungeon-174"><span class="linenos">174</span></a>    <span class="n">SHATTERED</span> <span class="o">=</span> <span class="mi">2032534090</span>
-</span><span id="Dungeon-175"><a href="#Dungeon-175"><span class="linenos">175</span></a>    <span class="sd">&quot;&quot;&quot;Shattered Throne&quot;&quot;&quot;</span>
+</span><span id="Dungeon-175"><a href="#Dungeon-175"><span class="linenos">175</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Shattered Throne&quot;&quot;&quot;</span>
 </span><span id="Dungeon-176"><a href="#Dungeon-176"><span class="linenos">176</span></a>
 </span><span id="Dungeon-177"><a href="#Dungeon-177"><span class="linenos">177</span></a>    <span class="n">GOA_LEGEND</span> <span class="o">=</span> <span class="mi">4078656646</span>
-</span><span id="Dungeon-178"><a href="#Dungeon-178"><span class="linenos">178</span></a>    <span class="sd">&quot;&quot;&quot;Grasp of Avarice legend.&quot;&quot;&quot;</span>
+</span><span id="Dungeon-178"><a href="#Dungeon-178"><span class="linenos">178</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Grasp of Avarice legend.&quot;&quot;&quot;</span>
 </span><span id="Dungeon-179"><a href="#Dungeon-179"><span class="linenos">179</span></a>
 </span><span id="Dungeon-180"><a href="#Dungeon-180"><span class="linenos">180</span></a>    <span class="n">GOA_MASTER</span> <span class="o">=</span> <span class="mi">3774021532</span>
-</span><span id="Dungeon-181"><a href="#Dungeon-181"><span class="linenos">181</span></a>    <span class="sd">&quot;&quot;&quot;Grasp of Avarice master.&quot;&quot;&quot;</span>
+</span><span id="Dungeon-181"><a href="#Dungeon-181"><span class="linenos">181</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Grasp of Avarice master.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -4554,6 +4561,7 @@
                 <dd id="Dungeon.to_bytes" class="function">to_bytes</dd>
                 <dd id="Dungeon.from_bytes" class="function">from_bytes</dd>
                 <dd id="Dungeon.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Dungeon.is_integer" class="function">is_integer</dd>
                 <dd id="Dungeon.real" class="variable">real</dd>
                 <dd id="Dungeon.imag" class="variable">imag</dd>
                 <dd id="Dungeon.numerator" class="variable">numerator</dd>
@@ -4577,7 +4585,7 @@
     <a class="headerlink" href="#Gender"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Gender-476"><a href="#Gender-476"><span class="linenos">476</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Gender-477"><a href="#Gender-477"><span class="linenos">477</span></a><span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Gender-478"><a href="#Gender-478"><span class="linenos">478</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
+</span><span id="Gender-478"><a href="#Gender-478"><span class="linenos">478</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
 </span><span id="Gender-479"><a href="#Gender-479"><span class="linenos">479</span></a>
 </span><span id="Gender-480"><a href="#Gender-480"><span class="linenos">480</span></a>    <span class="n">MALE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Gender-481"><a href="#Gender-481"><span class="linenos">481</span></a>    <span class="n">FEMALE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -4640,6 +4648,7 @@
                 <dd id="Gender.to_bytes" class="function">to_bytes</dd>
                 <dd id="Gender.from_bytes" class="function">from_bytes</dd>
                 <dd id="Gender.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Gender.is_integer" class="function">is_integer</dd>
                 <dd id="Gender.real" class="variable">real</dd>
                 <dd id="Gender.imag" class="variable">imag</dd>
                 <dd id="Gender.numerator" class="variable">numerator</dd>
@@ -4663,7 +4672,7 @@
     <a class="headerlink" href="#ComponentType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ComponentType-347"><a href="#ComponentType-347"><span class="linenos">347</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ComponentType-348"><a href="#ComponentType-348"><span class="linenos">348</span></a><span class="k">class</span> <span class="nc">ComponentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="ComponentType-349"><a href="#ComponentType-349"><span class="linenos">349</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 profile Components.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-349"><a href="#ComponentType-349"><span class="linenos">349</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 profile Components.&quot;&quot;&quot;</span>
 </span><span id="ComponentType-350"><a href="#ComponentType-350"><span class="linenos">350</span></a>
 </span><span id="ComponentType-351"><a href="#ComponentType-351"><span class="linenos">351</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ComponentType-352"><a href="#ComponentType-352"><span class="linenos">352</span></a>
@@ -4677,13 +4686,13 @@
 </span><span id="ComponentType-360"><a href="#ComponentType-360"><span class="linenos">360</span></a>        <span class="n">PROFILE_CURRENCIES</span><span class="p">,</span>
 </span><span id="ComponentType-361"><a href="#ComponentType-361"><span class="linenos">361</span></a>        <span class="n">PROFILE_PROGRESSION</span><span class="p">,</span>
 </span><span id="ComponentType-362"><a href="#ComponentType-362"><span class="linenos">362</span></a>    <span class="p">)</span>
-</span><span id="ComponentType-363"><a href="#ComponentType-363"><span class="linenos">363</span></a>    <span class="sd">&quot;&quot;&quot;All profile components.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-363"><a href="#ComponentType-363"><span class="linenos">363</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All profile components.&quot;&quot;&quot;</span>
 </span><span id="ComponentType-364"><a href="#ComponentType-364"><span class="linenos">364</span></a>
 </span><span id="ComponentType-365"><a href="#ComponentType-365"><span class="linenos">365</span></a>    <span class="n">VENDORS</span> <span class="o">=</span> <span class="mi">400</span>
 </span><span id="ComponentType-366"><a href="#ComponentType-366"><span class="linenos">366</span></a>    <span class="n">VENDOR_SALES</span> <span class="o">=</span> <span class="mi">402</span>
 </span><span id="ComponentType-367"><a href="#ComponentType-367"><span class="linenos">367</span></a>    <span class="n">VENDOR_RECEIPTS</span> <span class="o">=</span> <span class="mi">101</span>
 </span><span id="ComponentType-368"><a href="#ComponentType-368"><span class="linenos">368</span></a>    <span class="n">ALL_VENDORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">VENDORS</span><span class="p">,</span> <span class="n">VENDOR_RECEIPTS</span><span class="p">,</span> <span class="n">VENDOR_SALES</span><span class="p">)</span>
-</span><span id="ComponentType-369"><a href="#ComponentType-369"><span class="linenos">369</span></a>    <span class="sd">&quot;&quot;&quot;All vendor components.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-369"><a href="#ComponentType-369"><span class="linenos">369</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All vendor components.&quot;&quot;&quot;</span>
 </span><span id="ComponentType-370"><a href="#ComponentType-370"><span class="linenos">370</span></a>
 </span><span id="ComponentType-371"><a href="#ComponentType-371"><span class="linenos">371</span></a>    <span class="c1"># Items</span>
 </span><span id="ComponentType-372"><a href="#ComponentType-372"><span class="linenos">372</span></a>    <span class="n">ITEM_INSTANCES</span> <span class="o">=</span> <span class="mi">300</span>
@@ -4709,7 +4718,7 @@
 </span><span id="ComponentType-392"><a href="#ComponentType-392"><span class="linenos">392</span></a>        <span class="n">ITEM_TALENT_GRINDS</span><span class="p">,</span>
 </span><span id="ComponentType-393"><a href="#ComponentType-393"><span class="linenos">393</span></a>        <span class="n">ITEM_REUSABLE_PLUGS</span><span class="p">,</span>
 </span><span id="ComponentType-394"><a href="#ComponentType-394"><span class="linenos">394</span></a>    <span class="p">)</span>
-</span><span id="ComponentType-395"><a href="#ComponentType-395"><span class="linenos">395</span></a>    <span class="sd">&quot;&quot;&quot;All item components.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-395"><a href="#ComponentType-395"><span class="linenos">395</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All item components.&quot;&quot;&quot;</span>
 </span><span id="ComponentType-396"><a href="#ComponentType-396"><span class="linenos">396</span></a>
 </span><span id="ComponentType-397"><a href="#ComponentType-397"><span class="linenos">397</span></a>    <span class="n">PLATFORM_SILVER</span> <span class="o">=</span> <span class="mi">105</span>
 </span><span id="ComponentType-398"><a href="#ComponentType-398"><span class="linenos">398</span></a>    <span class="n">KIOSKS</span> <span class="o">=</span> <span class="mi">500</span>
@@ -4741,7 +4750,7 @@
 </span><span id="ComponentType-424"><a href="#ComponentType-424"><span class="linenos">424</span></a>        <span class="n">CHARACTER_LOADOUTS</span><span class="p">,</span>
 </span><span id="ComponentType-425"><a href="#ComponentType-425"><span class="linenos">425</span></a>        <span class="n">RECORDS</span><span class="p">,</span>
 </span><span id="ComponentType-426"><a href="#ComponentType-426"><span class="linenos">426</span></a>    <span class="p">)</span>
-</span><span id="ComponentType-427"><a href="#ComponentType-427"><span class="linenos">427</span></a>    <span class="sd">&quot;&quot;&quot;All character components.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-427"><a href="#ComponentType-427"><span class="linenos">427</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All character components.&quot;&quot;&quot;</span>
 </span><span id="ComponentType-428"><a href="#ComponentType-428"><span class="linenos">428</span></a>
 </span><span id="ComponentType-429"><a href="#ComponentType-429"><span class="linenos">429</span></a>    <span class="c1"># Ignores: We those are iterables, They&#39;re tuples.</span>
 </span><span id="ComponentType-430"><a href="#ComponentType-430"><span class="linenos">430</span></a>    <span class="n">ALL</span> <span class="o">=</span> <span class="p">(</span>
@@ -4761,7 +4770,7 @@
 </span><span id="ComponentType-444"><a href="#ComponentType-444"><span class="linenos">444</span></a>        <span class="n">TRANSITORY</span><span class="p">,</span>
 </span><span id="ComponentType-445"><a href="#ComponentType-445"><span class="linenos">445</span></a>        <span class="n">CRAFTABLES</span><span class="p">,</span>
 </span><span id="ComponentType-446"><a href="#ComponentType-446"><span class="linenos">446</span></a>    <span class="p">)</span>
-</span><span id="ComponentType-447"><a href="#ComponentType-447"><span class="linenos">447</span></a>    <span class="sd">&quot;&quot;&quot;ALl components included.&quot;&quot;&quot;</span>
+</span><span id="ComponentType-447"><a href="#ComponentType-447"><span class="linenos">447</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;ALl components included.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -5297,37 +5306,37 @@
     <a class="headerlink" href="#Planet"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Planet-184"><a href="#Planet-184"><span class="linenos">184</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Planet-185"><a href="#Planet-185"><span class="linenos">185</span></a><span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Planet-186"><a href="#Planet-186"><span class="linenos">186</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
+</span><span id="Planet-186"><a href="#Planet-186"><span class="linenos">186</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
 </span><span id="Planet-187"><a href="#Planet-187"><span class="linenos">187</span></a>
 </span><span id="Planet-188"><a href="#Planet-188"><span class="linenos">188</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Planet-189"><a href="#Planet-189"><span class="linenos">189</span></a>    <span class="sd">&quot;&quot;&quot;Unknown space&quot;&quot;&quot;</span>
+</span><span id="Planet-189"><a href="#Planet-189"><span class="linenos">189</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown space&quot;&quot;&quot;</span>
 </span><span id="Planet-190"><a href="#Planet-190"><span class="linenos">190</span></a>
 </span><span id="Planet-191"><a href="#Planet-191"><span class="linenos">191</span></a>    <span class="n">EARTH</span> <span class="o">=</span> <span class="mi">3747705955</span>
-</span><span id="Planet-192"><a href="#Planet-192"><span class="linenos">192</span></a>    <span class="sd">&quot;&quot;&quot;Earth&quot;&quot;&quot;</span>
+</span><span id="Planet-192"><a href="#Planet-192"><span class="linenos">192</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Earth&quot;&quot;&quot;</span>
 </span><span id="Planet-193"><a href="#Planet-193"><span class="linenos">193</span></a>
 </span><span id="Planet-194"><a href="#Planet-194"><span class="linenos">194</span></a>    <span class="n">DREAMING_CITY</span> <span class="o">=</span> <span class="mi">2877881518</span>
-</span><span id="Planet-195"><a href="#Planet-195"><span class="linenos">195</span></a>    <span class="sd">&quot;&quot;&quot;The Dreaming city.&quot;&quot;&quot;</span>
+</span><span id="Planet-195"><a href="#Planet-195"><span class="linenos">195</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Dreaming city.&quot;&quot;&quot;</span>
 </span><span id="Planet-196"><a href="#Planet-196"><span class="linenos">196</span></a>
 </span><span id="Planet-197"><a href="#Planet-197"><span class="linenos">197</span></a>    <span class="n">NESSUS</span> <span class="o">=</span> <span class="mi">3526908984</span>
-</span><span id="Planet-198"><a href="#Planet-198"><span class="linenos">198</span></a>    <span class="sd">&quot;&quot;&quot;Nessus&quot;&quot;&quot;</span>
+</span><span id="Planet-198"><a href="#Planet-198"><span class="linenos">198</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Nessus&quot;&quot;&quot;</span>
 </span><span id="Planet-199"><a href="#Planet-199"><span class="linenos">199</span></a>
 </span><span id="Planet-200"><a href="#Planet-200"><span class="linenos">200</span></a>    <span class="n">MOON</span> <span class="o">=</span> <span class="mi">3325508439</span>
-</span><span id="Planet-201"><a href="#Planet-201"><span class="linenos">201</span></a>    <span class="sd">&quot;&quot;&quot;The Moon&quot;&quot;&quot;</span>
+</span><span id="Planet-201"><a href="#Planet-201"><span class="linenos">201</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Moon&quot;&quot;&quot;</span>
 </span><span id="Planet-202"><a href="#Planet-202"><span class="linenos">202</span></a>
 </span><span id="Planet-203"><a href="#Planet-203"><span class="linenos">203</span></a>    <span class="n">COSMODROME</span> <span class="o">=</span> <span class="mi">3990611421</span>
-</span><span id="Planet-204"><a href="#Planet-204"><span class="linenos">204</span></a>    <span class="sd">&quot;&quot;&quot;The Cosmodrome&quot;&quot;&quot;</span>
+</span><span id="Planet-204"><a href="#Planet-204"><span class="linenos">204</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Cosmodrome&quot;&quot;&quot;</span>
 </span><span id="Planet-205"><a href="#Planet-205"><span class="linenos">205</span></a>
 </span><span id="Planet-206"><a href="#Planet-206"><span class="linenos">206</span></a>    <span class="n">TANGLED_SHORE</span> <span class="o">=</span> <span class="mi">3821439926</span>
-</span><span id="Planet-207"><a href="#Planet-207"><span class="linenos">207</span></a>    <span class="sd">&quot;&quot;&quot;The Tangled Shore&quot;&quot;&quot;</span>
+</span><span id="Planet-207"><a href="#Planet-207"><span class="linenos">207</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The Tangled Shore&quot;&quot;&quot;</span>
 </span><span id="Planet-208"><a href="#Planet-208"><span class="linenos">208</span></a>
 </span><span id="Planet-209"><a href="#Planet-209"><span class="linenos">209</span></a>    <span class="n">VENUS</span> <span class="o">=</span> <span class="mi">3871070152</span>
-</span><span id="Planet-210"><a href="#Planet-210"><span class="linenos">210</span></a>    <span class="sd">&quot;&quot;&quot;Venus&quot;&quot;&quot;</span>
+</span><span id="Planet-210"><a href="#Planet-210"><span class="linenos">210</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Venus&quot;&quot;&quot;</span>
 </span><span id="Planet-211"><a href="#Planet-211"><span class="linenos">211</span></a>
 </span><span id="Planet-212"><a href="#Planet-212"><span class="linenos">212</span></a>    <span class="n">EAZ</span> <span class="o">=</span> <span class="mi">541863059</span>  <span class="c1"># Exclusive event.</span>
-</span><span id="Planet-213"><a href="#Planet-213"><span class="linenos">213</span></a>    <span class="sd">&quot;&quot;&quot;European Aerial Zone&quot;&quot;&quot;</span>
+</span><span id="Planet-213"><a href="#Planet-213"><span class="linenos">213</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;European Aerial Zone&quot;&quot;&quot;</span>
 </span><span id="Planet-214"><a href="#Planet-214"><span class="linenos">214</span></a>
 </span><span id="Planet-215"><a href="#Planet-215"><span class="linenos">215</span></a>    <span class="n">EUROPA</span> <span class="o">=</span> <span class="mi">1729879943</span>
-</span><span id="Planet-216"><a href="#Planet-216"><span class="linenos">216</span></a>    <span class="sd">&quot;&quot;&quot;Europa&quot;&quot;&quot;</span>
+</span><span id="Planet-216"><a href="#Planet-216"><span class="linenos">216</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Europa&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -5490,6 +5499,7 @@
                 <dd id="Planet.to_bytes" class="function">to_bytes</dd>
                 <dd id="Planet.from_bytes" class="function">from_bytes</dd>
                 <dd id="Planet.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Planet.is_integer" class="function">is_integer</dd>
                 <dd id="Planet.real" class="variable">real</dd>
                 <dd id="Planet.imag" class="variable">imag</dd>
                 <dd id="Planet.numerator" class="variable">numerator</dd>
@@ -5513,7 +5523,7 @@
     <a class="headerlink" href="#Stat"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Stat-507"><a href="#Stat-507"><span class="linenos">507</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Stat-508"><a href="#Stat-508"><span class="linenos">508</span></a><span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Stat-509"><a href="#Stat-509"><span class="linenos">509</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
+</span><span id="Stat-509"><a href="#Stat-509"><span class="linenos">509</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
 </span><span id="Stat-510"><a href="#Stat-510"><span class="linenos">510</span></a>
 </span><span id="Stat-511"><a href="#Stat-511"><span class="linenos">511</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Stat-512"><a href="#Stat-512"><span class="linenos">512</span></a>    <span class="n">MOBILITY</span> <span class="o">=</span> <span class="mi">2996146975</span>
@@ -5641,6 +5651,7 @@
                 <dd id="Stat.to_bytes" class="function">to_bytes</dd>
                 <dd id="Stat.from_bytes" class="function">from_bytes</dd>
                 <dd id="Stat.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Stat.is_integer" class="function">is_integer</dd>
                 <dd id="Stat.real" class="variable">real</dd>
                 <dd id="Stat.imag" class="variable">imag</dd>
                 <dd id="Stat.numerator" class="variable">numerator</dd>
@@ -5664,7 +5675,7 @@
     <a class="headerlink" href="#WeaponType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="WeaponType-521"><a href="#WeaponType-521"><span class="linenos">521</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="WeaponType-522"><a href="#WeaponType-522"><span class="linenos">522</span></a><span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="WeaponType-523"><a href="#WeaponType-523"><span class="linenos">523</span></a>    <span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
+</span><span id="WeaponType-523"><a href="#WeaponType-523"><span class="linenos">523</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
 </span><span id="WeaponType-524"><a href="#WeaponType-524"><span class="linenos">524</span></a>
 </span><span id="WeaponType-525"><a href="#WeaponType-525"><span class="linenos">525</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="WeaponType-526"><a href="#WeaponType-526"><span class="linenos">526</span></a>    <span class="n">KINETIC</span> <span class="o">=</span> <span class="mi">1498876634</span>
@@ -5740,6 +5751,7 @@
                 <dd id="WeaponType.to_bytes" class="function">to_bytes</dd>
                 <dd id="WeaponType.from_bytes" class="function">from_bytes</dd>
                 <dd id="WeaponType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="WeaponType.is_integer" class="function">is_integer</dd>
                 <dd id="WeaponType.real" class="variable">real</dd>
                 <dd id="WeaponType.imag" class="variable">imag</dd>
                 <dd id="WeaponType.numerator" class="variable">numerator</dd>
@@ -5763,7 +5775,7 @@
     <a class="headerlink" href="#DamageType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="DamageType-531"><a href="#DamageType-531"><span class="linenos">531</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="DamageType-532"><a href="#DamageType-532"><span class="linenos">532</span></a><span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="DamageType-533"><a href="#DamageType-533"><span class="linenos">533</span></a>    <span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
+</span><span id="DamageType-533"><a href="#DamageType-533"><span class="linenos">533</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
 </span><span id="DamageType-534"><a href="#DamageType-534"><span class="linenos">534</span></a>
 </span><span id="DamageType-535"><a href="#DamageType-535"><span class="linenos">535</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="DamageType-536"><a href="#DamageType-536"><span class="linenos">536</span></a>    <span class="n">KINETIC</span> <span class="o">=</span> <span class="mi">1</span>
@@ -5771,7 +5783,7 @@
 </span><span id="DamageType-538"><a href="#DamageType-538"><span class="linenos">538</span></a>    <span class="n">SOLAR</span> <span class="o">=</span> <span class="mi">3</span>
 </span><span id="DamageType-539"><a href="#DamageType-539"><span class="linenos">539</span></a>    <span class="n">VOID</span> <span class="o">=</span> <span class="mi">4</span>
 </span><span id="DamageType-540"><a href="#DamageType-540"><span class="linenos">540</span></a>    <span class="n">RAID</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span id="DamageType-541"><a href="#DamageType-541"><span class="linenos">541</span></a>    <span class="sd">&quot;&quot;&quot;This is a special damage type reserved for some raid activity encounters.&quot;&quot;&quot;</span>
+</span><span id="DamageType-541"><a href="#DamageType-541"><span class="linenos">541</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a special damage type reserved for some raid activity encounters.&quot;&quot;&quot;</span>
 </span><span id="DamageType-542"><a href="#DamageType-542"><span class="linenos">542</span></a>    <span class="n">STASIS</span> <span class="o">=</span> <span class="mi">6</span>
 </span></pre></div>
 
@@ -5881,6 +5893,7 @@
                 <dd id="DamageType.to_bytes" class="function">to_bytes</dd>
                 <dd id="DamageType.from_bytes" class="function">from_bytes</dd>
                 <dd id="DamageType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="DamageType.is_integer" class="function">is_integer</dd>
                 <dd id="DamageType.real" class="variable">real</dd>
                 <dd id="DamageType.imag" class="variable">imag</dd>
                 <dd id="DamageType.numerator" class="variable">numerator</dd>
@@ -5904,7 +5917,7 @@
     <a class="headerlink" href="#ItemType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemType-545"><a href="#ItemType-545"><span class="linenos">545</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemType-546"><a href="#ItemType-546"><span class="linenos">546</span></a><span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ItemType-547"><a href="#ItemType-547"><span class="linenos">547</span></a>    <span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
+</span><span id="ItemType-547"><a href="#ItemType-547"><span class="linenos">547</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
 </span><span id="ItemType-548"><a href="#ItemType-548"><span class="linenos">548</span></a>
 </span><span id="ItemType-549"><a href="#ItemType-549"><span class="linenos">549</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemType-550"><a href="#ItemType-550"><span class="linenos">550</span></a>    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -6279,6 +6292,7 @@
                 <dd id="ItemType.to_bytes" class="function">to_bytes</dd>
                 <dd id="ItemType.from_bytes" class="function">from_bytes</dd>
                 <dd id="ItemType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ItemType.is_integer" class="function">is_integer</dd>
                 <dd id="ItemType.real" class="variable">real</dd>
                 <dd id="ItemType.imag" class="variable">imag</dd>
                 <dd id="ItemType.numerator" class="variable">numerator</dd>
@@ -6302,7 +6316,7 @@
     <a class="headerlink" href="#Place"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Place-219"><a href="#Place-219"><span class="linenos">219</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Place-220"><a href="#Place-220"><span class="linenos">220</span></a><span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Place-221"><a href="#Place-221"><span class="linenos">221</span></a>    <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
+</span><span id="Place-221"><a href="#Place-221"><span class="linenos">221</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
 </span><span id="Place-222"><a href="#Place-222"><span class="linenos">222</span></a>
 </span><span id="Place-223"><a href="#Place-223"><span class="linenos">223</span></a>    <span class="n">ORBIT</span> <span class="o">=</span> <span class="mi">2961497387</span>
 </span><span id="Place-224"><a href="#Place-224"><span class="linenos">224</span></a>    <span class="n">SOCIAL</span> <span class="o">=</span> <span class="mi">4151112093</span>
@@ -6378,6 +6392,7 @@
                 <dd id="Place.to_bytes" class="function">to_bytes</dd>
                 <dd id="Place.from_bytes" class="function">from_bytes</dd>
                 <dd id="Place.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Place.is_integer" class="function">is_integer</dd>
                 <dd id="Place.real" class="variable">real</dd>
                 <dd id="Place.imag" class="variable">imag</dd>
                 <dd id="Place.numerator" class="variable">numerator</dd>
@@ -6401,7 +6416,7 @@
     <a class="headerlink" href="#ItemTier"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemTier-610"><a href="#ItemTier-610"><span class="linenos">610</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemTier-611"><a href="#ItemTier-611"><span class="linenos">611</span></a><span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ItemTier-612"><a href="#ItemTier-612"><span class="linenos">612</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
+</span><span id="ItemTier-612"><a href="#ItemTier-612"><span class="linenos">612</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
 </span><span id="ItemTier-613"><a href="#ItemTier-613"><span class="linenos">613</span></a>
 </span><span id="ItemTier-614"><a href="#ItemTier-614"><span class="linenos">614</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemTier-615"><a href="#ItemTier-615"><span class="linenos">615</span></a>    <span class="n">BASIC</span> <span class="o">=</span> <span class="mi">3340296461</span>
@@ -6503,6 +6518,7 @@
                 <dd id="ItemTier.to_bytes" class="function">to_bytes</dd>
                 <dd id="ItemTier.from_bytes" class="function">from_bytes</dd>
                 <dd id="ItemTier.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ItemTier.is_integer" class="function">is_integer</dd>
                 <dd id="ItemTier.real" class="variable">real</dd>
                 <dd id="ItemTier.imag" class="variable">imag</dd>
                 <dd id="ItemTier.numerator" class="variable">numerator</dd>
@@ -6526,7 +6542,7 @@
     <a class="headerlink" href="#AmmoType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AmmoType-635"><a href="#AmmoType-635"><span class="linenos">635</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="AmmoType-636"><a href="#AmmoType-636"><span class="linenos">636</span></a><span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="AmmoType-637"><a href="#AmmoType-637"><span class="linenos">637</span></a>    <span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
+</span><span id="AmmoType-637"><a href="#AmmoType-637"><span class="linenos">637</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
 </span><span id="AmmoType-638"><a href="#AmmoType-638"><span class="linenos">638</span></a>
 </span><span id="AmmoType-639"><a href="#AmmoType-639"><span class="linenos">639</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="AmmoType-640"><a href="#AmmoType-640"><span class="linenos">640</span></a>    <span class="n">PRIMARY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -6602,6 +6618,7 @@
                 <dd id="AmmoType.to_bytes" class="function">to_bytes</dd>
                 <dd id="AmmoType.from_bytes" class="function">from_bytes</dd>
                 <dd id="AmmoType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="AmmoType.is_integer" class="function">is_integer</dd>
                 <dd id="AmmoType.real" class="variable">real</dd>
                 <dd id="AmmoType.imag" class="variable">imag</dd>
                 <dd id="AmmoType.numerator" class="variable">numerator</dd>
@@ -6625,7 +6642,7 @@
     <a class="headerlink" href="#GroupType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="GroupType-645"><a href="#GroupType-645"><span class="linenos">645</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="GroupType-646"><a href="#GroupType-646"><span class="linenos">646</span></a><span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="GroupType-647"><a href="#GroupType-647"><span class="linenos">647</span></a>    <span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
+</span><span id="GroupType-647"><a href="#GroupType-647"><span class="linenos">647</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
 </span><span id="GroupType-648"><a href="#GroupType-648"><span class="linenos">648</span></a>
 </span><span id="GroupType-649"><a href="#GroupType-649"><span class="linenos">649</span></a>    <span class="n">GENERAL</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="GroupType-650"><a href="#GroupType-650"><span class="linenos">650</span></a>    <span class="n">CLAN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -6675,6 +6692,7 @@
                 <dd id="GroupType.to_bytes" class="function">to_bytes</dd>
                 <dd id="GroupType.from_bytes" class="function">from_bytes</dd>
                 <dd id="GroupType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="GroupType.is_integer" class="function">is_integer</dd>
                 <dd id="GroupType.real" class="variable">real</dd>
                 <dd id="GroupType.imag" class="variable">imag</dd>
                 <dd id="GroupType.numerator" class="variable">numerator</dd>
@@ -6698,7 +6716,7 @@
     <a class="headerlink" href="#CredentialType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="CredentialType-653"><a href="#CredentialType-653"><span class="linenos">653</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="CredentialType-654"><a href="#CredentialType-654"><span class="linenos">654</span></a><span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="CredentialType-655"><a href="#CredentialType-655"><span class="linenos">655</span></a>    <span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
+</span><span id="CredentialType-655"><a href="#CredentialType-655"><span class="linenos">655</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
 </span><span id="CredentialType-656"><a href="#CredentialType-656"><span class="linenos">656</span></a>
 </span><span id="CredentialType-657"><a href="#CredentialType-657"><span class="linenos">657</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="CredentialType-658"><a href="#CredentialType-658"><span class="linenos">658</span></a>    <span class="n">XUID</span> <span class="o">=</span> <span class="mi">1</span>
@@ -6891,6 +6909,7 @@
                 <dd id="CredentialType.to_bytes" class="function">to_bytes</dd>
                 <dd id="CredentialType.from_bytes" class="function">from_bytes</dd>
                 <dd id="CredentialType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="CredentialType.is_integer" class="function">is_integer</dd>
                 <dd id="CredentialType.real" class="variable">real</dd>
                 <dd id="CredentialType.imag" class="variable">imag</dd>
                 <dd id="CredentialType.numerator" class="variable">numerator</dd>
@@ -6914,7 +6933,7 @@
     <a class="headerlink" href="#Presence"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Presence-672"><a href="#Presence-672"><span class="linenos">672</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Presence-673"><a href="#Presence-673"><span class="linenos">673</span></a><span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Presence-674"><a href="#Presence-674"><span class="linenos">674</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
+</span><span id="Presence-674"><a href="#Presence-674"><span class="linenos">674</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
 </span><span id="Presence-675"><a href="#Presence-675"><span class="linenos">675</span></a>
 </span><span id="Presence-676"><a href="#Presence-676"><span class="linenos">676</span></a>    <span class="n">OFFLINE_OR_UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Presence-677"><a href="#Presence-677"><span class="linenos">677</span></a>    <span class="n">ONLINE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -6964,6 +6983,7 @@
                 <dd id="Presence.to_bytes" class="function">to_bytes</dd>
                 <dd id="Presence.from_bytes" class="function">from_bytes</dd>
                 <dd id="Presence.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Presence.is_integer" class="function">is_integer</dd>
                 <dd id="Presence.real" class="variable">real</dd>
                 <dd id="Presence.imag" class="variable">imag</dd>
                 <dd id="Presence.numerator" class="variable">numerator</dd>
@@ -6987,7 +7007,7 @@
     <a class="headerlink" href="#Relationship"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Relationship-680"><a href="#Relationship-680"><span class="linenos">680</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="Relationship-681"><a href="#Relationship-681"><span class="linenos">681</span></a><span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="Relationship-682"><a href="#Relationship-682"><span class="linenos">682</span></a>    <span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
+</span><span id="Relationship-682"><a href="#Relationship-682"><span class="linenos">682</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
 </span><span id="Relationship-683"><a href="#Relationship-683"><span class="linenos">683</span></a>
 </span><span id="Relationship-684"><a href="#Relationship-684"><span class="linenos">684</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Relationship-685"><a href="#Relationship-685"><span class="linenos">685</span></a>    <span class="n">FRIEND</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7063,6 +7083,7 @@
                 <dd id="Relationship.to_bytes" class="function">to_bytes</dd>
                 <dd id="Relationship.from_bytes" class="function">from_bytes</dd>
                 <dd id="Relationship.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="Relationship.is_integer" class="function">is_integer</dd>
                 <dd id="Relationship.real" class="variable">real</dd>
                 <dd id="Relationship.imag" class="variable">imag</dd>
                 <dd id="Relationship.numerator" class="variable">numerator</dd>
@@ -7086,7 +7107,7 @@
     <a class="headerlink" href="#ClanMemberType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ClanMemberType-690"><a href="#ClanMemberType-690"><span class="linenos">690</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ClanMemberType-691"><a href="#ClanMemberType-691"><span class="linenos">691</span></a><span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ClanMemberType-692"><a href="#ClanMemberType-692"><span class="linenos">692</span></a>    <span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
+</span><span id="ClanMemberType-692"><a href="#ClanMemberType-692"><span class="linenos">692</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
 </span><span id="ClanMemberType-693"><a href="#ClanMemberType-693"><span class="linenos">693</span></a>
 </span><span id="ClanMemberType-694"><a href="#ClanMemberType-694"><span class="linenos">694</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ClanMemberType-695"><a href="#ClanMemberType-695"><span class="linenos">695</span></a>    <span class="n">BEGINNER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7188,6 +7209,7 @@
                 <dd id="ClanMemberType.to_bytes" class="function">to_bytes</dd>
                 <dd id="ClanMemberType.from_bytes" class="function">from_bytes</dd>
                 <dd id="ClanMemberType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ClanMemberType.is_integer" class="function">is_integer</dd>
                 <dd id="ClanMemberType.real" class="variable">real</dd>
                 <dd id="ClanMemberType.imag" class="variable">imag</dd>
                 <dd id="ClanMemberType.numerator" class="variable">numerator</dd>
@@ -7211,7 +7233,7 @@
     <a class="headerlink" href="#MembershipOption"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MembershipOption-702"><a href="#MembershipOption-702"><span class="linenos">702</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="MembershipOption-703"><a href="#MembershipOption-703"><span class="linenos">703</span></a><span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="MembershipOption-704"><a href="#MembershipOption-704"><span class="linenos">704</span></a>    <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
+</span><span id="MembershipOption-704"><a href="#MembershipOption-704"><span class="linenos">704</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
 </span><span id="MembershipOption-705"><a href="#MembershipOption-705"><span class="linenos">705</span></a>
 </span><span id="MembershipOption-706"><a href="#MembershipOption-706"><span class="linenos">706</span></a>    <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="MembershipOption-707"><a href="#MembershipOption-707"><span class="linenos">707</span></a>    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7274,6 +7296,7 @@
                 <dd id="MembershipOption.to_bytes" class="function">to_bytes</dd>
                 <dd id="MembershipOption.from_bytes" class="function">from_bytes</dd>
                 <dd id="MembershipOption.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="MembershipOption.is_integer" class="function">is_integer</dd>
                 <dd id="MembershipOption.real" class="variable">real</dd>
                 <dd id="MembershipOption.imag" class="variable">imag</dd>
                 <dd id="MembershipOption.numerator" class="variable">numerator</dd>
@@ -7297,7 +7320,7 @@
     <a class="headerlink" href="#ItemBindStatus"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemBindStatus-711"><a href="#ItemBindStatus-711"><span class="linenos">711</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemBindStatus-712"><a href="#ItemBindStatus-712"><span class="linenos">712</span></a><span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ItemBindStatus-713"><a href="#ItemBindStatus-713"><span class="linenos">713</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
+</span><span id="ItemBindStatus-713"><a href="#ItemBindStatus-713"><span class="linenos">713</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
 </span><span id="ItemBindStatus-714"><a href="#ItemBindStatus-714"><span class="linenos">714</span></a>
 </span><span id="ItemBindStatus-715"><a href="#ItemBindStatus-715"><span class="linenos">715</span></a>    <span class="n">NOT_BOUND</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemBindStatus-716"><a href="#ItemBindStatus-716"><span class="linenos">716</span></a>    <span class="n">BOUND_TO_CHARACTER</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7373,6 +7396,7 @@
                 <dd id="ItemBindStatus.to_bytes" class="function">to_bytes</dd>
                 <dd id="ItemBindStatus.from_bytes" class="function">from_bytes</dd>
                 <dd id="ItemBindStatus.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ItemBindStatus.is_integer" class="function">is_integer</dd>
                 <dd id="ItemBindStatus.real" class="variable">real</dd>
                 <dd id="ItemBindStatus.imag" class="variable">imag</dd>
                 <dd id="ItemBindStatus.numerator" class="variable">numerator</dd>
@@ -7396,7 +7420,7 @@
     <a class="headerlink" href="#ItemLocation"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemLocation-721"><a href="#ItemLocation-721"><span class="linenos">721</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemLocation-722"><a href="#ItemLocation-722"><span class="linenos">722</span></a><span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ItemLocation-723"><a href="#ItemLocation-723"><span class="linenos">723</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
+</span><span id="ItemLocation-723"><a href="#ItemLocation-723"><span class="linenos">723</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
 </span><span id="ItemLocation-724"><a href="#ItemLocation-724"><span class="linenos">724</span></a>
 </span><span id="ItemLocation-725"><a href="#ItemLocation-725"><span class="linenos">725</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemLocation-726"><a href="#ItemLocation-726"><span class="linenos">726</span></a>    <span class="n">INVENTORY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7485,6 +7509,7 @@
                 <dd id="ItemLocation.to_bytes" class="function">to_bytes</dd>
                 <dd id="ItemLocation.from_bytes" class="function">from_bytes</dd>
                 <dd id="ItemLocation.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ItemLocation.is_integer" class="function">is_integer</dd>
                 <dd id="ItemLocation.real" class="variable">real</dd>
                 <dd id="ItemLocation.imag" class="variable">imag</dd>
                 <dd id="ItemLocation.numerator" class="variable">numerator</dd>
@@ -7508,16 +7533,16 @@
     <a class="headerlink" href="#TransferStatus"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="TransferStatus-732"><a href="#TransferStatus-732"><span class="linenos">732</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="TransferStatus-733"><a href="#TransferStatus-733"><span class="linenos">733</span></a><span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="TransferStatus-734"><a href="#TransferStatus-734"><span class="linenos">734</span></a>    <span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
+</span><span id="TransferStatus-734"><a href="#TransferStatus-734"><span class="linenos">734</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
 </span><span id="TransferStatus-735"><a href="#TransferStatus-735"><span class="linenos">735</span></a>
 </span><span id="TransferStatus-736"><a href="#TransferStatus-736"><span class="linenos">736</span></a>    <span class="n">CAN_TRANSFER</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="TransferStatus-737"><a href="#TransferStatus-737"><span class="linenos">737</span></a>    <span class="sd">&quot;&quot;&quot;The item can be transferred.&quot;&quot;&quot;</span>
+</span><span id="TransferStatus-737"><a href="#TransferStatus-737"><span class="linenos">737</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The item can be transferred.&quot;&quot;&quot;</span>
 </span><span id="TransferStatus-738"><a href="#TransferStatus-738"><span class="linenos">738</span></a>    <span class="n">IS_EQUIPPED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
-</span><span id="TransferStatus-739"><a href="#TransferStatus-739"><span class="linenos">739</span></a>    <span class="sd">&quot;&quot;&quot;You can&#39;t transfer since the item is equipped.&quot;&quot;&quot;</span>
+</span><span id="TransferStatus-739"><a href="#TransferStatus-739"><span class="linenos">739</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;You can&#39;t transfer since the item is equipped.&quot;&quot;&quot;</span>
 </span><span id="TransferStatus-740"><a href="#TransferStatus-740"><span class="linenos">740</span></a>    <span class="n">NOT_TRASNFERRABLE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
-</span><span id="TransferStatus-741"><a href="#TransferStatus-741"><span class="linenos">741</span></a>    <span class="sd">&quot;&quot;&quot;This item can not be transferred.&quot;&quot;&quot;</span>
+</span><span id="TransferStatus-741"><a href="#TransferStatus-741"><span class="linenos">741</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;This item can not be transferred.&quot;&quot;&quot;</span>
 </span><span id="TransferStatus-742"><a href="#TransferStatus-742"><span class="linenos">742</span></a>    <span class="n">COULD_BE_TRANSFERRED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
-</span><span id="TransferStatus-743"><a href="#TransferStatus-743"><span class="linenos">743</span></a>    <span class="sd">&quot;&quot;&quot;You can transfer the item. But the place you&#39;re trying to put it at has no space for it.&quot;&quot;&quot;</span>
+</span><span id="TransferStatus-743"><a href="#TransferStatus-743"><span class="linenos">743</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;You can transfer the item. But the place you&#39;re trying to put it at has no space for it.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -7606,16 +7631,16 @@
     <a class="headerlink" href="#ItemState"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemState-746"><a href="#ItemState-746"><span class="linenos">746</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemState-747"><a href="#ItemState-747"><span class="linenos">747</span></a><span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="ItemState-748"><a href="#ItemState-748"><span class="linenos">748</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
+</span><span id="ItemState-748"><a href="#ItemState-748"><span class="linenos">748</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
 </span><span id="ItemState-749"><a href="#ItemState-749"><span class="linenos">749</span></a>
 </span><span id="ItemState-750"><a href="#ItemState-750"><span class="linenos">750</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemState-751"><a href="#ItemState-751"><span class="linenos">751</span></a>    <span class="n">LOCKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 </span><span id="ItemState-752"><a href="#ItemState-752"><span class="linenos">752</span></a>    <span class="n">TRACKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
 </span><span id="ItemState-753"><a href="#ItemState-753"><span class="linenos">753</span></a>    <span class="n">MASTERWORKED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
 </span><span id="ItemState-754"><a href="#ItemState-754"><span class="linenos">754</span></a>    <span class="n">CRAFTED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
-</span><span id="ItemState-755"><a href="#ItemState-755"><span class="linenos">755</span></a>    <span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
+</span><span id="ItemState-755"><a href="#ItemState-755"><span class="linenos">755</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
 </span><span id="ItemState-756"><a href="#ItemState-756"><span class="linenos">756</span></a>    <span class="n">HIGHLITED_OBJECTIVE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span>
-</span><span id="ItemState-757"><a href="#ItemState-757"><span class="linenos">757</span></a>    <span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
+</span><span id="ItemState-757"><a href="#ItemState-757"><span class="linenos">757</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -7724,7 +7749,7 @@
     <a class="headerlink" href="#PrivacySetting"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PrivacySetting-760"><a href="#PrivacySetting-760"><span class="linenos">760</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="PrivacySetting-761"><a href="#PrivacySetting-761"><span class="linenos">761</span></a><span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="PrivacySetting-762"><a href="#PrivacySetting-762"><span class="linenos">762</span></a>    <span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
+</span><span id="PrivacySetting-762"><a href="#PrivacySetting-762"><span class="linenos">762</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
 </span><span id="PrivacySetting-763"><a href="#PrivacySetting-763"><span class="linenos">763</span></a>
 </span><span id="PrivacySetting-764"><a href="#PrivacySetting-764"><span class="linenos">764</span></a>    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="PrivacySetting-765"><a href="#PrivacySetting-765"><span class="linenos">765</span></a>    <span class="n">CLAN_AND_FRIENDS</span> <span class="o">=</span> <span class="mi">1</span>
@@ -7813,6 +7838,7 @@
                 <dd id="PrivacySetting.to_bytes" class="function">to_bytes</dd>
                 <dd id="PrivacySetting.from_bytes" class="function">from_bytes</dd>
                 <dd id="PrivacySetting.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="PrivacySetting.is_integer" class="function">is_integer</dd>
                 <dd id="PrivacySetting.real" class="variable">real</dd>
                 <dd id="PrivacySetting.imag" class="variable">imag</dd>
                 <dd id="PrivacySetting.numerator" class="variable">numerator</dd>
@@ -7836,23 +7862,23 @@
     <a class="headerlink" href="#ClosedReasons"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ClosedReasons-771"><a href="#ClosedReasons-771"><span class="linenos">771</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ClosedReasons-772"><a href="#ClosedReasons-772"><span class="linenos">772</span></a><span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
-</span><span id="ClosedReasons-773"><a href="#ClosedReasons-773"><span class="linenos">773</span></a>    <span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
+</span><span id="ClosedReasons-773"><a href="#ClosedReasons-773"><span class="linenos">773</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
 </span><span id="ClosedReasons-774"><a href="#ClosedReasons-774"><span class="linenos">774</span></a>
 </span><span id="ClosedReasons-775"><a href="#ClosedReasons-775"><span class="linenos">775</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ClosedReasons-776"><a href="#ClosedReasons-776"><span class="linenos">776</span></a>    <span class="n">MATCHMAKING</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 </span><span id="ClosedReasons-777"><a href="#ClosedReasons-777"><span class="linenos">777</span></a>    <span class="n">LOADING</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
 </span><span id="ClosedReasons-778"><a href="#ClosedReasons-778"><span class="linenos">778</span></a>    <span class="n">SOLO</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
-</span><span id="ClosedReasons-779"><a href="#ClosedReasons-779"><span class="linenos">779</span></a>    <span class="sd">&quot;&quot;&quot;The activity is required to be played solo.&quot;&quot;&quot;</span>
+</span><span id="ClosedReasons-779"><a href="#ClosedReasons-779"><span class="linenos">779</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The activity is required to be played solo.&quot;&quot;&quot;</span>
 </span><span id="ClosedReasons-780"><a href="#ClosedReasons-780"><span class="linenos">780</span></a>    <span class="n">INTERNAL_REASONS</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
-</span><span id="ClosedReasons-781"><a href="#ClosedReasons-781"><span class="linenos">781</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ClosedReasons-781"><a href="#ClosedReasons-781"><span class="linenos">781</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="ClosedReasons-782"><a href="#ClosedReasons-782"><span class="linenos">782</span></a><span class="sd">    The user can&#39;t be joined for one of a variety of internal reasons.</span>
 </span><span id="ClosedReasons-783"><a href="#ClosedReasons-783"><span class="linenos">783</span></a><span class="sd">    Basically, the game can&#39;t let you join at this time,</span>
 </span><span id="ClosedReasons-784"><a href="#ClosedReasons-784"><span class="linenos">784</span></a><span class="sd">    but for reasons that aren&#39;t under the control of this user</span>
 </span><span id="ClosedReasons-785"><a href="#ClosedReasons-785"><span class="linenos">785</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="ClosedReasons-786"><a href="#ClosedReasons-786"><span class="linenos">786</span></a>    <span class="n">DISALLOWED_BY_GAME_STATE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span>
-</span><span id="ClosedReasons-787"><a href="#ClosedReasons-787"><span class="linenos">787</span></a>    <span class="sd">&quot;&quot;&quot;The user&#39;s current activity/quest/other transitory game state is preventing joining.&quot;&quot;&quot;</span>
+</span><span id="ClosedReasons-787"><a href="#ClosedReasons-787"><span class="linenos">787</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The user&#39;s current activity/quest/other transitory game state is preventing joining.&quot;&quot;&quot;</span>
 </span><span id="ClosedReasons-788"><a href="#ClosedReasons-788"><span class="linenos">788</span></a>    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="mi">32768</span>
-</span><span id="ClosedReasons-789"><a href="#ClosedReasons-789"><span class="linenos">789</span></a>    <span class="sd">&quot;&quot;&quot;The user appears offline.&quot;&quot;&quot;</span>
+</span><span id="ClosedReasons-789"><a href="#ClosedReasons-789"><span class="linenos">789</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The user appears offline.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -7979,7 +8005,7 @@ but for reasons that aren't under the control of this user</p>
     <a class="headerlink" href="#ItemSubType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ItemSubType-578"><a href="#ItemSubType-578"><span class="linenos">578</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="ItemSubType-579"><a href="#ItemSubType-579"><span class="linenos">579</span></a><span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="ItemSubType-580"><a href="#ItemSubType-580"><span class="linenos">580</span></a>    <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
+</span><span id="ItemSubType-580"><a href="#ItemSubType-580"><span class="linenos">580</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
 </span><span id="ItemSubType-581"><a href="#ItemSubType-581"><span class="linenos">581</span></a>
 </span><span id="ItemSubType-582"><a href="#ItemSubType-582"><span class="linenos">582</span></a>    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ItemSubType-583"><a href="#ItemSubType-583"><span class="linenos">583</span></a>    <span class="n">AUTORIFLE</span> <span class="o">=</span> <span class="mi">6</span>
@@ -8341,6 +8367,7 @@ but for reasons that aren't under the control of this user</p>
                 <dd id="ItemSubType.to_bytes" class="function">to_bytes</dd>
                 <dd id="ItemSubType.from_bytes" class="function">from_bytes</dd>
                 <dd id="ItemSubType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="ItemSubType.is_integer" class="function">is_integer</dd>
                 <dd id="ItemSubType.real" class="variable">real</dd>
                 <dd id="ItemSubType.imag" class="variable">imag</dd>
                 <dd id="ItemSubType.numerator" class="variable">numerator</dd>
@@ -8364,7 +8391,7 @@ but for reasons that aren't under the control of this user</p>
     <a class="headerlink" href="#TierType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="TierType-622"><a href="#TierType-622"><span class="linenos">622</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
 </span><span id="TierType-623"><a href="#TierType-623"><span class="linenos">623</span></a><span class="k">class</span> <span class="nc">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="TierType-624"><a href="#TierType-624"><span class="linenos">624</span></a>    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
+</span><span id="TierType-624"><a href="#TierType-624"><span class="linenos">624</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
 </span><span id="TierType-625"><a href="#TierType-625"><span class="linenos">625</span></a>
 </span><span id="TierType-626"><a href="#TierType-626"><span class="linenos">626</span></a>    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="TierType-627"><a href="#TierType-627"><span class="linenos">627</span></a>    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
@@ -8479,6 +8506,7 @@ but for reasons that aren't under the control of this user</p>
                 <dd id="TierType.to_bytes" class="function">to_bytes</dd>
                 <dd id="TierType.from_bytes" class="function">from_bytes</dd>
                 <dd id="TierType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="TierType.is_integer" class="function">is_integer</dd>
                 <dd id="TierType.real" class="variable">real</dd>
                 <dd id="TierType.imag" class="variable">imag</dd>
                 <dd id="TierType.numerator" class="variable">numerator</dd>

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A module that has type definitions used globally in aiobungie."""
+"""Type definitions used globally in aiobungie."""
 
 from __future__ import annotations
 

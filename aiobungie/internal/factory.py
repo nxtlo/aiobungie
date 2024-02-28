@@ -2417,7 +2417,7 @@ class Factory(interfaces.FactoryInterface):
 
 
 class EmptyFactory(Factory):
-    """A stand-alone factory that doesn't requires a client instance.
+    """A stand-alone factory that doesn't require a client instance.
 
     # Example
     ---------

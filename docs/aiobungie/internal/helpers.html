@@ -126,7 +126,7 @@
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="k">class</span> <span class="nc">UnimplementedWarning</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">):</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>    <span class="sd">&quot;&quot;&quot;A warning that is raised when a function or class is not implemented.&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A warning that is raised when a function or class is not implemented.&quot;&quot;&quot;</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
@@ -135,7 +135,7 @@
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="n">use_instead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="n">hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    Parameters</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">    ----------</span>
@@ -177,7 +177,7 @@
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="k">def</span> <span class="nf">unimplemented</span><span class="p">(</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">available_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    Parameters</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">    ----------</span>
@@ -212,7 +212,7 @@
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">    .. warn::</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>
@@ -235,7 +235,7 @@
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="o">*</span><span class="n">aws</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Awaitable</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span>
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="sd">    Parameters</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="sd">    ----------</span>
@@ -264,7 +264,7 @@
 </span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">gatherer</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>
 </span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>    <span class="k">finally</span><span class="p">:</span>
 </span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
@@ -275,7 +275,7 @@
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="c1"># Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
-</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>    <span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
 </span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="sd">    Returns</span>
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a><span class="sd">    -------</span>
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
@@ -363,7 +363,7 @@
 </span><span id="deprecated-60"><a href="#deprecated-60"><span class="linenos">60</span></a>    <span class="n">use_instead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="deprecated-61"><a href="#deprecated-61"><span class="linenos">61</span></a>    <span class="n">hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="deprecated-62"><a href="#deprecated-62"><span class="linenos">62</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="deprecated-63"><a href="#deprecated-63"><span class="linenos">63</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
+</span><span id="deprecated-63"><a href="#deprecated-63"><span class="linenos">63</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
 </span><span id="deprecated-64"><a href="#deprecated-64"><span class="linenos">64</span></a>
 </span><span id="deprecated-65"><a href="#deprecated-65"><span class="linenos">65</span></a><span class="sd">    Parameters</span>
 </span><span id="deprecated-66"><a href="#deprecated-66"><span class="linenos">66</span></a><span class="sd">    ----------</span>
@@ -432,7 +432,7 @@ If provided, This should be the alternative object name that should be used inst
 </span><span id="awaits-160"><a href="#awaits-160"><span class="linenos">160</span></a>    <span class="o">*</span><span class="n">aws</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Awaitable</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span>
 </span><span id="awaits-161"><a href="#awaits-161"><span class="linenos">161</span></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="awaits-162"><a href="#awaits-162"><span class="linenos">162</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="awaits-163"><a href="#awaits-163"><span class="linenos">163</span></a>    <span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
+</span><span id="awaits-163"><a href="#awaits-163"><span class="linenos">163</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
 </span><span id="awaits-164"><a href="#awaits-164"><span class="linenos">164</span></a>
 </span><span id="awaits-165"><a href="#awaits-165"><span class="linenos">165</span></a><span class="sd">    Parameters</span>
 </span><span id="awaits-166"><a href="#awaits-166"><span class="linenos">166</span></a><span class="sd">    ----------</span>
@@ -461,7 +461,7 @@ If provided, This should be the alternative object name that should be used inst
 </span><span id="awaits-189"><a href="#awaits-189"><span class="linenos">189</span></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">gatherer</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </span><span id="awaits-190"><a href="#awaits-190"><span class="linenos">190</span></a>
 </span><span id="awaits-191"><a href="#awaits-191"><span class="linenos">191</span></a>    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-</span><span id="awaits-192"><a href="#awaits-192"><span class="linenos">192</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="awaits-192"><a href="#awaits-192"><span class="linenos">192</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 </span><span id="awaits-193"><a href="#awaits-193"><span class="linenos">193</span></a>
 </span><span id="awaits-194"><a href="#awaits-194"><span class="linenos">194</span></a>    <span class="k">finally</span><span class="p">:</span>
 </span><span id="awaits-195"><a href="#awaits-195"><span class="linenos">195</span></a>        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
@@ -503,7 +503,7 @@ An optional timeout.</li>
     </div>
     <a class="headerlink" href="#get_or_make_loop"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="get_or_make_loop-202"><a href="#get_or_make_loop-202"><span class="linenos">202</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
-</span><span id="get_or_make_loop-203"><a href="#get_or_make_loop-203"><span class="linenos">203</span></a>    <span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
+</span><span id="get_or_make_loop-203"><a href="#get_or_make_loop-203"><span class="linenos">203</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
 </span><span id="get_or_make_loop-204"><a href="#get_or_make_loop-204"><span class="linenos">204</span></a><span class="sd">    Returns</span>
 </span><span id="get_or_make_loop-205"><a href="#get_or_make_loop-205"><span class="linenos">205</span></a><span class="sd">    -------</span>
 </span><span id="get_or_make_loop-206"><a href="#get_or_make_loop-206"><span class="linenos">206</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
@@ -551,7 +551,7 @@ An optional timeout.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="unimplemented-102"><a href="#unimplemented-102"><span class="linenos">102</span></a><span class="k">def</span> <span class="nf">unimplemented</span><span class="p">(</span>
 </span><span id="unimplemented-103"><a href="#unimplemented-103"><span class="linenos">103</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">available_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="unimplemented-104"><a href="#unimplemented-104"><span class="linenos">104</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="unimplemented-105"><a href="#unimplemented-105"><span class="linenos">105</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
+</span><span id="unimplemented-105"><a href="#unimplemented-105"><span class="linenos">105</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
 </span><span id="unimplemented-106"><a href="#unimplemented-106"><span class="linenos">106</span></a>
 </span><span id="unimplemented-107"><a href="#unimplemented-107"><span class="linenos">107</span></a><span class="sd">    Parameters</span>
 </span><span id="unimplemented-108"><a href="#unimplemented-108"><span class="linenos">108</span></a><span class="sd">    ----------</span>
@@ -684,7 +684,7 @@ If provided, This will be shown as what release this object be implemented.</li>
     </div>
     <a class="headerlink" href="#unstable"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="unstable-139"><a href="#unstable-139"><span class="linenos">139</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
-</span><span id="unstable-140"><a href="#unstable-140"><span class="linenos">140</span></a>    <span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
+</span><span id="unstable-140"><a href="#unstable-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
 </span><span id="unstable-141"><a href="#unstable-141"><span class="linenos">141</span></a>
 </span><span id="unstable-142"><a href="#unstable-142"><span class="linenos">142</span></a><span class="sd">    .. warn::</span>
 </span><span id="unstable-143"><a href="#unstable-143"><span class="linenos">143</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>

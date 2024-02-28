@@ -20,13 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Standard aiobungie API client implementation."""
+"""A higher-level single process client implementation."""
 
 from __future__ import annotations
 
 __all__ = ("Client",)
 
-import logging
 import typing
 
 from aiobungie import rest as rest_
@@ -51,16 +50,12 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import milestones
     from aiobungie.crates import profile
 
-_LOGGER = logging.getLogger("aiobungie.client")
-
 
 class Client(traits.ClientApp):
-    """Standard Bungie API client application.
+    """Standard Bungie API client implementation.
 
-    This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`
+    This client deserialize the REST JSON responses using `aiobungie.Factory`
     and returns `aiobungie.crates` Python object implementations of the responses.
-
-    A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.
 
     Example
     -------
@@ -143,9 +138,6 @@ class Client(traits.ClientApp):
         except Exception as exc:
             raise RuntimeError(f"Failed to run {fn!s}") from exc
 
-        except KeyboardInterrupt:
-            _LOGGER.warning("Unexpected Keyboard interrupt. Exiting.")
-
     # * User methods.
 
     async def fetch_current_user_memberships(self, access_token: str, /) -> user.User:
@@ -206,8 +198,8 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.DestinyMembership]`
-            A sequence of destiny memberships.
+        `aiobungie.Iterator[aiobungie.crates.SearchableDestinyUser]`
+            A sequence of the found users with this name.
         """
         payload = await self.rest.search_users(name)
 

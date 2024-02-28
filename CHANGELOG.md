@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.11...HEAD)
 
+### Added
+* An option to use a specific executor for downloading the manifest and `Image.save` method.
+```py
+import concurrent.futures
+# Use process pool executor to write the manifest data.
+await rest.download_json_manifest(
+  ...,
+  executor=concurrent.futures.ProcessPoolExecutor()
+)
+```
+
+## Changed
+
+## Removed
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

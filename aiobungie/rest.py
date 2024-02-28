@@ -20,10 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of a RESTful client for Bungie's REST API.
-
-This client only makes HTTP requests to the API and returns pure JSON objects.
-"""
+"""Basic implementation of a RESTful clients for Bungie's REST API."""
 
 from __future__ import annotations
 
@@ -57,6 +54,7 @@ from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+    import concurrent.futures
     import types
 
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
@@ -138,8 +136,8 @@ def _uuid() -> str:
 
 
 def _ensure_manifest_language(language: str) -> None:
-    langs = "\n".join(_MANIFEST_LANGUAGES)
     if language not in _MANIFEST_LANGUAGES:
+        langs = "\n".join(_MANIFEST_LANGUAGES)
         raise ValueError(
             f"{language} is not a valid manifest language, "
             f"valid languages are: {langs}"
@@ -192,22 +190,26 @@ class _JSONPayload(aiohttp.BytesPayload):
 
 
 class RESTPool:
-    """Pool of `RESTClient` instances.
+    """a Pool of `RESTClient` instances.
 
-    This allows to create multiple instances of `RESTClient`s that can be acquired
-    which share the same TCP connector.
+    This allows to acquire multiple instances of `RESTClient`s which can be acquired with the same token and metadata.
+
+    A full example of this client can be found in the examples directory.
 
     Example
     -------
     ```py
     import aiobungie
+    import asyncio
 
-    client_pool = aiobungie.RESTPool("token", client_id=1234, client_secret='secret')
+    pool = aiobungie.RESTPool("token")
+    pool.metadata['auth_code'] = 'code'
 
-    # Using a context manager to acquire an instance
-    # from the pool and close it after.
-    async with client_pool.acquire() as rest:
-        ...
+    async def get() -> None:
+        async with pool.acquire() as rest:
+            this = await rest.fetch_current_user_memberships(pool.metadata['auth_code'])
+
+    await asyncio.run(get())
     ```
 
     Parameters
@@ -306,13 +308,9 @@ class RESTPool:
 
 
 class RESTClient(interfaces.RESTInterface):
-    """A RESTful client implementation for Bungie's API.
+    """A single process REST client implementation.
 
-    This client is designed to only make HTTP requests and return JSON objects
-    to provide RESTful functionality.
-
-    This client is the core for `aiobungie.Client` which deserialize those returned JSON objects
-    using the factory into Pythonic data classes objects which provide Python functionality.
+    This client is designed to only make HTTP requests and return raw JSON objects.
 
     Example
     -------
@@ -323,8 +321,7 @@ class RESTClient(interfaces.RESTInterface):
     async with client:
         response = await client.fetch_clan_members(4389205)
         for member in response['results']:
-            for key, value in member['destinyUserInfo'].items():
-                print(key, value)
+            print(member['destinyUserInfo'])
     ```
 
     Parameters
@@ -361,7 +358,6 @@ class RESTClient(interfaces.RESTInterface):
         "_client_id",
         "_metadata",
         "_dumps",
-        "_print",
         "_loads",
     )
 
@@ -386,7 +382,6 @@ class RESTClient(interfaces.RESTInterface):
         self._max_retries = max_retries
         self._dumps = dumps
         self._loads = loads
-        self._print = False
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self.with_debug(debug)
 
@@ -433,6 +428,14 @@ class RESTClient(interfaces.RESTInterface):
         json: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         return await self._request(method, path, auth=auth, json=json)
+
+    @typing.overload
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
+        ...
+
+    @typing.overload
+    def build_oauth2_url(self) -> builders.OAuthURL | None:
+        ...
 
     @typing.final
     def build_oauth2_url(
@@ -1025,7 +1028,6 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> int:
-        self._print = True
         body = {
             "state": state,
             "itemId": item_id,
@@ -1090,6 +1092,7 @@ class RESTClient(interfaces.RESTInterface):
         path: pathlib.Path | str = ".",
         *,
         force: bool = False,
+        executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         complete_path = _get_path(name, path, sql=True)
 
@@ -1113,7 +1116,7 @@ class RESTClient(interfaces.RESTInterface):
         _LOGGER.info(f"Downloading manifest. Location: {complete_path!s}")
         data_bytes = await self.read_manifest_bytes(language)
         await asyncio.get_running_loop().run_in_executor(
-            None, _write_sqlite_bytes, data_bytes, path, name
+            executor, _write_sqlite_bytes, data_bytes, path, name
         )
         _LOGGER.info("Finished downloading manifest.")
         return _get_path(name, path, sql=True)
@@ -1122,10 +1125,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
+        *,
         language: str = "en",
+        executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         _ensure_manifest_language(language)
-        #
         full_path = _get_path(file_name, path)
         _LOGGER.info(f"Downloading manifest JSON to {full_path!r}...")
 
@@ -1139,7 +1143,7 @@ class RESTClient(interfaces.RESTInterface):
 
         assert isinstance(json_bytes, bytes)
         await asyncio.get_running_loop().run_in_executor(
-            None, _write_json_bytes, json_bytes, file_name, path
+            executor, _write_json_bytes, json_bytes, file_name, path
         )
         _LOGGER.info("Finished downloading manifest JSON.")
         return full_path

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie assets module for API Image hash and path linking."""
+"""Utilities for interacting with image resources from the API."""
 
 from __future__ import annotations
 
@@ -74,7 +74,7 @@ def _write(
 
 @attrs.frozen(kw_only=True, weakref_slot=False)
 class Image:
-    """Representation of an image/avatar/picture at Bungie.
+    """Representation of an image/avatar/picture Bungie resource.
 
     Example
     -------
@@ -83,11 +83,6 @@ class Image:
     img = Image("img/destiny_content/pgcr/raid_eclipse.jpg")
     print(img)
     # https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg
-
-    # Stream the image.
-    async for chunk in img:
-        # Byte chunks of the image.
-        print(chunk)
 
     # Save the image to a file.
     await img.save("file_name", "/my/path/to/save/to", "jpeg")
@@ -149,8 +144,9 @@ class Image:
         self,
         file_name: str,
         path: pathlib.Path | str,
-        /,
+        *,
         mime_type: MimeType | str = MimeType.JPEG,
+        executor: concurrent.futures.Executor | None = None,
     ) -> None:
         """Saves the image to a file.
 
@@ -165,6 +161,8 @@ class Image:
         ----------------
         mime_type : `MimeType | str`
             MIME type of the image. Defaults to JPEG.
+        executor : `concurrent.futures.Executor | None`
+            An optional executor to use for writing the bytes of this image.
 
         Raises
         ------
@@ -184,14 +182,12 @@ class Image:
         path = pathlib.Path(path)
 
         loop = helpers.get_or_make_loop()
-        pool = concurrent.futures.ThreadPoolExecutor()
 
         try:
-            with pool:
-                await loop.run_in_executor(
-                    pool, _write, path, file_name, mime_type, await self.read()
-                )
-                _LOGGER.info("Saved image to %s", file_name)
+            await loop.run_in_executor(
+                executor, _write, path, file_name, mime_type, await self.read()
+            )
+            _LOGGER.info("Saved image to %s", file_name)
 
         except asyncio.CancelledError:
             pass

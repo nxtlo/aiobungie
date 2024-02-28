@@ -38,6 +38,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    import concurrent.futures
     import types
 
     from aiobungie import builders
@@ -96,7 +97,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
+        *,
         language: str = "en",
+        executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         """Download the Bungie manifest json file.
 
@@ -117,6 +120,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The path to save the manifest json file. Default is the current directory. Example `"D:/"`
         language: `str`
             The manifest database language bytes to get. Default is English.
+        executor: `concurrent.futures.Executor | None`
+            An optional executor which will be used to write the bytes of the manifest.
 
         Returns
         -------
@@ -132,6 +137,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         path: str | pathlib.Path = ".",
         *,
         force: bool = False,
+        executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         """Downloads the SQLite version of Destiny2's Manifest.
 
@@ -154,6 +160,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         force : `bool`
             Whether to force the download. Default is `False`. However if set to true the old
             file will get unlinked and a new one will begin to download.
+        executor: `concurrent.futures.Executor | None`
+            An optional executor which will be used to write the bytes of the manifest.
 
         Returns
         --------

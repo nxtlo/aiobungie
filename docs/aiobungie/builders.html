@@ -118,7 +118,7 @@
                     <h1 class="modulename">
 <a href="./../aiobungie.html">aiobungie</a><wbr>.builders    </h1>
 
-                        <div class="docstring"><p>Objects that helps building entities to be sent/received to/from the API.</p>
+                        <div class="docstring"><p>Utilities for building entities to be sent/received to/from the API.</p>
 </div>
 
                         <input id="mod-builders-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -146,7 +146,7 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="c1"># SOFTWARE.</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">&quot;&quot;&quot;Objects that helps building entities to be sent/received to/from the API.&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">&quot;&quot;&quot;Utilities for building entities to be sent/received to/from the API.&quot;&quot;&quot;</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
@@ -170,29 +170,29 @@
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="k">class</span> <span class="nc">OAuth2Response</span><span class="p">:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="sd">&quot;&quot;&quot;Represents a proxy object for returned information from an OAuth2 successful response.&quot;&quot;&quot;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a proxy object for returned information from an OAuth2 successful response.&quot;&quot;&quot;</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `access_token` field.&quot;&quot;&quot;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `access_token` field.&quot;&quot;&quot;</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_token` field.&quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_token` field.&quot;&quot;&quot;</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>    <span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `expires_in` field.&quot;&quot;&quot;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `expires_in` field.&quot;&quot;&quot;</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="n">token_type</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `token_type` field. This is usually just `Bearer`&quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `token_type` field. This is usually just `Bearer`&quot;&quot;&quot;</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="n">refresh_expires_in</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_expires_in` field.&quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_expires_in` field.&quot;&quot;&quot;</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="sd">&quot;&quot;&quot;The returned BungieNet membership id for the authorized user.&quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned BungieNet membership id for the authorized user.&quot;&quot;&quot;</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="nd">@classmethod</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">build_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuth2Response</span><span class="p">:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="n">OAuth2Response</span><span class="p">(</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">],</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">],</span>
@@ -206,7 +206,7 @@
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="c1"># To be able to cache the result of the compiled URL, We disable the slots here.</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="k">class</span> <span class="nc">OAuthURL</span><span class="p">:</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="sd">&quot;&quot;&quot;The result of calling `aiobungie.RESTClient.build_oauth2_url`.</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The result of calling `aiobungie.RESTClient.build_oauth2_url`.</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    Example</span>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">    -------</span>
@@ -218,14 +218,14 @@
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="n">state</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">)</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="sd">&quot;&quot;&quot;The state parameter for the URL.&quot;&quot;&quot;</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The state parameter for the URL.&quot;&quot;&quot;</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="n">client_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="sd">&quot;&quot;&quot;The client id for that&#39;s making the request.&quot;&quot;&quot;</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The client id for that&#39;s making the request.&quot;&quot;&quot;</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">cached_property</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        This allow for a faster access for the compiled URL.</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
@@ -240,7 +240,7 @@
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span>
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;?client_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&amp;response_type=code&amp;state=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: W503</span>
@@ -252,7 +252,7 @@
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="k">class</span> <span class="nc">PlugSocketBuilder</span><span class="p">:</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>    <span class="sd">&quot;&quot;&quot;A helper for building insert socket plugs.</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A helper for building insert socket plugs.</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">    Example</span>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    -------</span>
@@ -274,7 +274,7 @@
 </span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>    <span class="n">_map</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="k">def</span> <span class="nf">set_socket_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">        Parameters</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="sd">        ----------</span>
@@ -291,7 +291,7 @@
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="k">def</span> <span class="nf">set_socket_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>
 </span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a><span class="sd">        Parameters</span>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a><span class="sd">        ----------</span>
@@ -307,7 +307,7 @@
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>    <span class="k">def</span> <span class="nf">set_plug_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="sd">        Parameters</span>
 </span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="sd">        ----------</span>
@@ -323,7 +323,7 @@
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>
 </span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>        <span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="sd">        Returns</span>
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="sd">        -------</span>
@@ -349,29 +349,29 @@
     <a class="headerlink" href="#OAuth2Response"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="OAuth2Response-45"><a href="#OAuth2Response-45"><span class="linenos">45</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="OAuth2Response-46"><a href="#OAuth2Response-46"><span class="linenos">46</span></a><span class="k">class</span> <span class="nc">OAuth2Response</span><span class="p">:</span>
-</span><span id="OAuth2Response-47"><a href="#OAuth2Response-47"><span class="linenos">47</span></a>    <span class="sd">&quot;&quot;&quot;Represents a proxy object for returned information from an OAuth2 successful response.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-47"><a href="#OAuth2Response-47"><span class="linenos">47</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a proxy object for returned information from an OAuth2 successful response.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-48"><a href="#OAuth2Response-48"><span class="linenos">48</span></a>
 </span><span id="OAuth2Response-49"><a href="#OAuth2Response-49"><span class="linenos">49</span></a>    <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="OAuth2Response-50"><a href="#OAuth2Response-50"><span class="linenos">50</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `access_token` field.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-50"><a href="#OAuth2Response-50"><span class="linenos">50</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `access_token` field.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-51"><a href="#OAuth2Response-51"><span class="linenos">51</span></a>
 </span><span id="OAuth2Response-52"><a href="#OAuth2Response-52"><span class="linenos">52</span></a>    <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="OAuth2Response-53"><a href="#OAuth2Response-53"><span class="linenos">53</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_token` field.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-53"><a href="#OAuth2Response-53"><span class="linenos">53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_token` field.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-54"><a href="#OAuth2Response-54"><span class="linenos">54</span></a>
 </span><span id="OAuth2Response-55"><a href="#OAuth2Response-55"><span class="linenos">55</span></a>    <span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="OAuth2Response-56"><a href="#OAuth2Response-56"><span class="linenos">56</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `expires_in` field.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-56"><a href="#OAuth2Response-56"><span class="linenos">56</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `expires_in` field.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-57"><a href="#OAuth2Response-57"><span class="linenos">57</span></a>
 </span><span id="OAuth2Response-58"><a href="#OAuth2Response-58"><span class="linenos">58</span></a>    <span class="n">token_type</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="OAuth2Response-59"><a href="#OAuth2Response-59"><span class="linenos">59</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `token_type` field. This is usually just `Bearer`&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-59"><a href="#OAuth2Response-59"><span class="linenos">59</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `token_type` field. This is usually just `Bearer`&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-60"><a href="#OAuth2Response-60"><span class="linenos">60</span></a>
 </span><span id="OAuth2Response-61"><a href="#OAuth2Response-61"><span class="linenos">61</span></a>    <span class="n">refresh_expires_in</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="OAuth2Response-62"><a href="#OAuth2Response-62"><span class="linenos">62</span></a>    <span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_expires_in` field.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-62"><a href="#OAuth2Response-62"><span class="linenos">62</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned OAuth2 `refresh_expires_in` field.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-63"><a href="#OAuth2Response-63"><span class="linenos">63</span></a>
 </span><span id="OAuth2Response-64"><a href="#OAuth2Response-64"><span class="linenos">64</span></a>    <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="OAuth2Response-65"><a href="#OAuth2Response-65"><span class="linenos">65</span></a>    <span class="sd">&quot;&quot;&quot;The returned BungieNet membership id for the authorized user.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-65"><a href="#OAuth2Response-65"><span class="linenos">65</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The returned BungieNet membership id for the authorized user.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-66"><a href="#OAuth2Response-66"><span class="linenos">66</span></a>
 </span><span id="OAuth2Response-67"><a href="#OAuth2Response-67"><span class="linenos">67</span></a>    <span class="nd">@classmethod</span>
 </span><span id="OAuth2Response-68"><a href="#OAuth2Response-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">build_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuth2Response</span><span class="p">:</span>
-</span><span id="OAuth2Response-69"><a href="#OAuth2Response-69"><span class="linenos">69</span></a>        <span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response-69"><a href="#OAuth2Response-69"><span class="linenos">69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response-70"><a href="#OAuth2Response-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="n">OAuth2Response</span><span class="p">(</span>
 </span><span id="OAuth2Response-71"><a href="#OAuth2Response-71"><span class="linenos">71</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">],</span>
 </span><span id="OAuth2Response-72"><a href="#OAuth2Response-72"><span class="linenos">72</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">],</span>
@@ -497,7 +497,7 @@
                     <div class="decorator">@classmethod</div>
 
         <span class="def">def</span>
-        <span class="name">build_response</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">payload</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#OAuth2Response">OAuth2Response</a></span>:</span></span>
+        <span class="name">build_response</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">payload</span><span class="p">:</span> <span class="s1">&#39;typedefs.JSONObject&#39;</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#OAuth2Response">OAuth2Response</a></span>:</span></span>
 
                 <label class="view-source-button" for="OAuth2Response.build_response-view-source"><span>View Source</span></label>
 
@@ -505,7 +505,7 @@
     <a class="headerlink" href="#OAuth2Response.build_response"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="OAuth2Response.build_response-67"><a href="#OAuth2Response.build_response-67"><span class="linenos">67</span></a>    <span class="nd">@classmethod</span>
 </span><span id="OAuth2Response.build_response-68"><a href="#OAuth2Response.build_response-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">build_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuth2Response</span><span class="p">:</span>
-</span><span id="OAuth2Response.build_response-69"><a href="#OAuth2Response.build_response-69"><span class="linenos">69</span></a>        <span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
+</span><span id="OAuth2Response.build_response-69"><a href="#OAuth2Response.build_response-69"><span class="linenos">69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize and builds the JSON object into this object.&quot;&quot;&quot;</span>
 </span><span id="OAuth2Response.build_response-70"><a href="#OAuth2Response.build_response-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="n">OAuth2Response</span><span class="p">(</span>
 </span><span id="OAuth2Response.build_response-71"><a href="#OAuth2Response.build_response-71"><span class="linenos">71</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">],</span>
 </span><span id="OAuth2Response.build_response-72"><a href="#OAuth2Response.build_response-72"><span class="linenos">72</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">],</span>
@@ -537,7 +537,7 @@
     <a class="headerlink" href="#PlugSocketBuilder"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlugSocketBuilder-127"><a href="#PlugSocketBuilder-127"><span class="linenos">127</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="PlugSocketBuilder-128"><a href="#PlugSocketBuilder-128"><span class="linenos">128</span></a><span class="k">class</span> <span class="nc">PlugSocketBuilder</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder-129"><a href="#PlugSocketBuilder-129"><span class="linenos">129</span></a>    <span class="sd">&quot;&quot;&quot;A helper for building insert socket plugs.</span>
+</span><span id="PlugSocketBuilder-129"><a href="#PlugSocketBuilder-129"><span class="linenos">129</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A helper for building insert socket plugs.</span>
 </span><span id="PlugSocketBuilder-130"><a href="#PlugSocketBuilder-130"><span class="linenos">130</span></a>
 </span><span id="PlugSocketBuilder-131"><a href="#PlugSocketBuilder-131"><span class="linenos">131</span></a><span class="sd">    Example</span>
 </span><span id="PlugSocketBuilder-132"><a href="#PlugSocketBuilder-132"><span class="linenos">132</span></a><span class="sd">    -------</span>
@@ -559,7 +559,7 @@
 </span><span id="PlugSocketBuilder-148"><a href="#PlugSocketBuilder-148"><span class="linenos">148</span></a>    <span class="n">_map</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 </span><span id="PlugSocketBuilder-149"><a href="#PlugSocketBuilder-149"><span class="linenos">149</span></a>
 </span><span id="PlugSocketBuilder-150"><a href="#PlugSocketBuilder-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">set_socket_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder-151"><a href="#PlugSocketBuilder-151"><span class="linenos">151</span></a>        <span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
+</span><span id="PlugSocketBuilder-151"><a href="#PlugSocketBuilder-151"><span class="linenos">151</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
 </span><span id="PlugSocketBuilder-152"><a href="#PlugSocketBuilder-152"><span class="linenos">152</span></a>
 </span><span id="PlugSocketBuilder-153"><a href="#PlugSocketBuilder-153"><span class="linenos">153</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder-154"><a href="#PlugSocketBuilder-154"><span class="linenos">154</span></a><span class="sd">        ----------</span>
@@ -576,7 +576,7 @@
 </span><span id="PlugSocketBuilder-165"><a href="#PlugSocketBuilder-165"><span class="linenos">165</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="PlugSocketBuilder-166"><a href="#PlugSocketBuilder-166"><span class="linenos">166</span></a>
 </span><span id="PlugSocketBuilder-167"><a href="#PlugSocketBuilder-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">set_socket_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder-168"><a href="#PlugSocketBuilder-168"><span class="linenos">168</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="PlugSocketBuilder-168"><a href="#PlugSocketBuilder-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="PlugSocketBuilder-169"><a href="#PlugSocketBuilder-169"><span class="linenos">169</span></a>
 </span><span id="PlugSocketBuilder-170"><a href="#PlugSocketBuilder-170"><span class="linenos">170</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder-171"><a href="#PlugSocketBuilder-171"><span class="linenos">171</span></a><span class="sd">        ----------</span>
@@ -592,7 +592,7 @@
 </span><span id="PlugSocketBuilder-181"><a href="#PlugSocketBuilder-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="PlugSocketBuilder-182"><a href="#PlugSocketBuilder-182"><span class="linenos">182</span></a>
 </span><span id="PlugSocketBuilder-183"><a href="#PlugSocketBuilder-183"><span class="linenos">183</span></a>    <span class="k">def</span> <span class="nf">set_plug_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder-184"><a href="#PlugSocketBuilder-184"><span class="linenos">184</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="PlugSocketBuilder-184"><a href="#PlugSocketBuilder-184"><span class="linenos">184</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="PlugSocketBuilder-185"><a href="#PlugSocketBuilder-185"><span class="linenos">185</span></a>
 </span><span id="PlugSocketBuilder-186"><a href="#PlugSocketBuilder-186"><span class="linenos">186</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder-187"><a href="#PlugSocketBuilder-187"><span class="linenos">187</span></a><span class="sd">        ----------</span>
@@ -608,7 +608,7 @@
 </span><span id="PlugSocketBuilder-197"><a href="#PlugSocketBuilder-197"><span class="linenos">197</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="PlugSocketBuilder-198"><a href="#PlugSocketBuilder-198"><span class="linenos">198</span></a>
 </span><span id="PlugSocketBuilder-199"><a href="#PlugSocketBuilder-199"><span class="linenos">199</span></a>    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="PlugSocketBuilder-200"><a href="#PlugSocketBuilder-200"><span class="linenos">200</span></a>        <span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
+</span><span id="PlugSocketBuilder-200"><a href="#PlugSocketBuilder-200"><span class="linenos">200</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
 </span><span id="PlugSocketBuilder-201"><a href="#PlugSocketBuilder-201"><span class="linenos">201</span></a>
 </span><span id="PlugSocketBuilder-202"><a href="#PlugSocketBuilder-202"><span class="linenos">202</span></a><span class="sd">        Returns</span>
 </span><span id="PlugSocketBuilder-203"><a href="#PlugSocketBuilder-203"><span class="linenos">203</span></a><span class="sd">        -------</span>
@@ -669,14 +669,14 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">set_socket_array</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">socket_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="n">typing_extensions</span><span class="o">.</span><span class="n">Self</span>:</span></span>
+        <span class="name">set_socket_array</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">socket_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="s1">&#39;Self&#39;</span>:</span></span>
 
                 <label class="view-source-button" for="PlugSocketBuilder.set_socket_array-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#PlugSocketBuilder.set_socket_array"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlugSocketBuilder.set_socket_array-150"><a href="#PlugSocketBuilder.set_socket_array-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">set_socket_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder.set_socket_array-151"><a href="#PlugSocketBuilder.set_socket_array-151"><span class="linenos">151</span></a>        <span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
+</span><span id="PlugSocketBuilder.set_socket_array-151"><a href="#PlugSocketBuilder.set_socket_array-151"><span class="linenos">151</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the array socket type.</span>
 </span><span id="PlugSocketBuilder.set_socket_array-152"><a href="#PlugSocketBuilder.set_socket_array-152"><span class="linenos">152</span></a>
 </span><span id="PlugSocketBuilder.set_socket_array-153"><a href="#PlugSocketBuilder.set_socket_array-153"><span class="linenos">153</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder.set_socket_array-154"><a href="#PlugSocketBuilder.set_socket_array-154"><span class="linenos">154</span></a><span class="sd">        ----------</span>
@@ -718,14 +718,14 @@ Otherwise if 1 it will be Intrinsic.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">set_socket_index</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">index</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="n">typing_extensions</span><span class="o">.</span><span class="n">Self</span>:</span></span>
+        <span class="name">set_socket_index</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">index</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="s1">&#39;Self&#39;</span>:</span></span>
 
                 <label class="view-source-button" for="PlugSocketBuilder.set_socket_index-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#PlugSocketBuilder.set_socket_index"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlugSocketBuilder.set_socket_index-167"><a href="#PlugSocketBuilder.set_socket_index-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">set_socket_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder.set_socket_index-168"><a href="#PlugSocketBuilder.set_socket_index-168"><span class="linenos">168</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="PlugSocketBuilder.set_socket_index-168"><a href="#PlugSocketBuilder.set_socket_index-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="PlugSocketBuilder.set_socket_index-169"><a href="#PlugSocketBuilder.set_socket_index-169"><span class="linenos">169</span></a>
 </span><span id="PlugSocketBuilder.set_socket_index-170"><a href="#PlugSocketBuilder.set_socket_index-170"><span class="linenos">170</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder.set_socket_index-171"><a href="#PlugSocketBuilder.set_socket_index-171"><span class="linenos">171</span></a><span class="sd">        ----------</span>
@@ -765,14 +765,14 @@ The socket index.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">set_plug_item</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">item_hash</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="n">typing_extensions</span><span class="o">.</span><span class="n">Self</span>:</span></span>
+        <span class="name">set_plug_item</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">item_hash</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="s1">&#39;Self&#39;</span>:</span></span>
 
                 <label class="view-source-button" for="PlugSocketBuilder.set_plug_item-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#PlugSocketBuilder.set_plug_item"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlugSocketBuilder.set_plug_item-183"><a href="#PlugSocketBuilder.set_plug_item-183"><span class="linenos">183</span></a>    <span class="k">def</span> <span class="nf">set_plug_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-</span><span id="PlugSocketBuilder.set_plug_item-184"><a href="#PlugSocketBuilder.set_plug_item-184"><span class="linenos">184</span></a>        <span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
+</span><span id="PlugSocketBuilder.set_plug_item-184"><a href="#PlugSocketBuilder.set_plug_item-184"><span class="linenos">184</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the socket index into the array.</span>
 </span><span id="PlugSocketBuilder.set_plug_item-185"><a href="#PlugSocketBuilder.set_plug_item-185"><span class="linenos">185</span></a>
 </span><span id="PlugSocketBuilder.set_plug_item-186"><a href="#PlugSocketBuilder.set_plug_item-186"><span class="linenos">186</span></a><span class="sd">        Parameters</span>
 </span><span id="PlugSocketBuilder.set_plug_item-187"><a href="#PlugSocketBuilder.set_plug_item-187"><span class="linenos">187</span></a><span class="sd">        ----------</span>
@@ -819,7 +819,7 @@ The hash of the item to plug.</li>
     </div>
     <a class="headerlink" href="#PlugSocketBuilder.collect"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlugSocketBuilder.collect-199"><a href="#PlugSocketBuilder.collect-199"><span class="linenos">199</span></a>    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="PlugSocketBuilder.collect-200"><a href="#PlugSocketBuilder.collect-200"><span class="linenos">200</span></a>        <span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
+</span><span id="PlugSocketBuilder.collect-200"><a href="#PlugSocketBuilder.collect-200"><span class="linenos">200</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect the set values and return its map to be passed to the request.</span>
 </span><span id="PlugSocketBuilder.collect-201"><a href="#PlugSocketBuilder.collect-201"><span class="linenos">201</span></a>
 </span><span id="PlugSocketBuilder.collect-202"><a href="#PlugSocketBuilder.collect-202"><span class="linenos">202</span></a><span class="sd">        Returns</span>
 </span><span id="PlugSocketBuilder.collect-203"><a href="#PlugSocketBuilder.collect-203"><span class="linenos">203</span></a><span class="sd">        -------</span>
@@ -856,7 +856,7 @@ The hash of the item to plug.</li>
     <a class="headerlink" href="#OAuthURL"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="OAuthURL-81"><a href="#OAuthURL-81"><span class="linenos"> 81</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">frozen</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="OAuthURL-82"><a href="#OAuthURL-82"><span class="linenos"> 82</span></a><span class="k">class</span> <span class="nc">OAuthURL</span><span class="p">:</span>
-</span><span id="OAuthURL-83"><a href="#OAuthURL-83"><span class="linenos"> 83</span></a>    <span class="sd">&quot;&quot;&quot;The result of calling `aiobungie.RESTClient.build_oauth2_url`.</span>
+</span><span id="OAuthURL-83"><a href="#OAuthURL-83"><span class="linenos"> 83</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The result of calling `aiobungie.RESTClient.build_oauth2_url`.</span>
 </span><span id="OAuthURL-84"><a href="#OAuthURL-84"><span class="linenos"> 84</span></a>
 </span><span id="OAuthURL-85"><a href="#OAuthURL-85"><span class="linenos"> 85</span></a><span class="sd">    Example</span>
 </span><span id="OAuthURL-86"><a href="#OAuthURL-86"><span class="linenos"> 86</span></a><span class="sd">    -------</span>
@@ -868,14 +868,14 @@ The hash of the item to plug.</li>
 </span><span id="OAuthURL-92"><a href="#OAuthURL-92"><span class="linenos"> 92</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="OAuthURL-93"><a href="#OAuthURL-93"><span class="linenos"> 93</span></a>
 </span><span id="OAuthURL-94"><a href="#OAuthURL-94"><span class="linenos"> 94</span></a>    <span class="n">state</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">factory</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">)</span>
-</span><span id="OAuthURL-95"><a href="#OAuthURL-95"><span class="linenos"> 95</span></a>    <span class="sd">&quot;&quot;&quot;The state parameter for the URL.&quot;&quot;&quot;</span>
+</span><span id="OAuthURL-95"><a href="#OAuthURL-95"><span class="linenos"> 95</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The state parameter for the URL.&quot;&quot;&quot;</span>
 </span><span id="OAuthURL-96"><a href="#OAuthURL-96"><span class="linenos"> 96</span></a>
 </span><span id="OAuthURL-97"><a href="#OAuthURL-97"><span class="linenos"> 97</span></a>    <span class="n">client_id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="OAuthURL-98"><a href="#OAuthURL-98"><span class="linenos"> 98</span></a>    <span class="sd">&quot;&quot;&quot;The client id for that&#39;s making the request.&quot;&quot;&quot;</span>
+</span><span id="OAuthURL-98"><a href="#OAuthURL-98"><span class="linenos"> 98</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The client id for that&#39;s making the request.&quot;&quot;&quot;</span>
 </span><span id="OAuthURL-99"><a href="#OAuthURL-99"><span class="linenos"> 99</span></a>
 </span><span id="OAuthURL-100"><a href="#OAuthURL-100"><span class="linenos">100</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">cached_property</span>
 </span><span id="OAuthURL-101"><a href="#OAuthURL-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="OAuthURL-102"><a href="#OAuthURL-102"><span class="linenos">102</span></a>        <span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
+</span><span id="OAuthURL-102"><a href="#OAuthURL-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
 </span><span id="OAuthURL-103"><a href="#OAuthURL-103"><span class="linenos">103</span></a>
 </span><span id="OAuthURL-104"><a href="#OAuthURL-104"><span class="linenos">104</span></a><span class="sd">        This allow for a faster access for the compiled URL.</span>
 </span><span id="OAuthURL-105"><a href="#OAuthURL-105"><span class="linenos">105</span></a>
@@ -890,7 +890,7 @@ The hash of the item to plug.</li>
 </span><span id="OAuthURL-114"><a href="#OAuthURL-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
 </span><span id="OAuthURL-115"><a href="#OAuthURL-115"><span class="linenos">115</span></a>
 </span><span id="OAuthURL-116"><a href="#OAuthURL-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="OAuthURL-117"><a href="#OAuthURL-117"><span class="linenos">117</span></a>        <span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
+</span><span id="OAuthURL-117"><a href="#OAuthURL-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
 </span><span id="OAuthURL-118"><a href="#OAuthURL-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="OAuthURL-119"><a href="#OAuthURL-119"><span class="linenos">119</span></a>            <span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span>
 </span><span id="OAuthURL-120"><a href="#OAuthURL-120"><span class="linenos">120</span></a>            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;?client_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&amp;response_type=code&amp;state=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: W503</span>
@@ -977,7 +977,7 @@ The hash of the item to plug.</li>
     <a class="headerlink" href="#OAuthURL.url"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="OAuthURL.url-100"><a href="#OAuthURL.url-100"><span class="linenos">100</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">cached_property</span>
 </span><span id="OAuthURL.url-101"><a href="#OAuthURL.url-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="OAuthURL.url-102"><a href="#OAuthURL.url-102"><span class="linenos">102</span></a>        <span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
+</span><span id="OAuthURL.url-102"><a href="#OAuthURL.url-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The cached result of calling `OAuthURL.compile`.</span>
 </span><span id="OAuthURL.url-103"><a href="#OAuthURL.url-103"><span class="linenos">103</span></a>
 </span><span id="OAuthURL.url-104"><a href="#OAuthURL.url-104"><span class="linenos">104</span></a><span class="sd">        This allow for a faster access for the compiled URL.</span>
 </span><span id="OAuthURL.url-105"><a href="#OAuthURL.url-105"><span class="linenos">105</span></a>
@@ -1021,7 +1021,7 @@ The hash of the item to plug.</li>
     </div>
     <a class="headerlink" href="#OAuthURL.compile"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="OAuthURL.compile-116"><a href="#OAuthURL.compile-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="OAuthURL.compile-117"><a href="#OAuthURL.compile-117"><span class="linenos">117</span></a>        <span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
+</span><span id="OAuthURL.compile-117"><a href="#OAuthURL.compile-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compiles the fields to finalize the result of the URL.&quot;&quot;&quot;</span>
 </span><span id="OAuthURL.compile-118"><a href="#OAuthURL.compile-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="OAuthURL.compile-119"><a href="#OAuthURL.compile-119"><span class="linenos">119</span></a>            <span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span>
 </span><span id="OAuthURL.compile-120"><a href="#OAuthURL.compile-120"><span class="linenos">120</span></a>            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;?client_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&amp;response_type=code&amp;state=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: W503</span>

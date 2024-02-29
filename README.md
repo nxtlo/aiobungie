@@ -28,8 +28,7 @@ import aiobungie
 client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
-    # Fetch a Destiny 2 character passing a component.
-    # This includes Equipments, Inventory, Records, etc.
+    # Search for Destiny 2 players.
     async with client.rest:
         users = await client.search_users("Fate")
         for user in users:

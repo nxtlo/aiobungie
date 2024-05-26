@@ -112,11 +112,9 @@ class TestBungieUser:
 
 class TestDestinyUser:
     @pytest.fixture()
-    def obj(self):
-        ...
+    def obj(self): ...
 
 
 class TestUser:
     @pytest.fixture()
-    def obj(self):
-        ...
+    def obj(self): ...

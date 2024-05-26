@@ -49,9 +49,9 @@ PRIMARY_USERNAME = "Fate怒"
 """Your in game name."""
 PRIMARY_CODE = 4275
 """Your in game unique code. This is the code that follows your unique name"""
-PRIMARY_CLAN_NAME = "Nuanceㅤ "
+PRIMARY_CLAN_NAME = "dealloc"
 """The clan name your membership is associated with."""
-PRIMARY_CLAN_ID = 4389205
+PRIMARY_CLAN_ID = 5251169
 """The clan ID."""
 APP_ID = 33226
 """You application ID from bungie.net developer portal."""

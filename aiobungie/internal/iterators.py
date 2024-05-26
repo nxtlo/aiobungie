@@ -86,12 +86,10 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         self._items = _builtins.iter(items)
 
     @typing.overload
-    def collect(self) -> collections.Sequence[Item]:
-        ...
+    def collect(self) -> collections.Sequence[Item]: ...
 
     @typing.overload
-    def collect(self, casting: _B) -> collections.Sequence[_B]:
-        ...
+    def collect(self, casting: _B) -> collections.Sequence[_B]: ...
 
     def collect(
         self, casting: _B | None = None

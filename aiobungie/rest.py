@@ -157,9 +157,8 @@ def _write_json_bytes(
     file_name: str = "manifest",
     path: pathlib.Path | str = "./",
 ) -> None:
-    p = _get_path(file_name, path).open("wb")
-    with p as file:
-        file.write(helpers.dumps(helpers.loads(data)))
+    with _get_path(file_name, path).open("wb") as p:
+        p.write(helpers.dumps(helpers.loads(data)))
 
 
 def _write_sqlite_bytes(
@@ -186,7 +185,7 @@ class _JSONPayload(aiohttp.BytesPayload):
     def __init__(
         self, value: typing.Any, dumps: typedefs.Dumps = helpers.dumps
     ) -> None:
-        super().__init__(dumps(value), content_type=_APP_JSON, encoding="UTF-8")
+        super().__init__(dumps(value), content_type=_APP_JSON, encoding="utf-8")
 
 
 class RESTPool:
@@ -430,12 +429,10 @@ class RESTClient(interfaces.RESTInterface):
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
-        ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None:
-        ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
 
     @typing.final
     def build_oauth2_url(

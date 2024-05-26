@@ -143,27 +143,31 @@ class TestCharacterProgression:
         )
 
     def test_progressions(self, model: crates.CharacterProgression) -> None:
-        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
-            model, "progressions", new={0: mock.Mock()}
-        ) as progress:
+        with (
+            pytest.raises(attrs.FrozenInstanceError),
+            mock.patch.object(model, "progressions", new={0: mock.Mock()}) as progress,
+        ):
             assert model.progressions == progress
 
     def test_factions(self, model: crates.CharacterProgression) -> None:
-        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
-            model, "factions", new={1: mock.Mock()}
-        ) as factions:
+        with (
+            pytest.raises(attrs.FrozenInstanceError),
+            mock.patch.object(model, "factions", new={1: mock.Mock()}) as factions,
+        ):
             assert model.factions == factions
 
     def test_milestones(self, model: crates.CharacterProgression) -> None:
-        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
-            model, "milestones", new={2: mock.Mock()}
-        ) as milestone:
+        with (
+            pytest.raises(attrs.FrozenInstanceError),
+            mock.patch.object(model, "milestones", new={2: mock.Mock()}) as milestone,
+        ):
             assert model.milestones == milestone
 
     def test_checklists(self, model: crates.CharacterProgression) -> None:
-        with pytest.raises(attrs.FrozenInstanceError), mock.patch.object(
-            model, "checklists", new={3: mock.Mock()}
-        ) as checklist:
+        with (
+            pytest.raises(attrs.FrozenInstanceError),
+            mock.patch.object(model, "checklists", new={3: mock.Mock()}) as checklist,
+        ):
             assert model.checklists == checklist
 
 

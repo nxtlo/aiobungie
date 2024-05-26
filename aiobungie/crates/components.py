@@ -222,9 +222,9 @@ class ProfileComponent:
 class UninstancedItemsComponent:
     """Represents Components belonging to the player's uninstanced items."""
 
-    objectives: collections.Mapping[
-        int, collections.Sequence[records_.Objective]
-    ] | None
+    objectives: (
+        collections.Mapping[int, collections.Sequence[records_.Objective]] | None
+    )
     """A mapping from the objective id to a sequence of objectives component."""
 
     perks: collections.Mapping[int, collections.Collection[items.ItemPerk]] | None
@@ -274,9 +274,9 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
-    reusable_plugs: collections.Mapping[
-        int, collections.Sequence[items.PlugItemState]
-    ] | None
+    reusable_plugs: (
+        collections.Mapping[int, collections.Sequence[items.PlugItemState]] | None
+    )
     """If the item supports reusable plugs,
     this is the mapping from the item instance id to a sequence of plugs that are allowed to be used for the socket.
 
@@ -284,9 +284,12 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
-    plug_objectives: collections.Mapping[
-        int, collections.Mapping[int, collections.Collection[records_.Objective]]
-    ] | None
+    plug_objectives: (
+        collections.Mapping[
+            int, collections.Mapping[int, collections.Collection[records_.Objective]]
+        ]
+        | None
+    )
     """A mapping from the item instance id to a mapping of the plug hash to
     a collections of the plug objectives being returned.
 
@@ -359,9 +362,9 @@ class StringVariableComponent:
     profile_string_variables: collections.Mapping[int, int] | None
     """A mapping from an expression mapping definition hash to its value."""
 
-    character_string_variables: collections.Mapping[
-        int, collections.Mapping[int, int]
-    ] | None
+    character_string_variables: (
+        collections.Mapping[int, collections.Mapping[int, int]] | None
+    )
     """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
@@ -378,9 +381,12 @@ class MetricsComponent:
     - `Metrics`
     """
 
-    metrics: collections.Sequence[
-        collections.Mapping[int, tuple[bool, records_.Objective | None]]
-    ] | None
+    metrics: (
+        collections.Sequence[
+            collections.Mapping[int, tuple[bool, records_.Objective | None]]
+        ]
+        | None
+    )
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
@@ -528,9 +534,9 @@ class Component(
     otherwise will be `None`.
     """
 
-    character_inventories: collections.Mapping[
-        int, collections.Sequence[profile.ProfileItemImpl]
-    ] | None
+    character_inventories: (
+        collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]] | None
+    )
     """A mapping from character's id to a sequence of their character inventory items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -542,9 +548,9 @@ class Component(
     is passed to the request components.
     """
 
-    character_progressions: collections.Mapping[
-        int, character_.CharacterProgression
-    ] | None
+    character_progressions: (
+        collections.Mapping[int, character_.CharacterProgression] | None
+    )
     """A mapping from character's id to a character progression component.
 
     Notes
@@ -568,9 +574,9 @@ class Component(
     is passed to the request components.
     """
 
-    character_equipments: collections.Mapping[
-        int, collections.Sequence[profile.ProfileItemImpl]
-    ] | None
+    character_equipments: (
+        collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]] | None
+    )
     """A mapping from character's id to a sequence of their character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
@@ -607,21 +613,24 @@ class Component(
     item_components: ItemsComponent | None = attrs.field(repr=False)
     """A component that includes all items components for this profile component."""
 
-    profile_plugsets: collections.Mapping[
-        int, collections.Sequence[items.PlugItemState]
-    ] | None
+    profile_plugsets: (
+        collections.Mapping[int, collections.Sequence[items.PlugItemState]] | None
+    )
     """A mapping from the index of the plugset to a sequence of the profile's plug set objects."""
 
-    character_plugsets: collections.Mapping[
-        int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
-    ] | None
+    character_plugsets: (
+        collections.Mapping[
+            int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+        ]
+        | None
+    )
     """A mapping from the character's id to mapping from the index of
     the plug set to a sequence of plug objects bound to that character.
     """
 
-    character_nodes: collections.Mapping[
-        int, collections.Mapping[int, records_.Node]
-    ] | None
+    character_nodes: (
+        collections.Mapping[int, collections.Mapping[int, records_.Node]] | None
+    )
     """A mapping from each character ID to a mapping of the node hash
     to a sequence of presentation nodes component.
 
@@ -646,9 +655,9 @@ class Component(
     is passed to the request components.
     """
 
-    character_currency_lookups: collections.Mapping[
-        int, collections.Sequence[items.Currency]
-    ] | None
+    character_currency_lookups: (
+        collections.Mapping[int, collections.Sequence[items.Currency]] | None
+    )
     """A mapping from each character ID to a sequence of its currency lookups.
 
     Notes

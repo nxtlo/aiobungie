@@ -1003,16 +1003,16 @@ class Factory(interfaces.FactoryInterface):
                     raw_profile_inventories["data"]
                 )
 
-        profile_records: typing.Optional[
-            collections.Mapping[int, records.Record]
-        ] = None
+        profile_records: typing.Optional[collections.Mapping[int, records.Record]] = (
+            None
+        )
 
         if raw_profile_records_ := payload.get("profileRecords"):
             profile_records = self.deserialize_profile_records(raw_profile_records_)
 
-        characters: typing.Optional[
-            collections.Mapping[int, character.Character]
-        ] = None
+        characters: typing.Optional[collections.Mapping[int, character.Character]] = (
+            None
+        )
         if raw_characters := payload.get("characters"):
             characters = self.deserialize_characters(raw_characters)
 

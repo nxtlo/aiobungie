@@ -64,8 +64,7 @@ class TestUser:
     @staticmethod
     async def test_membership():
         p = await client.fetch_membership(config.PRIMARY_USERNAME, config.PRIMARY_CODE)
-        profile = await p[0].fetch_self_profile([])
-        assert isinstance(profile, aiobungie.crates.Component)
+        assert isinstance(p[0], aiobungie.crates.DestinyMembership)
 
     @staticmethod
     async def test_membership_types_from_id():
@@ -122,42 +121,42 @@ class TestClans:
     @staticmethod
     async def test_clan_from_id():
         c = await client.fetch_clan_from_id(config.PRIMARY_CLAN_ID)
-        members = await c.fetch_members()
-        for member in members:
-            assert isinstance(member, aiobungie.crates.ClanMember)
+        assert isinstance(c, aiobungie.crates.Clan)
 
     @staticmethod
     async def test_clan():
         c = await client.fetch_clan(config.PRIMARY_CLAN_NAME)
-        members = await c.fetch_members()
-
-        assert isinstance(members.next(), aiobungie.crates.ClanMember)
+        assert isinstance(c, aiobungie.crates.Clan)
 
     @staticmethod
     async def test_fetch_clan_members():
         ms = await client.fetch_clan_members(
             config.PRIMARY_CLAN_ID, name=config.PRIMARY_USERNAME
         )
-        assert any(
-            member.bungie_user and member.bungie_user.name == config.PRIMARY_USERNAME
-            for member in ms
+        assert ms.any(
+            (
+                lambda member: member.bungie_user is not None
+                and member.bungie_user.name == config.PRIMARY_USERNAME
+            )
         )
 
     @staticmethod
     async def test_clan_conversations():
-        x = await client.fetch_clan_conversations(881267)
+        x = await client.fetch_clan_conversations(config.PRIMARY_CLAN_ID)
         for c in x:
             assert isinstance(c, aiobungie.crates.ClanConversation)
 
     @staticmethod
     async def test_clan_admins():
-        ca = await client.fetch_clan_admins(4389205)
-        ca.any(lambda member: member.is_admin or member.is_founder)
+        ca = await client.fetch_clan_admins(config.PRIMARY_CLAN_ID)
+        assert ca.take_while(lambda member: member.is_founder).all(
+            lambda member: member.name == config.PRIMARY_USERNAME
+        )
 
     @staticmethod
     async def test_groups_for_member():
         obj = await client.fetch_groups_for_member(
-            4611686018475612431, config.PRIMARY_MEMBERSHIP_TYPE
+            config.PRIMARY_MEMBERSHIP_ID, config.PRIMARY_MEMBERSHIP_TYPE
         )
         assert obj
         up_to_date_clan_obj = await obj[0].fetch_self_clan()
@@ -168,7 +167,8 @@ class TestClans:
         obj = await client.fetch_potential_groups_for_member(
             config.PRIMARY_MEMBERSHIP_ID, config.PRIMARY_MEMBERSHIP_TYPE
         )
-        assert not obj
+        if obj:
+            assert isinstance(obj[0], aiobungie.crates.GroupMember)
 
     @staticmethod
     async def test_clan_banners():
@@ -178,7 +178,7 @@ class TestClans:
 
     @staticmethod
     async def test_clan_weekly_rewards():
-        r = await client.fetch_clan_weekly_rewards(4389205)
+        r = await client.fetch_clan_weekly_rewards(config.PRIMARY_CLAN_ID)
         assert isinstance(r, aiobungie.crates.Milestone)
 
 

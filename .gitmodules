@@ -1,0 +1,3 @@
+[submodule "syn"]
+	path = syn
+	url = https://github.com/nxtlo/syn

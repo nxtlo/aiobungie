@@ -14,5 +14,5 @@ python-dotenv~=1.0.1
 ruff~=0.4.9
 isort~=5.13.2
 pyright~=1.1.367
-typing-extensions~=4.12.1
+typing-extensions~=4.12.2
 codespell~=2.3.0

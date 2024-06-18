@@ -115,7 +115,7 @@ class MilestoneActivity:
 class QuestStatus:
     """Information that an available quest status has."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
 
     quest_hash: int
     """The quest hash."""
@@ -152,7 +152,7 @@ class QuestStatus:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
     )
     async def fetch_quest(self) -> entity.InventoryEntity:
         """Fetch the definition of this quest.
@@ -162,12 +162,12 @@ class QuestStatus:
         `aiobungie.crates.InventoryEntity`
             The fetched inventory item definition/entity.
         """
-        return await self.net.request.fetch_inventory_item(self.quest_hash)
+        return await self.app.request.fetch_inventory_item(self.quest_hash)
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
     )
     async def fetch_step(self) -> entity.InventoryEntity:
         """Fetch the definition of this quest step.
@@ -177,7 +177,7 @@ class QuestStatus:
         `aiobungie.crates.InventoryEntity`
             The fetched inventory item definition/entity.
         """
-        return await self.net.request.fetch_inventory_item(self.step_hash)
+        return await self.app.request.fetch_inventory_item(self.step_hash)
 
 
 @attrs.frozen(kw_only=True)

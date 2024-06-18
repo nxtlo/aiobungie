@@ -46,8 +46,8 @@ if typing.TYPE_CHECKING:
 class ApplicationOwner(user.UserLike):
     """Represents a Bungie Application owner."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     name: str | None
     """The application owner name. This can be `UNDEFINED` if not found."""
@@ -72,7 +72,7 @@ class ApplicationOwner(user.UserLike):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_bungie_user",
+        use_instead="{self}.app.request.fetch_bungie_user",
     )
     async def fetch_self(self) -> user.BungieUser:
         """Fetch the bungie user for this application owner.
@@ -87,7 +87,7 @@ class ApplicationOwner(user.UserLike):
         `aiobungie.NotFound`
             The user was not found.
         """
-        return await self.net.request.fetch_bungie_user(self.id)
+        return await self.app.request.fetch_bungie_user(self.id)
 
     @property
     def last_seen_name(self) -> str:

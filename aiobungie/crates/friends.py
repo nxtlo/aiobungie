@@ -53,8 +53,8 @@ class FriendRequestView:
 class Friend:
     """Represents a bungie friend in your account."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state we use to make external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     id: int
     """The friend's last seen at id."""

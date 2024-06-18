@@ -30,79 +30,61 @@ from __future__ import annotations
 
 from aiobungie import typedefs
 
-__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
+__all__ = ("Compact", "Send", "Deserialize", "RESTful")
 
 import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
+    from aiobungie import api
     from aiobungie import builders
     from aiobungie import client
-    from aiobungie import interfaces
-    from aiobungie.internal import factory as factory_
 
 
 @typing.runtime_checkable
-class Netrunner(typing.Protocol):
-    """Types that can run external requests.
+class Send(typing.Protocol):
+    """Types that can send HTTP requests from an external resource.
 
     These requests are performed by a reference of your `aiobungie.Client` instance.
 
     Example
     -------
     ```py
-    import aiobungie
-
     membership = aiobungie.crates.DestinyMembership(…)
     # Access the base client that references this membership.
-    external_request = await membership.net.request.fetch_user(…)
+    external_request = await membership.app.request.fetch_user(…)
     ```
-
-    Implementers
-    ------------
-    * `ClientApp`
     """
 
     __slots__ = ()
 
     @property
     def request(self) -> client.Client:
-        """A readonly `ClientApp` instance used for external requests."""
+        """A read-only `Compact` instance used for external requests."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
-class Serializable(typing.Protocol):
-    """Types which can deserialize REST payloads responses
-    into a `aiobungie.crates` implementation using the `Serializable.factory` property.
+class Deserialize(typing.Protocol):
+    """Types which can deserialize REST payloads responses into a `aiobungie.crates`.
 
-    Implementers
-    ------------
-    * `ClientApp`
+    They're responsible for turning a REST payload (`collections/bytes/etc`) into a `aiobungie.crates` basic implementation.
     """
 
     __slots__ = ()
 
     @property
-    def factory(self) -> factory_.Factory:
-        """Returns the marshalling factory for the client."""
+    def framework(self) -> api.Framework:
+        """An implementation of a `aiobungie.api.Framework` object used by your client."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """Types which it is possible to interact with the API directly
-    which provides RESTful functionalities.
+    """Types that interact with the API directly, they're able to perform REST calls.
 
-    Only `aiobungie.RESTClient` implement this trait,
-
-    .. note::
-        `ClientApp` may access its RESTClient using `ClientApp.rest` property.
-
-    Implementer
-    ----------
-    * `aiobungie.RESTClient`
+    This trait is automatically implemented for `aiobungie.RESTClient`, for `aiobungie.Client` also which can be accessed via `aiobungie.Client.rest`.
     """
 
     __slots__ = ()
@@ -154,9 +136,9 @@ class RESTful(typing.Protocol):
     def build_oauth2_url(
         self, client_id: int | None = None
     ) -> builders.OAuthURL | None:
-        """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
+        """Construct a new `OAuthURL` url object.
 
-        You can't get the complete string URL by using `.compile()` method.
+        You can get the complete string representation of the url by calling `.compile()` on it.
 
         Parameters
         ----------
@@ -231,14 +213,10 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class ClientApp(Netrunner, Serializable, typing.Protocol):
-    """Core trait for the standard `aiobungie.Client` implementation.
+class Compact(Send, Deserialize, typing.Protocol):
+    """A Structural super-type that can perform all actions that other traits provide.
 
-    This trait includes all aiobungie traits.
-
-    Implementers
-    ------------
-    * `aiobungie.Client`
+    This trait includes all aiobungie traits. is also automatically implemented for `aiobungie.Client`
     """
 
     __slots__ = ()
@@ -247,6 +225,10 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
         """Runs a coroutine function until its complete.
 
         This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
+
+        Warning
+        -------
+        This method is scheduled to be removed in future versions. Please use `asyncio.run` instead.
 
         Parameters
         ----------
@@ -267,7 +249,7 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
         """
 
     @property
-    def rest(self) -> interfaces.RESTInterface:
+    def rest(self) -> api.RESTClient:
         """Returns the REST client for the this client."""
         raise NotImplementedError
 

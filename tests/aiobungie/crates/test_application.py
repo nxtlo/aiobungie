@@ -34,7 +34,7 @@ class TestAppOwner:
     @pytest.fixture()
     def obj(self):
         return crates.ApplicationOwner(
-            net=mock.Mock(),
+            app=mock.Mock(),
             name="rose",
             type=aiobungie.MembershipType.XBOX,
             id=411098,
@@ -83,7 +83,7 @@ class TestApplication:
             name="rose",
             id=411098,
             code=2463,
-            net=mock.AsyncMock(),
+            app=mock.AsyncMock(),
             type=aiobungie.MembershipType.XBOX,
             is_public=True,
             icon=assets.Image(path="dndlkwadjnh9.jpg"),
@@ -121,10 +121,10 @@ class TestApplication:
     async def test_fetch_self_app_owner_bungie_user(
         self, owner: crates.ApplicationOwner
     ) -> None:
-        owner.net.request.fetch_bungie_user = mock.AsyncMock()
+        owner.app.request.fetch_bungie_user = mock.AsyncMock()
 
         assert (
-            await owner.fetch_self() is owner.net.request.fetch_bungie_user.return_value
+            await owner.fetch_self() is owner.app.request.fetch_bungie_user.return_value
         )
 
-        owner.net.request.fetch_bungie_user.assert_called_once_with(411098)
+        owner.app.request.fetch_bungie_user.assert_called_once_with(411098)

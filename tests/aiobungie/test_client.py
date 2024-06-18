@@ -338,7 +338,7 @@ class TestMeta:
     async def test_client_metadata():
         client.metadata[0] = None
         clan = await client.fetch_clan("Math Class")
-        assert clan.net.request.metadata[0] is None
+        assert clan.app.request.metadata[0] is None
 
     # FIXME: There's currently a problem with this API route from Bungie's side
     # where it returns an HTML not found page.

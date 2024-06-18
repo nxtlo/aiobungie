@@ -27,8 +27,8 @@
 aiobungie provides 3 different client interfaces to get started with, each serve a different purpose.
 
 * `Client`: is probably what you want to get started with first. It provides minimal abstraction for the REST api. Is [Pythonic](https://stackoverflow.com/questions/84102/what-is-idiomatic-code#84270).
-* `RESTClient`: When you're building a light-weight REST backend. You can use this one. It returns `JSON` objects instead of `dataclasses`.
-This is considered lower-level that `Client`.
+* `RESTClient`: When you're building a light-weight REST backend. You can use this one. It returns `JSON` objects instead of `dataclasses`, as well `OAuth2` API.
+This is considered lower-level version of `Client`.
 * `RESTPool`: when you're serving a large amount of users and want to spawn a session for each. each instance of this pool returns a `RESTClient`.
 
 Check either the examples or each of those objects's documentation for more information about the usage.
@@ -38,7 +38,6 @@ from __future__ import annotations
 
 from aiobungie import builders
 from aiobungie import crates
-from aiobungie import interfaces
 from aiobungie import traits
 from aiobungie import typedefs
 from aiobungie import url
@@ -47,8 +46,8 @@ from aiobungie.error import *
 from aiobungie.internal import iterators
 from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
-from aiobungie.internal.factory import EmptyFactory
-from aiobungie.internal.factory import Factory
+from aiobungie import framework
+from aiobungie import api
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 
@@ -72,6 +71,8 @@ from .crates.fireteams import FireteamPlatform
 
 # Records enums
 from .crates.records import RecordState
+
+# Package metadata
 from .metadata import __about__
 from .metadata import __author__
 from .metadata import __docs__

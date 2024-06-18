@@ -124,8 +124,8 @@ class PartialBungieUser:
         by using `PartialBungieUser.fetch_self()` method.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     name: str | None
     """The user's name. Field may be undefined if not found."""
@@ -151,7 +151,7 @@ class PartialBungieUser:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_bungie_user",
+        use_instead="{self}.app.request.fetch_bungie_user",
     )
     async def fetch_self(self) -> BungieUser:
         """Fetch the Bungie user of this partial user.
@@ -166,7 +166,7 @@ class PartialBungieUser:
         `aiobungie.NotFound`
             The user was not found.
         """
-        return await self.net.request.fetch_bungie_user(self.id)
+        return await self.app.request.fetch_bungie_user(self.id)
 
     def __str__(self) -> str:
         return str(self.name)
@@ -257,8 +257,8 @@ class BungieUser:
 class DestinyMembership(UserLike):
     """Represents a Bungie user's Destiny 2 membership."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     id: int
     """The member's id."""
@@ -290,7 +290,7 @@ class DestinyMembership(UserLike):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_profile",
+        use_instead="{self}.app.request.fetch_profile",
     )
     async def fetch_self_profile(
         self,
@@ -317,7 +317,7 @@ class DestinyMembership(UserLike):
             A Destiny 2 player profile with its components.
             Only passed components will be available if they exists. Otherwise they will be `None`
         """
-        return await self.net.request.fetch_profile(
+        return await self.app.request.fetch_profile(
             self.id, self.type, components, auth
         )
 

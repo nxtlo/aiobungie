@@ -120,8 +120,8 @@ class RecordsComponent:
 class CraftablesComponent:
     """Represents craftables-only Bungie component."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     craftables: collections.Mapping[int, items.CraftableItem | None]
     """A mapping from craftable item IDs to a craftable item component.
@@ -136,7 +136,7 @@ class CraftablesComponent:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
         hint="You can fetch each item in {self}.craftables concurrently using their keys.",
     )
     async def fetch_craftables(
@@ -162,7 +162,7 @@ class CraftablesComponent:
         item_ids = tuple(self.craftables.keys())
         return await helpers.awaits(
             *[
-                self.net.request.fetch_inventory_item(item_id)
+                self.app.request.fetch_inventory_item(item_id)
                 for item_id in item_ids[:limit]
             ],
         )

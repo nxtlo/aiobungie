@@ -107,8 +107,8 @@ class EntityBase(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
+    def app(self) -> traits.Send:
+        """A reference to the client that fetched this resource."""
 
     @property
     @abc.abstractmethod
@@ -151,8 +151,8 @@ class Entity(EntityBase):
     It holds core information that all bungie entities has.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     hash: int
     """Entity's hash."""
@@ -180,8 +180,8 @@ class SearchableEntity(EntityBase):
     suggested_words: collections.Sequence[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     hash: int
     """Entity's hash."""
@@ -207,7 +207,7 @@ class SearchableEntity(EntityBase):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
         hint="{self}.entity_type and {self}.hash can be used here.",
     )
     async def fetch_self_item(self) -> InventoryEntity:
@@ -228,7 +228,7 @@ class SearchableEntity(EntityBase):
                 f"Entity type is not `DestinyInventoryItemDefinition`: {self.entity_type}."
             )
 
-        return await self.net.request.fetch_inventory_item(self.hash)
+        return await self.app.request.fetch_inventory_item(self.hash)
 
 
 # We separate the JSON objects within the InventoryEntity from the object itself

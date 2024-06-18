@@ -40,9 +40,9 @@ import zipfile
 
 import aiohttp
 
+from aiobungie import api
 from aiobungie import builders
 from aiobungie import error
-from aiobungie import interfaces
 from aiobungie import metadata
 from aiobungie import typedefs
 from aiobungie import url
@@ -124,7 +124,7 @@ def _collect_components(
     collector: collections.MutableSequence[str] = []
 
     for component in components:
-        if isinstance(component.value, tuple):  # pyright: ignore[reportUnknownMemberType]
+        if isinstance(component.value, tuple):
             collector.extend(str(c) for c in component.value)  # pyright: ignore
         else:
             collector.append(str(component.value))
@@ -306,7 +306,7 @@ class RESTPool:
         )
 
 
-class RESTClient(interfaces.RESTInterface):
+class RESTClient(api.RESTClient):
     """A single process REST client implementation.
 
     This client is designed to only make HTTP requests and return raw JSON objects.

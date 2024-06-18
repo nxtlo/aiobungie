@@ -19,16 +19,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Deserializing REST JSON payloads into an `aiobungie.crates` objects."""
+"""Concrete implementations of the library's deserialization framework.
+
+Exports
+-------
+* `Framework`: The default deserialization framework that's used within client impl's.
+* `Empty`: An empty deserialization framework, it can be used standalone without the need of a client owner.
+"""
 
 from __future__ import annotations
 
-__all__ = ("Factory", "EmptyFactory")
+__all__ = ("Framework", "Empty")
 
 import typing
 
-from aiobungie import interfaces
 from aiobungie import typedefs
+from aiobungie.api import framework
 from aiobungie.crates import activity
 from aiobungie.crates import application
 from aiobungie.crates import character
@@ -56,17 +62,16 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
 
 
-class Factory(interfaces.FactoryInterface):
-    """The base deserialization factory class for all aiobungie objects.
+class Framework(framework.Framework):
+    """The base deserialization framework implementation.
 
-    This entity factory is used to deserialize JSON responses from the REST client and turning them
-    into a `aiobungie.crates` Python classes.
+    This framework is used to deserialize JSON responses from the REST client and turning them into a `aiobungie.crates` Python classes.
     """
 
-    __slots__ = ("_net",)
+    __slots__ = ("_app",)
 
-    def __init__(self, net: traits.Netrunner) -> None:
-        self._net = net
+    def __init__(self, app: traits.Send) -> None:
+        self._app = app
 
     def deserialize_bungie_user(self, data: typedefs.JSONObject) -> user.BungieUser:
         return user.BungieUser(
@@ -96,7 +101,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> user.PartialBungieUser:
         return user.PartialBungieUser(
-            net=self._net,
+            app=self._app,
             types=tuple(
                 enums.MembershipType(type_)
                 for type_ in payload.get("applicableMembershipTypes", ())
@@ -117,7 +122,7 @@ class Factory(interfaces.FactoryInterface):
             name = typedefs.unknown(raw_name)
 
         return user.DestinyMembership(
-            net=self._net,
+            app=self._app,
             id=int(payload["membershipId"]),
             name=name,
             code=payload.get("bungieGlobalDisplayNameCode", None),
@@ -226,7 +231,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
         return clans.Clan(
-            net=self._net,
+            app=self._app,
             id=int(data["groupId"]),
             name=data["name"],
             type=enums.GroupType(data["groupType"]),
@@ -269,7 +274,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
         destiny_user = self.deserialize_destiny_membership(data["destinyUserInfo"])
         return clans.ClanMember(
-            net=self._net,
+            app=self._app,
             last_seen_name=destiny_user.last_seen_name,
             id=destiny_user.id,
             name=destiny_user.name,
@@ -301,7 +306,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> clans.GroupMember:
         member = payload["member"]
         return clans.GroupMember(
-            net=self._net,
+            app=self._app,
             join_date=time.clean_date(member["joinDate"]),
             group_id=int(member["groupId"]),
             member_type=enums.ClanMemberType(member["memberType"]),
@@ -316,7 +321,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> clans.ClanConversation:
         return clans.ClanConversation(
-            net=self._net,
+            app=self._app,
             id=int(payload["conversationId"]),
             group_id=int(payload["groupId"]),
             name=typedefs.unknown(payload["chatName"]),
@@ -333,7 +338,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> application.ApplicationOwner:
         return application.ApplicationOwner(
-            net=self._net,
+            app=self._app,
             name=payload.get("bungieGlobalDisplayName"),
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
@@ -357,7 +362,7 @@ class Factory(interfaces.FactoryInterface):
 
     def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
         return character.Character(
-            net=self._net,
+            app=self._app,
             id=int(payload["characterId"]),
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),
@@ -397,7 +402,7 @@ class Factory(interfaces.FactoryInterface):
             last_played=last_played,
             character_ids=character_ids,
             power_cap=power_cap,
-            net=self._net,
+            app=self._app,
         )
 
     def deserialize_profile_item(
@@ -414,7 +419,7 @@ class Factory(interfaces.FactoryInterface):
         transfer_status = enums.TransferStatus(payload["transferStatus"])
 
         return profile.ProfileItemImpl(
-            net=self._net,
+            app=self._app,
             hash=payload["itemHash"],
             quantity=payload["quantity"],
             bind_status=enums.ItemBindStatus(payload["bindStatus"]),
@@ -432,7 +437,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_objectives(self, payload: typedefs.JSONObject) -> records.Objective:
         return records.Objective(
-            net=self._net,
+            app=self._app,
             hash=payload["objectiveHash"],
             visible=payload["visible"],
             complete=payload["complete"],
@@ -527,14 +532,14 @@ class Factory(interfaces.FactoryInterface):
             dyes = ()
 
         return character.MinimalEquipments(
-            net=self._net, item_hash=payload["itemHash"], dyes=dyes
+            app=self._app, item_hash=payload["itemHash"], dyes=dyes
         )
 
     def deserialize_character_render_data(
         self, payload: typedefs.JSONObject, /
     ) -> character.RenderedData:
         return character.RenderedData(
-            net=self._net,
+            app=self._app,
             customization=self.deserialize_character_customization(
                 payload["customization"]
             ),
@@ -707,7 +712,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> milestones.QuestStatus:
         return milestones.QuestStatus(
-            net=self._net,
+            app=self._app,
             quest_hash=payload["questHash"],
             step_hash=payload["stepHash"],
             step_objectives=tuple(
@@ -960,7 +965,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> components.CraftablesComponent:
         return components.CraftablesComponent(
-            net=self._net,
+            app=self._app,
             craftables={
                 int(item_id): self._deserialize_craftable_item(item)
                 for item_id, item in payload["craftables"].items()
@@ -1431,7 +1436,7 @@ class Factory(interfaces.FactoryInterface):
         description = typedefs.unknown(properties["description"])
 
         return entity.Entity(
-            net=self._net,
+            app=self._app,
             hash=payload["hash"],
             index=payload["index"],
             name=name,
@@ -1446,7 +1451,7 @@ class Factory(interfaces.FactoryInterface):
         return iterators.Iterator(
             [
                 entity.SearchableEntity(
-                    net=self._net,
+                    app=self._app,
                     hash=data["hash"],
                     entity_type=data["entityType"],
                     weight=data["weight"],
@@ -1611,7 +1616,7 @@ class Factory(interfaces.FactoryInterface):
             trait_ids = ()
 
         return entity.InventoryEntity(
-            net=self._net,
+            app=self._app,
             collectible_hash=collectible_hash,
             name=props.name,
             about=about,
@@ -1673,7 +1678,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> entity.ObjectiveEntity:
         props = self._set_entity_attrs(payload)
         return entity.ObjectiveEntity(
-            net=self._net,
+            app=self._app,
             hash=props.hash,
             index=props.index,
             description=props.description,
@@ -1750,7 +1755,7 @@ class Factory(interfaces.FactoryInterface):
         values = self._deserialize_activity_values(payload["values"])
 
         return activity.Activity(
-            net=self._net,
+            app=self._app,
             hash=ref_id,
             instance_id=instance_id,
             mode=mode,
@@ -1880,7 +1885,7 @@ class Factory(interfaces.FactoryInterface):
         is_private = details["isPrivate"]
         membership_type = enums.MembershipType(int(details["membershipType"]))
         return activity.PostActivity(
-            net=self._net,
+            app=self._app,
             hash=ref_id,
             membership_type=membership_type,
             instance_id=instance_id,
@@ -2022,7 +2027,7 @@ class Factory(interfaces.FactoryInterface):
             bungie_user = self.deserialize_bungie_user(raw_bungie_user)
 
         return friends.Friend(
-            net=self._net,
+            app=self._app,
             id=int(payload["lastSeenAsMembershipId"]),
             name=typedefs.unknown(payload["bungieGlobalDisplayName"]),
             code=payload.get("bungieGlobalDisplayNameCode"),
@@ -2107,7 +2112,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> fireteams.FireteamUser:
         destiny_obj = self.deserialize_destiny_membership(payload)
         return fireteams.FireteamUser(
-            net=self._net,
+            app=self._app,
             id=destiny_obj.id,
             code=destiny_obj.code,
             icon=destiny_obj.icon,
@@ -2141,7 +2146,7 @@ class Factory(interfaces.FactoryInterface):
                     last_platform_invite_result=int(
                         member["lastPlatformInviteAttemptResult"]
                     ),
-                    net=self._net,
+                    app=self._app,
                     name=bungie_fields.name,
                     id=bungie_fields.id,
                     icon=bungie_fields.icon,
@@ -2416,35 +2421,36 @@ class Factory(interfaces.FactoryInterface):
         )
 
 
-class EmptyFactory(Factory):
-    """A stand-alone factory that doesn't require a client instance.
+@typing.final
+class Empty(Framework):
+    """A stand-alone framework that doesn't require a client owner.
 
-    # Example
-    ---------
+    Example
+    --------
     ```py
-    # We'll implement a serializable RESTClient.
-    @dataclass(slots=True)
-    class MyClient(aiobungie.traits.Serializable):
+    import aiobungie
+    from aiobungie import traits
+    from aiobungie import framework
+    from aiobungie import crates
+
+    class MyClient(traits.Deserialize):
         rest = aiobungie.RESTClient(env["CLIENT_TOKEN"])
         my_name = "Fate怒"
         my_code = 4275
 
-        # Must implement this one method.
-        @property
-        def factory(self) -> aiobungie.EmptyFactory:
-            # Return an empty factory
-            return aiobungie.EmptyFactory()
+        @property # required method.
+        def framework(self) -> framework.Empty:
+            return framework.Empty()
 
-        async def my_memberships(self) -> Sequence[aiobungie.crates.DestinyMembership]:
+        async def my_memberships(self) -> Sequence[crates.DestinyMembership]:
             # Note, Do not call methods within objects, Since this is an empty
             # factory, The client reference that makes these calls will be `None`.
             response = await self.rest.fetch_membership(self.my_name, self.my_code)
             return self.factory.deserialize_destiny_memberships(response)
 
-
         async def main() -> None:
             client = MyClient()
-            async with client.client:
+            async with client.rest:
                 print(await client.my_memberships())
 
     asyncio.run(main())
@@ -2455,7 +2461,7 @@ class EmptyFactory(Factory):
 
     if typing.TYPE_CHECKING:
         # We explicitly want this to be `None`.
-        _net: None
+        _app: None
 
-    def __init__(self, net: None = None) -> None:
-        self._net = net
+    def __init__(self, app: None = None) -> None:
+        self._app = app

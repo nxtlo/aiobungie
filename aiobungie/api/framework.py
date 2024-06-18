@@ -25,7 +25,7 @@ from __future__ import annotations
 
 from aiobungie.internal import iterators
 
-__all__ = ("FactoryInterface",)
+__all__ = ("Framework",)
 
 import abc
 import typing
@@ -33,7 +33,6 @@ import typing
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie.crates import activity
     from aiobungie.crates import application
@@ -52,13 +51,10 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import user
 
 
-class FactoryInterface(abc.ABC):
-    """An API interface that documents and describes the implementation of the marshaller factory."""
+class Framework(abc.ABC):
+    """An API interface for functionality that a deserialization framework implementation provides."""
 
     __slots__ = ()
-
-    if typing.TYPE_CHECKING:
-        _net: traits.Netrunner
 
     # Users, Memberships.
 

@@ -27,7 +27,7 @@ from __future__ import annotations
 import datetime
 import pathlib
 
-__all__ = ("RESTInterface",)
+__all__ = ("RESTClient",)
 
 import abc
 import collections.abc as collections
@@ -41,19 +41,21 @@ if typing.TYPE_CHECKING:
     import concurrent.futures
     import types
 
+    from typing_extensions import Self
+
     from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crates import fireteams
 
 
-class RESTInterface(traits.RESTful, abc.ABC):
-    """An API interface for the rest only client implementation."""
+class RESTClient(traits.RESTful, abc.ABC):
+    """An API interface for functionality that a REST API implementation provides."""
 
     __slots__ = ()
 
     if typing.TYPE_CHECKING:
 
-        async def __aenter__(self) -> RESTInterface: ...
+        async def __aenter__(self) -> Self: ...
 
         async def __aexit__(
             self,

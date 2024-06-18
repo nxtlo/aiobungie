@@ -85,8 +85,8 @@ class ProfileItemImpl:
     This also can be a character equipment i.e. Weapons, Armor, Ships, etc.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     hash: int
     """The item type hash."""
@@ -144,7 +144,7 @@ class ProfileItemImpl:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
     )
     async def fetch_self(self) -> entity.InventoryEntity:
         """Fetch this profile item.
@@ -154,7 +154,7 @@ class ProfileItemImpl:
         `aiobungie.crates.InventoryEntity`
             An inventory item definition entity.
         """
-        return await self.net.request.fetch_inventory_item(self.hash)
+        return await self.app.request.fetch_inventory_item(self.hash)
 
     def __int__(self) -> int:
         return self.hash
@@ -171,8 +171,8 @@ class Profile:
     id: int
     """Profile's id"""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     name: str
     """Profile's name."""
@@ -195,7 +195,7 @@ class Profile:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_character",
+        use_instead="{self}.app.request.fetch_character",
         hint="You can fetch each character concurrently with {self}.character_ids.",
     )
     async def collect_characters(
@@ -223,7 +223,7 @@ class Profile:
         """
         return await helpers.awaits(
             *[
-                self.net.request.fetch_character(
+                self.app.request.fetch_character(
                     self.id, self.type, char_id, components, auth
                 )
                 for char_id in self.character_ids

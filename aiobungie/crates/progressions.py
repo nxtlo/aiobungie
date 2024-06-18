@@ -33,7 +33,7 @@ import attrs
 class Progression:
     """The base progression class that all progression objects must inherit from."""
 
-    # net: traits.Netrunner = attrs.field(repr=False)
+    # app: traits.Send = attrs.field(repr=False)
 
     hash: int
     """The progression's hash."""

@@ -83,7 +83,7 @@ class Node:
 class Objective:
     """Represents a Destiny 2 record objective."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
 
     hash: int
     """The objective hash."""
@@ -112,7 +112,7 @@ class Objective:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_objective_entity",
+        use_instead="{self}.app.request.fetch_objective_entity",
     )
     async def fetch_self(self) -> entity.ObjectiveEntity:
         """Perform an HTTP request fetching this objective entity definition.
@@ -122,7 +122,7 @@ class Objective:
         `aiobungie.crates.ObjectiveEntity`
             An objective entity definition.
         """
-        return await self.net.request.fetch_objective_entity(self.hash)
+        return await self.app.request.fetch_objective_entity(self.hash)
 
 
 @attrs.mutable(kw_only=True)

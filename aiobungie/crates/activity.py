@@ -77,7 +77,8 @@ class Difficulty(int, enums.Enum):
 class Rewards:
     """Represents rewards achieved from activities."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     hash: int
     """Reward's hash."""
@@ -94,7 +95,7 @@ class Rewards:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
     )
     async def fetch_self(self) -> entity.InventoryEntity:
         """Fetch the definition of this reward.
@@ -104,14 +105,14 @@ class Rewards:
         `aiobungie.crates.InventoryEntity`
             An inventory item entity of the associated hash.
         """
-        return await self.net.request.fetch_inventory_item(self.hash)
+        return await self.app.request.fetch_inventory_item(self.hash)
 
 
 @attrs.frozen(kw_only=True)
 class Challenges:
     """Represents challenges found in activities."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
 
     objective_hash: int
     """The challenge's objective hash."""
@@ -122,11 +123,11 @@ class Challenges:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_objective_entity",
+        use_instead="{self}.app.request.fetch_objective_entity",
     )
     async def fetch_objective(self) -> entity.ObjectiveEntity:
         """Fetch the objective of this challenge."""
-        return await self.net.request.fetch_objective_entity(self.objective_hash)
+        return await self.app.request.fetch_objective_entity(self.objective_hash)
 
 
 @attrs.frozen(kw_only=True)
@@ -498,8 +499,8 @@ class PostActivityPlayer:
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     starting_phase: int
     """If this activity has "phases", this is the phase at which the activity was started."""
@@ -565,8 +566,8 @@ class PostActivity:
 class Activity:
     """Represents a Bungie Activity."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
+    """A reference to the client that fetched this resource."""
 
     hash: int
     """The activity's reference id or hash."""
@@ -615,7 +616,7 @@ class Activity:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_post_activity",
+        use_instead="{self}.app.request.fetch_post_activity",
     )
     async def fetch_post(self) -> PostActivity:
         """Fetch this activity's data after it was finished.
@@ -625,7 +626,7 @@ class Activity:
         `PostActivity`
             A post activity object.
         """
-        return await self.net.request.fetch_post_activity(self.instance_id)
+        return await self.app.request.fetch_post_activity(self.instance_id)
 
     def __int__(self) -> int:
         return self.instance_id

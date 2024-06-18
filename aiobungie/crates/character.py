@@ -108,8 +108,8 @@ class MinimalEquipments:
     3D character object.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     item_hash: int
     """The equipped items's hash."""
@@ -120,19 +120,19 @@ class MinimalEquipments:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
     )
     async def fetch_my_item(self) -> entity.InventoryEntity:
         """Fetch the inventory item definition of this equipment."""
-        return await self.net.request.fetch_inventory_item(self.item_hash)
+        return await self.app.request.fetch_inventory_item(self.item_hash)
 
 
 @attrs.frozen(kw_only=True)
 class RenderedData:
     """Represents a character's rendered data profile component."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     custom_dyes: collections.Collection[Dye]
     """A collection of the character's custom dyes."""
@@ -146,7 +146,7 @@ class RenderedData:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
+        use_instead="{self}.app.request.fetch_inventory_item",
         hint="You can fetch each item in {self}.equipment concurrently.",
     )
     async def fetch_my_items(
@@ -200,8 +200,8 @@ class CharacterProgression:
 class Character:
     """An implementation for a Bungie character."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     id: int
     """Character's id"""
@@ -251,7 +251,7 @@ class Character:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_activities",
+        use_instead="{self}.app.request.fetch_activities",
     )
     async def fetch_activities(
         self,
@@ -284,7 +284,7 @@ class Character:
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        return await self.net.request.fetch_activities(
+        return await self.app.request.fetch_activities(
             self.member_id,
             self.id,
             mode,
@@ -296,7 +296,7 @@ class Character:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.transfer_item",
+        use_instead="{self}.app.request.rest.transfer_item",
     )
     async def transfer_item(
         self,
@@ -329,7 +329,7 @@ class Character:
         vault : `bool`
             Whether to pill this item to your vault or not. Defaults to `False`.
         """
-        await self.net.request.rest.transfer_item(
+        await self.app.request.rest.transfer_item(
             access_token,
             item_id=item_id,
             character_id=self.id,
@@ -342,7 +342,7 @@ class Character:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.pull_item",
+        use_instead="{self}.app.request.rest.pull_item",
     )
     async def pull_item(
         self,
@@ -375,7 +375,7 @@ class Character:
         vault : `bool`
             Whether to pill this item to your vault or not. Defaults to `False`.
         """
-        await self.net.request.rest.pull_item(
+        await self.app.request.rest.pull_item(
             access_token,
             item_id=item_id,
             character_id=self.id,
@@ -388,7 +388,7 @@ class Character:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.equip_item",
+        use_instead="{self}.app.request.rest.equip_item",
     )
     async def equip_item(self, access_token: str, item_id: int, /) -> None:
         """Equip an item to this character.
@@ -405,7 +405,7 @@ class Character:
         item_id : `int`
             The item instance ID.
         """
-        await self.net.request.rest.equip_item(
+        await self.app.request.rest.equip_item(
             access_token,
             item_id=item_id,
             character_id=self.id,
@@ -415,7 +415,7 @@ class Character:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.equip_items",
+        use_instead="{self}.app.request.rest.equip_items",
     )
     async def equip_items(
         self, access_token: str, item_ids: collections.Sequence[int], /
@@ -433,7 +433,7 @@ class Character:
         item_ids: `Sequence[int]`
             A list of item ids you want to equip for this character.
         """
-        await self.net.request.rest.equip_items(
+        await self.app.request.rest.equip_items(
             access_token,
             item_ids=item_ids,
             character_id=self.id,

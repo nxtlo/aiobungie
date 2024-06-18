@@ -24,6 +24,7 @@ See [Examples for advance usage](https://github.com/nxtlo/aiobungie/tree/master/
 
 ```py
 import aiobungie
+import asyncio
 
 client = aiobungie.Client('YOUR_API_KEY')
 
@@ -36,8 +37,7 @@ async def main() -> None:
             print(user.memberships)
             
 
-# You can either run it using the client or just asyncio.run(main())
-client.run(main())
+asyncio.run(main())
 ```
 
 ## RESTful clients

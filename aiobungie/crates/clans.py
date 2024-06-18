@@ -85,8 +85,8 @@ class ClanFeatures:
 class ClanConversation:
     """Represents a clan conversation."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     group_id: int
     """The clan or group's id."""
@@ -106,7 +106,7 @@ class ClanConversation:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.edit_optional_conversation",
+        use_instead="{self}.app.request.rest.edit_optional_conversation",
     )
     async def edit(
         self,
@@ -141,7 +141,7 @@ class ClanConversation:
             Whether to enable chatting or not.
             If set to `True` then chatting will be enabled. Otherwise it will be disabled.
         """
-        await self.net.request.rest.edit_optional_conversation(
+        await self.app.request.rest.edit_optional_conversation(
             access_token,
             self.group_id,
             self.id,
@@ -178,8 +178,8 @@ class ClanBanner:
 class ClanMember(user.DestinyMembership):
     """Represents a Bungie clan member."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     last_seen_name: str
     """The clan member's last seen display name"""
@@ -219,7 +219,7 @@ class ClanMember(user.DestinyMembership):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_clan_from_id",
+        use_instead="{self}.app.request.fetch_clan_from_id",
         hint="You can use {self}.group_id to get the clan ID.",
     )
     async def fetch_clan(self) -> Clan:
@@ -230,12 +230,12 @@ class ClanMember(user.DestinyMembership):
         `Clan`
             The clan admins clan.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        return await self.app.request.fetch_clan_from_id(self.group_id)
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.ban_clan_member",
+        use_instead="{self}.app.request.rest.ban_clan_member",
         hint="You can use {self}.group_id and {self}.id to get the clan ID and the member ID.",
     )
     async def ban(
@@ -263,7 +263,7 @@ class ClanMember(user.DestinyMembership):
         comment: `aiobungie.UndefinedOr[str]`
             An optional comment to this ban. Default is `UNDEFINED`
         """
-        await self.net.request.rest.ban_clan_member(
+        await self.app.request.rest.ban_clan_member(
             access_token,
             self.group_id,
             self.id,
@@ -275,7 +275,7 @@ class ClanMember(user.DestinyMembership):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.unban_clan_member",
+        use_instead="{self}.app.request.rest.unban_clan_member",
         hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
     )
     async def unban(self, access_token: str, /) -> None:
@@ -289,7 +289,7 @@ class ClanMember(user.DestinyMembership):
         access_token : `str`
             The bearer access token associated with the bungie account.
         """
-        await self.net.request.rest.unban_clan_member(
+        await self.app.request.rest.unban_clan_member(
             access_token,
             group_id=self.group_id,
             membership_id=self.id,
@@ -299,7 +299,7 @@ class ClanMember(user.DestinyMembership):
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.kick_clan_member",
+        use_instead="{self}.app.request.rest.kick_clan_member",
         hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
     )
     async def kick(self, access_token: str, /) -> Clan:
@@ -318,7 +318,7 @@ class ClanMember(user.DestinyMembership):
         `aiobungie.crates.clan.Clan`
             The clan that represents the kicked member.
         """
-        return await self.net.request.kick_clan_member(
+        return await self.app.request.kick_clan_member(
             access_token,
             group_id=self.group_id,
             membership_id=self.id,
@@ -330,8 +330,8 @@ class ClanMember(user.DestinyMembership):
 class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     inactive_memberships: collections.Mapping[int, bool] | None
     """The member's inactive memberships if provided. This will be `None` if not provided."""
@@ -360,7 +360,7 @@ class GroupMember:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_clan_from_id",
+        use_instead="{self}.app.request.fetch_clan_from_id",
     )
     async def fetch_self_clan(self) -> Clan:
         """Fetch an up-to-date clan/group object of the current group.
@@ -370,7 +370,7 @@ class GroupMember:
         `Clan`
             The clan object.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        return await self.app.request.fetch_clan_from_id(self.group_id)
 
     def __int__(self) -> int:
         return self.group_id
@@ -380,8 +380,8 @@ class GroupMember:
 class Clan:
     """Represents a Bungie clan."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
+    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
+    """A reference to the client that fetched this resource."""
 
     id: int
     """The clan id"""
@@ -449,7 +449,7 @@ class Clan:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.edit_clan_options",
+        use_instead="{self}.app.request.rest.edit_clan_options",
     )
     async def edit_options(
         self,
@@ -500,7 +500,7 @@ class Clan:
             Level to join a member at when accepting an invite, application, or joining an open clan.
             Default is `aiobungie.ClanMemberType.BEGINNER`
         """
-        await self.net.request.rest.edit_clan_options(
+        await self.app.request.rest.edit_clan_options(
             access_token,
             group_id=self.id,
             invite_permissions_override=invite_permissions_override,
@@ -513,7 +513,7 @@ class Clan:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.edit_clan",
+        use_instead="{self}.app.request.rest.edit_clan",
     )
     async def edit(
         self,
@@ -591,7 +591,7 @@ class Clan:
         is_public_topic_admin : `aiobungie.bool | None`
             ???
         """
-        await self.net.request.rest.edit_clan(
+        await self.app.request.rest.edit_clan(
             access_token,
             group_id=self.id,
             name=name,
@@ -615,7 +615,7 @@ class Clan:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_available_clan_fireteams",
+        use_instead="{self}.app.request.fetch_available_clan_fireteams",
     )
     async def fetch_available_fireteams(
         self,
@@ -658,7 +658,7 @@ class Clan:
         slots_filter : `int`
             Filter the returned fireteams based on available slots. Default is `0`
         """
-        return await self.net.request.fetch_available_clan_fireteams(
+        return await self.app.request.fetch_available_clan_fireteams(
             access_token,
             self.id,
             activity_type,
@@ -673,7 +673,7 @@ class Clan:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_my_clan_fireteams",
+        use_instead="{self}.app.request.fetch_my_clan_fireteams",
     )
     async def fetch_fireteams(
         self,
@@ -716,7 +716,7 @@ class Clan:
         `collections.Sequence[aiobungie.crates.AvailableFireteam]`
             A sequence of available fireteams objects.
         """
-        return await self.net.request.fetch_my_clan_fireteams(
+        return await self.app.request.fetch_my_clan_fireteams(
             access_token,
             self.id,
             include_closed=include_closed,
@@ -729,7 +729,7 @@ class Clan:
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_clan_conversations",
+        use_instead="{self}.app.request.fetch_clan_conversations",
     )
     async def fetch_conversations(self) -> collections.Sequence[ClanConversation]:
         """Fetch the conversations/chat channels of this clan.
@@ -738,12 +738,12 @@ class Clan:
         `collections.Sequence[aiobungie.crates.ClanConversation]`
             A sequence of the clan chat channels.
         """
-        return await self.net.request.fetch_clan_conversations(self.id)
+        return await self.app.request.fetch_clan_conversations(self.id)
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.add_optional_conversation",
+        use_instead="{self}.app.request.rest.add_optional_conversation",
     )
     async def add_optional_conversation(
         self,
@@ -774,14 +774,14 @@ class Clan:
             If provided and set to 1, It will be `Admins` only.
             Default is `0`
         """
-        await self.net.request.rest.add_optional_conversation(
+        await self.app.request.rest.add_optional_conversation(
             access_token, self.id, name=name, security=security
         )
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_clan_members",
+        use_instead="{self}.app.request.fetch_clan_members",
     )
     async def fetch_members(
         self,
@@ -809,12 +809,12 @@ class Clan:
         `aiobungie.NotFound`
             The clan was not found.
         """
-        return await self.net.request.fetch_clan_members(self.id, type=type, name=name)
+        return await self.app.request.fetch_clan_members(self.id, type=type, name=name)
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.approve_all_pending_group_users",
+        use_instead="{self}.app.request.rest.approve_all_pending_group_users",
     )
     async def approve_pending_members(
         self,
@@ -838,14 +838,14 @@ class Clan:
         message: `aiobungie.UndefinedOr[str]`
             A message to send with the request. Defaults to `UNDEFINED`
         """
-        await self.net.request.rest.approve_all_pending_group_users(
+        await self.app.request.rest.approve_all_pending_group_users(
             access_token, self.id, message=message
         )
 
     @helpers.deprecated(
         since="0.2.10",
         removed_in="0.3.0",
-        use_instead="{self}.net.request.rest.deny_all_pending_group_users",
+        use_instead="{self}.app.request.rest.deny_all_pending_group_users",
     )
     async def deny_pending_members(
         self,
@@ -869,7 +869,7 @@ class Clan:
         message: `aiobungie.UndefinedOr[str]`
             A message to send with the request. Defaults to `UNDEFINED`
         """
-        await self.net.request.rest.deny_all_pending_group_users(
+        await self.app.request.rest.deny_all_pending_group_users(
             access_token, self.id, message=message
         )
 

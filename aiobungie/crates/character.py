@@ -40,22 +40,17 @@ import typing
 import attrs
 
 from aiobungie import url
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import traits
-    from aiobungie.crates import activity
-    from aiobungie.crates import entity
     from aiobungie.crates import milestones as milestones_
     from aiobungie.crates import progressions as progressions_
     from aiobungie.crates import records
     from aiobungie.crates import season
     from aiobungie.internal import assets
     from aiobungie.internal import enums
-    from aiobungie.internal import iterators
 
 
 @attrs.frozen(kw_only=True)
@@ -74,27 +69,16 @@ class CustomizationOptions:
     """Raw data represents a character's customization options."""
 
     personality: int
-
     face: int
-
     skin_color: int
-
     lip_color: int
-
     eye_color: int
-
     hair_colors: collections.Sequence[int]
-
     feature_colors: collections.Sequence[int]
-
     decal_color: int
-
     wear_helmet: bool
-
     hair_index: int
-
     feature_index: int
-
     decal_index: int
 
 
@@ -108,31 +92,16 @@ class MinimalEquipments:
     3D character object.
     """
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     item_hash: int
     """The equipped items's hash."""
 
     dyes: collections.Collection[Dye]
     """An collection of the item rendering dyes"""
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-    )
-    async def fetch_my_item(self) -> entity.InventoryEntity:
-        """Fetch the inventory item definition of this equipment."""
-        return await self.app.request.fetch_inventory_item(self.item_hash)
-
 
 @attrs.frozen(kw_only=True)
 class RenderedData:
     """Represents a character's rendered data profile component."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     custom_dyes: collections.Collection[Dye]
     """A collection of the character's custom dyes."""
@@ -142,31 +111,6 @@ class RenderedData:
 
     equipment: collections.Sequence[MinimalEquipments]
     """A sequence of minimal view of this character's equipment."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-        hint="You can fetch each item in {self}.equipment concurrently.",
-    )
-    async def fetch_my_items(
-        self, *, limit: int | None = None
-    ) -> collections.Collection[entity.InventoryEntity]:
-        """Fetch the inventory item definition of all the equipment this component has.
-
-        Other Parameters
-        ----------
-        limit : `int | None`
-            An optional item limit to fetch. Default is the length of the equipment.
-
-        Returns
-        -------
-        `collections.Collection[aiobungie.crates.InventoryEntity]`
-            A collection of the fetched item definitions.
-        """
-        return await helpers.awaits(
-            *(item.fetch_my_item() for item in self.equipment[:limit])
-        )
 
 
 @attrs.frozen(kw_only=True)
@@ -192,16 +136,10 @@ class CharacterProgression:
     ]
     """A Mapping from an uninstanced inventory item hash to a sequence of its objectives."""
 
-    # Still not sure if this field returned or not.
-    # uninstanced_item_pers: collections.Mapping[int, ...]?
-
 
 @attrs.frozen(kw_only=True)
 class Character:
     """An implementation for a Bungie character."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     id: int
     """Character's id"""
@@ -248,202 +186,12 @@ class Character:
     stats: collections.Mapping[enums.Stat, int]
     """A mapping of the character stats and its level."""
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_activities",
-    )
-    async def fetch_activities(
-        self,
-        mode: enums.GameMode | int,
-        *,
-        page: int = 0,
-        limit: int = 250,
-    ) -> iterators.Iterator[activity.Activity]:
-        """Fetch Destiny 2 activities for this character.
-
-        Parameters
-        ----------
-        mode: `aiobungie.aiobungie.internal.enums.GameMode | int`
-            Filters the Game Modes to fetch. i.e., Nightfall, Strike, Iron Banner, etc.
-
-        Other Parameters
-        ----------------
-        page : `int`
-            The page number. Default is `0`
-        limit: `int`
-            Limit the returned result. Default is `250` which's the max.
-
-        Returns
-        -------
-        `aiobungie.Iterator[aiobungie.crates.Activity]`
-            A iterator over the character's activities.
-
-        Raises
-        ------
-        `aiobungie.MembershipTypeError`
-            The provided membership type was invalid.
-        """
-        return await self.app.request.fetch_activities(
-            self.member_id,
-            self.id,
-            mode,
-            membership_type=self.member_type,
-            page=page,
-            limit=limit,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.transfer_item",
-    )
-    async def transfer_item(
-        self,
-        access_token: str,
-        /,
-        item_id: int,
-        item_hash: int,
-        *,
-        vault: bool = False,
-        stack_size: int = 1,
-    ) -> None:
-        """Transfer an item from / to your vault.
-
-        Notes
-        -----
-        * This method requires OAuth2: MoveEquipDestinyItems scope.
-        * This method requires both item instance ID and hash.
-
-        Parameters
-        ----------
-        item_id : `int`
-            The item instance ID you want to transfer.
-        item_hash : `int`
-            The item hash.
-
-        Other Parameters
-        ----------------
-        stack_size : `int`
-            The item stack size.
-        vault : `bool`
-            Whether to pill this item to your vault or not. Defaults to `False`.
-        """
-        await self.app.request.rest.transfer_item(
-            access_token,
-            item_id=item_id,
-            character_id=self.id,
-            item_hash=item_hash,
-            member_type=self.member_type,
-            vault=vault,
-            stack_size=stack_size,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.pull_item",
-    )
-    async def pull_item(
-        self,
-        access_token: str,
-        /,
-        item_id: int,
-        item_hash: int,
-        *,
-        vault: bool = False,
-        stack_size: int = 1,
-    ) -> None:
-        """Pull an item from the postmaster to this character.
-
-        Notes
-        -----
-        * This method requires OAuth2: MoveEquipDestinyItems scope.
-        * This method requires both item instance ID and hash.
-
-        Parameters
-        ----------
-        item_id : `int`
-            The item instance ID to pull.
-        item_hash : `int`
-            The item hash.
-
-        Other Parameters
-        ----------------
-        stack_size : `int`
-            The item stack size.
-        vault : `bool`
-            Whether to pill this item to your vault or not. Defaults to `False`.
-        """
-        await self.app.request.rest.pull_item(
-            access_token,
-            item_id=item_id,
-            character_id=self.id,
-            item_hash=item_hash,
-            member_type=self.member_type,
-            vault=vault,
-            stack_size=stack_size,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.equip_item",
-    )
-    async def equip_item(self, access_token: str, item_id: int, /) -> None:
-        """Equip an item to this character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        item_id : `int`
-            The item instance ID.
-        """
-        await self.app.request.rest.equip_item(
-            access_token,
-            item_id=item_id,
-            character_id=self.id,
-            membership_type=self.member_type,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.equip_items",
-    )
-    async def equip_items(
-        self, access_token: str, item_ids: collections.Sequence[int], /
-    ) -> None:
-        """Equip multiple items to this character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        item_ids: `Sequence[int]`
-            A list of item ids you want to equip for this character.
-        """
-        await self.app.request.rest.equip_items(
-            access_token,
-            item_ids=item_ids,
-            character_id=self.id,
-            membership_type=self.member_type,
-        )
+    @property
+    def power_level(self) -> int:
+        """An alias to the player's light level."""
+        return self.light
 
     @property
     def url(self) -> str:
         """A URL of the character at Bungie.net."""
         return f"{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}"
-
-    def __int__(self) -> int:
-        return int(self.id)

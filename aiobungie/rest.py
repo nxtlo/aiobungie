@@ -500,7 +500,10 @@ class RESTClient(api.RESTClient):
         params: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
-        assert self._session is not None
+        assert self._session is not None, (
+            "This client hasn't been opened yet. Use `async with client` or `async with client.rest` "
+            "before performing any request."
+        )
 
         retries: int = 0
         headers: collections.MutableMapping[str, typing.Any] = {}

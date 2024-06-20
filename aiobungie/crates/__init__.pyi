@@ -32,7 +32,6 @@ __all__ = [
     "AggregatedActivity",
     "AggregatedActivityValues",
     "Application",
-    "ApplicationOwner",
     "Character",
     "Dye",
     "MinimalEquipments",
@@ -99,6 +98,7 @@ __all__ = [
     "ArtifactTierItem",
     "CharacterScopedArtifact",
     "User",
+    "Unique",
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",
@@ -125,7 +125,6 @@ __all__ = [
 #   AggregatedActivity
 #   AggregatedActivityValues
 #   Application
-#   ApplicationOwner
 #   Artifact
 #   ArtifactTier
 #   ArtifactTierItem
@@ -214,6 +213,7 @@ __all__ = [
 #   SearchableEntity
 #   StringVariableComponent
 #   UninstancedItemsComponent
+#   Unique
 #   User
 #   UserCredentials
 #   UserThemes

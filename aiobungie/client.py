@@ -1230,7 +1230,7 @@ class Client(traits.Compact):
         """
         resp = await self.rest.fetch_application(appid)
 
-        return self._framework.deserialize_app(resp)
+        return self._framework.deserialize_application(resp)
 
     # Milestones
 

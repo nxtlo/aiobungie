@@ -38,13 +38,13 @@ class TestHardLinkedUser:
             cross_save_type=aiobungie.MembershipType.STADIA,
         )
 
-    def test_user_id(self, model):
+    def test_user_id(self, model: crates.HardLinkedMembership):
         assert model.id == 9909
 
-    def test_user_type(self, model):
+    def test_user_type(self, model: crates.HardLinkedMembership):
         assert model.type is aiobungie.MembershipType.STEAM
 
-    def test_cross_save_type(self, model):
+    def test_cross_save_type(self, model: crates.HardLinkedMembership):
         assert model.cross_save_type is aiobungie.MembershipType.STADIA
 
 
@@ -61,12 +61,12 @@ class TestUserThemes:
             crates.user.UserThemes(id=22, name="Ok", description=None),
         )
 
-    def test_model_meta(self, mod):
+    def test_model_meta(self, mod: crates.UserThemes):
         assert isinstance(mod, crates.user.UserThemes)
         assert mod is not None
         assert mod.description is None
 
-    def test_list_of_objs(self, list_objs):
+    def test_list_of_objs(self, list_objs: crates.UserThemes):
         assert isinstance(list_objs, tuple)
 
 
@@ -101,16 +101,18 @@ class TestBungieUser:
             theme_name="some_theme_name",
             display_title="Newbie",
             stadia_name=None,
+            egs_name=None,
+            profile_ban_expire=None,
         )
 
-    def test_str_op(self, model):
-        assert str(model) == str(None)
+    def test_str_op(self, model: crates.BungieUser):
+        assert str(model) == "Fate怒#4275"
 
-    def test_int_op(self, model):
+    def test_int_op(self, model: crates.BungieUser):
         assert int(model) == 205432
 
 
-class TestDestinyUser:
+class TestDestinyMembership:
     @pytest.fixture()
     def obj(self): ...
 

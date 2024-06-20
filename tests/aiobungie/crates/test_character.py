@@ -32,7 +32,6 @@ import pytest
 import aiobungie
 from aiobungie import crates
 from aiobungie.internal import assets
-from aiobungie.internal import helpers
 
 
 class TestDye:
@@ -79,7 +78,6 @@ class TestMinimalEquipments:
     @pytest.fixture()
     def equipment(self) -> crates.MinimalEquipments:
         return crates.MinimalEquipments(
-            app=mock.Mock(),
             item_hash=123,
             dyes=[mock.Mock(spec_set=crates.Dye), mock.Mock(spec_set=crates.Dye)],
         )
@@ -90,22 +88,11 @@ class TestMinimalEquipments:
     def test_dyes(self, equipment: crates.MinimalEquipments):
         assert equipment.dyes
 
-    @pytest.mark.asyncio()
-    async def test_fetch_my_item(self, equipment: crates.MinimalEquipments) -> None:
-        equipment.app.request.fetch_inventory_item = mock.AsyncMock()
-        item = await equipment.fetch_my_item()
-
-        equipment.app.request.fetch_inventory_item.assert_awaited_once_with(
-            equipment.item_hash
-        )
-        assert item is equipment.app.request.fetch_inventory_item.return_value
-
 
 class TestRenderedData:
     @pytest.fixture()
     def model(self) -> crates.RenderedData:
         return crates.RenderedData(
-            app=mock.Mock(),
             custom_dyes=[
                 mock.Mock(spec_set=crates.Dye),
                 mock.Mock(spec_set=crates.Dye),
@@ -116,18 +103,6 @@ class TestRenderedData:
 
     def test_custom_dyes(self, model: crates.RenderedData):
         assert model.custom_dyes
-
-    @pytest.mark.asyncio()
-    async def test_fetch_my_items(self, model: crates.RenderedData) -> None:
-        model.app.request.fetch_inventory_item = mock.AsyncMock()
-        helpers.awaits = mock.AsyncMock()
-
-        items = await model.fetch_my_items()
-        assert all(
-            item is model.app.request.fetch_inventory_item.return_value
-            for item in items
-        )
-        model.app.request.fetch_inventory_item.assert_has_calls([])
 
 
 class TestCharacterProgression:
@@ -200,9 +175,6 @@ class TestCharacter:
             },
         )
 
-    def test___int__(self, model: crates.Character) -> None:
-        assert int(model) == model.id
-
     def test_url(self, model: crates.Character) -> None:
         assert (
             model.url
@@ -243,67 +215,3 @@ class TestCharacter:
             page=0,
         )
         assert activities is model.app.request.fetch_activities.return_value
-
-    @pytest.mark.asyncio()
-    async def test_transfer_item(self, model: crates.Character) -> None:
-        model.app.request.rest.transfer_item = mock.AsyncMock()
-        await model.transfer_item(
-            "token",
-            item_id=123,
-            item_hash=293,
-        )
-        model.app.request.rest.transfer_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            item_hash=293,
-            member_type=model.member_type,
-            vault=False,
-            stack_size=1,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_pull_item(self, model: crates.Character) -> None:
-        model.app.request.rest.pull_item = mock.AsyncMock()
-        await model.pull_item(
-            "token",
-            item_id=123,
-            item_hash=293,
-        )
-        model.app.request.rest.pull_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            item_hash=293,
-            member_type=model.member_type,
-            vault=False,
-            stack_size=1,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_equip_item(self, model: crates.Character) -> None:
-        model.app.request.rest.equip_item = mock.AsyncMock()
-        await model.equip_item(
-            "token",
-            123,
-        )
-        model.app.request.rest.equip_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            membership_type=model.member_type,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_equip_items(self, model: crates.Character) -> None:
-        model.app.request.rest.equip_items = mock.AsyncMock()
-        await model.equip_items(
-            "token",
-            [123, 234],
-        )
-        model.app.request.rest.equip_items.assert_called_once_with(
-            "token",
-            item_ids=[123, 234],
-            character_id=model.id,
-            membership_type=model.member_type,
-        )

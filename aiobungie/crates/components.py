@@ -51,10 +51,8 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie.crates import activity
     from aiobungie.crates import character as character_
-    from aiobungie.crates import entity
     from aiobungie.crates import fireteams
     from aiobungie.crates import items
     from aiobungie.crates import profile
@@ -120,9 +118,6 @@ class RecordsComponent:
 class CraftablesComponent:
     """Represents craftables-only Bungie component."""
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     craftables: collections.Mapping[int, items.CraftableItem | None]
     """A mapping from craftable item IDs to a craftable item component.
 
@@ -132,40 +127,6 @@ class CraftablesComponent:
 
     crafting_root_node_hash: int
     """The hash for the root presentation node definition of craftable item categories."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-        hint="You can fetch each item in {self}.craftables concurrently using their keys.",
-    )
-    async def fetch_craftables(
-        self, limit: int | None = None
-    ) -> collections.Sequence[entity.InventoryEntity] | None:
-        """Fetch the inventory definitions for the craftables.
-
-        Parameters
-        ----------
-        limit : `int | None`
-            The maximum number of items to fetch. If not provided, all items will be fetched.
-
-        Returns
-        -------
-        `collections.Sequence[entity.InventoryEntity] | None`
-            If the craftables are available, a sequence of inventory entities. Otherwise `None`.
-        """
-
-        # No reason to turn the map keys if it was empty.
-        if not self.craftables:
-            return None
-
-        item_ids = tuple(self.craftables.keys())
-        return await helpers.awaits(
-            *[
-                self.app.request.fetch_inventory_item(item_id)
-                for item_id in item_ids[:limit]
-            ],
-        )
 
 
 @attrs.frozen(kw_only=True)
@@ -303,42 +264,6 @@ class ItemsComponent(UninstancedItemsComponent):
     This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
     otherwise will be `None`.
     """
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    def any(self) -> bool:
-        """Returns `True` if one if the components are available, `False` otherwise."""
-        return any(
-            (
-                self.instances,
-                self.render_data,
-                self.stats,
-                self.sockets,
-                self.reusable_plugs,
-                self.plug_objectives,
-                self.plug_states,
-            )
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    def all(self) -> bool:
-        """Returns `True` if all components are available, `False` otherwise."""
-        return all(
-            (
-                self.instances,
-                self.render_data,
-                self.stats,
-                self.sockets,
-                self.reusable_plugs,
-                self.plug_objectives,
-                self.plug_states,
-            )
-        )
 
 
 @helpers.unimplemented()

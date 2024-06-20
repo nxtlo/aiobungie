@@ -47,7 +47,6 @@ __all__ = (
     "AggregatedActivityValues",
     # application.py
     "Application",
-    "ApplicationOwner",
     # character.py
     "Character",
     "Dye",
@@ -126,6 +125,7 @@ __all__ = (
     "CharacterScopedArtifact",
     # user.py
     "User",
+    "Unique",
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",

@@ -36,8 +36,10 @@ Check either the examples or each of those objects's documentation for more info
 
 from __future__ import annotations
 
+from aiobungie import api
 from aiobungie import builders
 from aiobungie import crates
+from aiobungie import framework
 from aiobungie import traits
 from aiobungie import typedefs
 from aiobungie import url
@@ -46,8 +48,6 @@ from aiobungie.error import *
 from aiobungie.internal import iterators
 from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
-from aiobungie import framework
-from aiobungie import api
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 

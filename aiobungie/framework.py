@@ -33,8 +33,8 @@ __all__ = ("Framework", "Empty")
 
 import typing
 
+from aiobungie import api
 from aiobungie import typedefs
-from aiobungie.api import framework
 from aiobungie.crates import activity
 from aiobungie.crates import application
 from aiobungie.crates import character
@@ -62,7 +62,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
 
 
-class Framework(framework.Framework):
+class Framework(api.Framework):
     """The base deserialization framework implementation.
 
     This framework is used to deserialize JSON responses from the REST client and turning them into a `aiobungie.crates` Python classes.
@@ -86,6 +86,7 @@ class Framework(framework.Framework):
             steam_name=data.get("steamDisplayName", None),
             twitch_name=data.get("twitchDisplayName", None),
             blizzard_name=data.get("blizzardDisplayName", None),
+            egs_name=data.get("egsDisplayName", None),
             status=data["statusText"],
             locale=data["locale"],
             picture=assets.Image(path=data["profilePicturePath"]),
@@ -95,6 +96,9 @@ class Framework(framework.Framework):
             show_activity=bool(data["showActivity"]),
             theme_name=data["profileThemeName"],
             display_title=data["userTitleDisplay"],
+            profile_ban_expire=time.clean_date(data["profileBanExpire"])
+            if "profileBanExpire" in data
+            else None,
         )
 
     def deserialize_partial_bungie_user(
@@ -106,12 +110,15 @@ class Framework(framework.Framework):
                 enums.MembershipType(type_)
                 for type_ in payload.get("applicableMembershipTypes", ())
             ),
-            name=payload.get("displayName"),
+            name=payload["bungieGlobalDisplayName"]
+            if "bungieGlobalDisplayName" in payload
+            else payload.get("displayName"),
             id=int(payload["membershipId"]),
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             is_public=payload["isPublic"],
             icon=assets.Image(path=payload.get("iconPath", "")),
             type=enums.MembershipType(payload["membershipType"]),
+            code=payload.get("bungieGlobalDisplayNameCode"),
         )
 
     def deserialize_destiny_membership(
@@ -306,7 +313,6 @@ class Framework(framework.Framework):
     ) -> clans.GroupMember:
         member = payload["member"]
         return clans.GroupMember(
-            app=self._app,
             join_date=time.clean_date(member["joinDate"]),
             group_id=int(member["groupId"]),
             member_type=enums.ClanMemberType(member["memberType"]),
@@ -321,7 +327,6 @@ class Framework(framework.Framework):
         self, payload: typedefs.JSONObject
     ) -> clans.ClanConversation:
         return clans.ClanConversation(
-            app=self._app,
             id=int(payload["conversationId"]),
             group_id=int(payload["groupId"]),
             name=typedefs.unknown(payload["chatName"]),
@@ -334,29 +339,32 @@ class Framework(framework.Framework):
     ) -> collections.Sequence[clans.ClanConversation]:
         return tuple(self._deserialize_clan_conversation(conv) for conv in payload)
 
-    def deserialize_app_owner(
+    def deserialize_application_member(
         self, payload: typedefs.JSONObject
-    ) -> application.ApplicationOwner:
-        return application.ApplicationOwner(
-            app=self._app,
-            name=payload.get("bungieGlobalDisplayName"),
-            id=int(payload["membershipId"]),
-            type=enums.MembershipType(payload["membershipType"]),
-            icon=assets.Image(path=payload["iconPath"]),
-            is_public=payload["isPublic"],
-            code=payload.get("bungieGlobalDisplayNameCode", None),
+    ) -> application.ApplicationMember:
+        return application.ApplicationMember(
+            api_eula_version=payload["apiEulaVersion"],
+            role=payload["role"],
+            user=self.deserialize_partial_bungie_user(payload["user"]),
         )
 
-    def deserialize_app(self, payload: typedefs.JSONObject) -> application.Application:
+    def deserialize_application(
+        self, payload: typedefs.JSONObject
+    ) -> application.Application:
         return application.Application(
             id=int(payload["applicationId"]),
             name=payload["name"],
+            origin=payload["origin"],
             link=payload["link"],
             status=payload["status"],
             redirect_url=payload.get("redirectUrl", None),
             created_at=time.clean_date(payload["creationDate"]),
+            status_changed=time.clean_date(payload["statusChanged"]),
             published_at=time.clean_date(payload["firstPublished"]),
-            owner=self.deserialize_app_owner(payload["team"][0]["user"]),
+            team=tuple(
+                self.deserialize_application_member(member)
+                for member in payload["team"]
+            ),
             scope=payload.get("scope"),
         )
 
@@ -402,7 +410,6 @@ class Framework(framework.Framework):
             last_played=last_played,
             character_ids=character_ids,
             power_cap=power_cap,
-            app=self._app,
         )
 
     def deserialize_profile_item(
@@ -419,7 +426,6 @@ class Framework(framework.Framework):
         transfer_status = enums.TransferStatus(payload["transferStatus"])
 
         return profile.ProfileItemImpl(
-            app=self._app,
             hash=payload["itemHash"],
             quantity=payload["quantity"],
             bind_status=enums.ItemBindStatus(payload["bindStatus"]),
@@ -437,7 +443,6 @@ class Framework(framework.Framework):
 
     def deserialize_objectives(self, payload: typedefs.JSONObject) -> records.Objective:
         return records.Objective(
-            app=self._app,
             hash=payload["objectiveHash"],
             visible=payload["visible"],
             complete=payload["complete"],
@@ -531,15 +536,12 @@ class Framework(framework.Framework):
         else:
             dyes = ()
 
-        return character.MinimalEquipments(
-            app=self._app, item_hash=payload["itemHash"], dyes=dyes
-        )
+        return character.MinimalEquipments(item_hash=payload["itemHash"], dyes=dyes)
 
     def deserialize_character_render_data(
         self, payload: typedefs.JSONObject, /
     ) -> character.RenderedData:
         return character.RenderedData(
-            app=self._app,
             customization=self.deserialize_character_customization(
                 payload["customization"]
             ),
@@ -712,7 +714,6 @@ class Framework(framework.Framework):
         self, payload: typedefs.JSONObject
     ) -> milestones.QuestStatus:
         return milestones.QuestStatus(
-            app=self._app,
             quest_hash=payload["questHash"],
             step_hash=payload["stepHash"],
             step_objectives=tuple(
@@ -965,7 +966,6 @@ class Framework(framework.Framework):
         self, payload: typedefs.JSONObject
     ) -> components.CraftablesComponent:
         return components.CraftablesComponent(
-            app=self._app,
             craftables={
                 int(item_id): self._deserialize_craftable_item(item)
                 for item_id, item in payload["craftables"].items()
@@ -1436,7 +1436,6 @@ class Framework(framework.Framework):
         description = typedefs.unknown(properties["description"])
 
         return entity.Entity(
-            app=self._app,
             hash=payload["hash"],
             index=payload["index"],
             name=name,
@@ -1451,7 +1450,6 @@ class Framework(framework.Framework):
         return iterators.Iterator(
             [
                 entity.SearchableEntity(
-                    app=self._app,
                     hash=data["hash"],
                     entity_type=data["entityType"],
                     weight=data["weight"],
@@ -1616,7 +1614,6 @@ class Framework(framework.Framework):
             trait_ids = ()
 
         return entity.InventoryEntity(
-            app=self._app,
             collectible_hash=collectible_hash,
             name=props.name,
             about=about,
@@ -1678,7 +1675,6 @@ class Framework(framework.Framework):
     ) -> entity.ObjectiveEntity:
         props = self._set_entity_attrs(payload)
         return entity.ObjectiveEntity(
-            app=self._app,
             hash=props.hash,
             index=props.index,
             description=props.description,
@@ -2027,9 +2023,8 @@ class Framework(framework.Framework):
             bungie_user = self.deserialize_bungie_user(raw_bungie_user)
 
         return friends.Friend(
-            app=self._app,
             id=int(payload["lastSeenAsMembershipId"]),
-            name=typedefs.unknown(payload["bungieGlobalDisplayName"]),
+            name=typedefs.unknown(payload.get("bungieGlobalDisplayName", "")),
             code=payload.get("bungieGlobalDisplayNameCode"),
             relationship=enums.Relationship(payload["relationship"]),
             user=bungie_user,
@@ -2107,7 +2102,7 @@ class Framework(framework.Framework):
             fireteams_ = ()
         return fireteams_
 
-    def deserialize_fireteam_destiny_users(
+    def deserialize_fireteam_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
         destiny_obj = self.deserialize_destiny_membership(payload)
@@ -2136,7 +2131,7 @@ class Framework(framework.Framework):
             for member in members:
                 bungie_fields = self.deserialize_partial_bungie_user(member)
                 members_fields = fireteams.FireteamMember(
-                    destiny_user=self.deserialize_fireteam_destiny_users(member),
+                    membership=self.deserialize_fireteam_destiny_membership(member),
                     has_microphone=member["hasMicrophone"],
                     character_id=int(member["characterId"]),
                     date_joined=time.clean_date(member["dateJoined"]),
@@ -2154,6 +2149,7 @@ class Framework(framework.Framework):
                     crossave_override=bungie_fields.crossave_override,
                     types=bungie_fields.types,
                     type=bungie_fields.type,
+                    code=bungie_fields.code,
                 )
                 members_.append(members_fields)
         return tuple(members_)

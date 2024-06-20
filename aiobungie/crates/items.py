@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Standard implementation of Bungie items."""
+"""Basic implementation of Bungie items components."""
 
 from __future__ import annotations
 
@@ -51,6 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
+@typing.final
 class ItemBreakerType(int, enums.Enum):
     """An enum for Destiny2 item breaker types."""
 
@@ -67,6 +68,7 @@ class ItemBreakerType(int, enums.Enum):
     """An alias to SHIELD_PIERCING."""
 
 
+@typing.final
 class ItemEnergyType(int, enums.Enum):
     """An enum for Destiny 2 item energy types for Armor 2.0, Ghosts 2.0 and stasis subclasses."""
 
@@ -104,7 +106,7 @@ class Currency:
     """The hash of this currency."""
 
     amount: int
-    """The amount of this currency you have."""
+    """The amount of this currency."""
 
 
 @attrs.frozen(kw_only=True)
@@ -128,7 +130,7 @@ class ItemSocket:
 
 @attrs.frozen(kw_only=True)
 class CraftableItem:
-    """Represents a craftable item found within the craftable component."""
+    """Represents a craftable item found within the craftables component."""
 
     is_visible: bool
     """Whether or not the item is visible."""

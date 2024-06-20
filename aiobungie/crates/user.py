@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie users."""
+"""Basic implementation of Bungie user components."""
 
 from __future__ import annotations
 
 __all__ = (
     "User",
+    "Unique",
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",
@@ -53,46 +54,53 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
 
 
-class UserLike(abc.ABC):
-    """An interface for common fields that Bungie user objects has."""
+class Unique(abc.ABC):
+    """An interface for common fields that Destiny2/Bungie membership/user objects has.
+
+    You can use this interface as a type hint for objects that contains minimal information.
+
+    Example
+    -------
+    ```py
+    def print_options(user: crates.Unique) -> None:
+        print(
+        "Welcome", user.unique_name,
+        "You membership type is", user.type,
+        "You profile link is", user.link
+    )
+
+    my_user = await client.fetch_bungie_user(00000)
+    print_options(my_user) # accepts a bungie user.
+
+    my_friends = await client.fetch_friends('token')
+    for friend in my_friends:
+        print_options(friend) # Friend is also unique
+    ```
+    """
 
     __slots__ = ()
 
     @property
     @abc.abstractmethod
     def id(self) -> int:
-        """The user like's id."""
+        """The user's id."""
 
     @property
     @abc.abstractmethod
     def name(self) -> str | None:
-        """The user like's name."""
-
-    @property
-    @abc.abstractmethod
-    def last_seen_name(self) -> str:
-        """The user like's last seen name."""
-
-    @property
-    @abc.abstractmethod
-    def is_public(self) -> bool:
-        """True if the user profile is public or no."""
+        """The user's name."""
 
     @property
     @abc.abstractmethod
     def type(self) -> enums.MembershipType:
-        """The user type of the user."""
-
-    @property
-    @abc.abstractmethod
-    def icon(self) -> assets.Image:
-        """The user like's icon."""
+        """The membership type of this user."""
 
     @property
     @abc.abstractmethod
     def code(self) -> int | None:
         """The user like's unique display name code.
-        This can be None if the user hasn't logged in after season of the lost update.
+
+        This can be `None` if the user hasn't logged in after season of the lost update.
         """
 
     @property
@@ -113,11 +121,14 @@ class UserLike(abc.ABC):
 
 
 @attrs.frozen(kw_only=True)
-class PartialBungieUser:
-    """Represents partial bungie user.
+class PartialBungieUser(Unique):
+    """The result of a partial `BungieUser` information. also known as battle-net membership.
 
-    This is usually used for bungie users that are missing attributes not present in `BungieUser`,
-    i.e., Clan members, Owners, Moderators and any other object the has a `bungie` attribute.
+    The difference between the two is that some memberships return information
+    about their `Bungie` user, but is incomplete, so this get used instead.
+
+    This is what's used for objects that contain `.bungie_user` field,
+    for an example `ClanMember.bungie_user`
 
     .. note::
         You can fetch the actual bungie user of this partial user
@@ -128,7 +139,10 @@ class PartialBungieUser:
     """A reference to the client that fetched this resource."""
 
     name: str | None
-    """The user's name. Field may be undefined if not found."""
+    """The user's name. Field may be `None` if not found."""
+
+    code: int | None
+    """The user's global name code. Field may be `None` if not found."""
 
     id: int
     """The user's id."""
@@ -150,7 +164,7 @@ class PartialBungieUser:
 
     @helpers.deprecated(
         since="0.2.10",
-        removed_in="0.3.0",
+        removed_in="0.3.1",
         use_instead="{self}.app.request.fetch_bungie_user",
     )
     async def fetch_self(self) -> BungieUser:
@@ -160,27 +174,19 @@ class PartialBungieUser:
         -------
         `aiobungie.crates.BungieUser`
             A Bungie net user.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The user was not found.
         """
         return await self.app.request.fetch_bungie_user(self.id)
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.id
-
 
 @attrs.frozen(kw_only=True)
-class BungieUser:
+class BungieUser(Unique):
     """Represents a user at Bungie.net."""
 
     id: int
     """The user's id"""
+
+    type: enums.MembershipType = attrs.field(default=enums.MembershipType.BUNGIE)
+    """The type of this user, always returns `aiobungie.MembershipType.BUNGIE`"""
 
     created_at: datetime
     """The user's creation datetime."""
@@ -227,6 +233,12 @@ class BungieUser:
     stadia_name: str | None
     """The user's stadia name if it exists."""
 
+    egs_name: str | None
+    """The user's EpicGames name if it exists."""
+
+    profile_ban_expire: datetime | None
+    """If this user's profile was banned, this is the expire date for it."""
+
     status: str | None
     """The user's bungie status text"""
 
@@ -246,15 +258,13 @@ class BungieUser:
         """The user's profile URL at Bungie.net"""
         return f"{url.BASE}/7/en/User/Profile/254/{self.id}"
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.id
+    @property
+    def link(self) -> str:
+        return self.profile_url
 
 
 @attrs.frozen(kw_only=True)
-class DestinyMembership(UserLike):
+class DestinyMembership(Unique):
     """Represents a Bungie user's Destiny 2 membership."""
 
     app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
@@ -284,12 +294,12 @@ class DestinyMembership(UserLike):
     is_public: bool
     """The member's profile privacy status."""
 
-    crossave_override: enums.MembershipType | int
+    crossave_override: enums.MembershipType
     """The member's crossave override membership type."""
 
     @helpers.deprecated(
         since="0.2.10",
-        removed_in="0.3.0",
+        removed_in="0.3.1",
         use_instead="{self}.app.request.fetch_profile",
     )
     async def fetch_self_profile(

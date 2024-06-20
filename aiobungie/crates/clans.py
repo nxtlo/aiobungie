@@ -38,7 +38,6 @@ import typing
 import attrs
 
 from aiobungie import url
-from aiobungie.crates import fireteams
 from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -85,9 +84,6 @@ class ClanFeatures:
 class ClanConversation:
     """Represents a clan conversation."""
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     group_id: int
     """The clan or group's id."""
 
@@ -103,59 +99,6 @@ class ClanConversation:
     security: int
     """Conversation's security level."""
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.edit_optional_conversation",
-    )
-    async def edit(
-        self,
-        access_token: str,
-        /,
-        *,
-        name: str | None = None,
-        security: typing.Literal[0, 1] = 0,
-        enable_chat: bool = False,
-    ) -> None:
-        """Edit the settings of this chat/conversation channel.
-
-        ..note::
-            This request requires OAuth2: AdminGroups scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other parameters
-        ----------------
-        name: `aiobungie.UndefinedOr[str]`
-            The new chat name. Default to `UNDEFINED`
-        security: `typing.Literal[0, 1]`
-            The new security level of the chat.
-
-            If provided and set to 0, It will be to `Group` only.
-            If provided and set to 1, It will be `Admins` only.
-            Default is `0`
-        enable_chat : `bool`
-            Whether to enable chatting or not.
-            If set to `True` then chatting will be enabled. Otherwise it will be disabled.
-        """
-        await self.app.request.rest.edit_optional_conversation(
-            access_token,
-            self.group_id,
-            self.id,
-            name=name,
-            security=security,
-            enable_chat=enable_chat,
-        )
-
-    def __int__(self) -> int:
-        return self.id
-
-    def __str__(self) -> str:
-        return str(self.name)
-
 
 @attrs.frozen(kw_only=True)
 class ClanBanner:
@@ -170,19 +113,10 @@ class ClanBanner:
     background: assets.Image
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
-    def __int__(self) -> int:
-        return self.id
-
 
 @attrs.frozen(kw_only=True)
 class ClanMember(user.DestinyMembership):
     """Represents a Bungie clan member."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
-    last_seen_name: str
-    """The clan member's last seen display name"""
 
     group_id: int
     """The member's group id."""
@@ -203,7 +137,7 @@ class ClanMember(user.DestinyMembership):
     """The clan member's bungie partial net user if set. `None` if not found.
 
     .. note:: This only returns a partial bungie net user.
-    You can fetch the fully implemented user using `aiobungie.crates.PartialBungieUser.fetch_self()` method.
+    You can fetch a detailed user with `PartialBungieUser.fetch_self()` method.
     """
 
     @property
@@ -218,7 +152,7 @@ class ClanMember(user.DestinyMembership):
 
     @helpers.deprecated(
         since="0.2.10",
-        removed_in="0.3.0",
+        removed_in="0.3.1",
         use_instead="{self}.app.request.fetch_clan_from_id",
         hint="You can use {self}.group_id to get the clan ID.",
     )
@@ -232,106 +166,10 @@ class ClanMember(user.DestinyMembership):
         """
         return await self.app.request.fetch_clan_from_id(self.group_id)
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.ban_clan_member",
-        hint="You can use {self}.group_id and {self}.id to get the clan ID and the member ID.",
-    )
-    async def ban(
-        self,
-        access_token: str,
-        /,
-        *,
-        comment: str | None = None,
-        length: int = 0,
-    ) -> None:
-        """Ban this member from the clan.
-
-        .. note::
-            This request requires OAuth2: oauth2: `AdminGroups` scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        length: `int`
-            An optional ban length. Default is 0
-        comment: `aiobungie.UndefinedOr[str]`
-            An optional comment to this ban. Default is `UNDEFINED`
-        """
-        await self.app.request.rest.ban_clan_member(
-            access_token,
-            self.group_id,
-            self.id,
-            self.type,
-            comment=comment,
-            length=length,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.unban_clan_member",
-        hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
-    )
-    async def unban(self, access_token: str, /) -> None:
-        """Unban this member from the clan.
-
-        .. note::
-            This request requires OAuth2: oauth2: `AdminGroups` scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        """
-        await self.app.request.rest.unban_clan_member(
-            access_token,
-            group_id=self.group_id,
-            membership_id=self.id,
-            membership_type=self.type,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.kick_clan_member",
-        hint="You can use {self}.group_id, {self}.id to get the clan ID and the member ID.",
-    )
-    async def kick(self, access_token: str, /) -> Clan:
-        """Kick this member from the clan.
-
-        .. note::
-            This request requires OAuth2: oauth2: `AdminGroups` scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `aiobungie.crates.clan.Clan`
-            The clan that represents the kicked member.
-        """
-        return await self.app.request.kick_clan_member(
-            access_token,
-            group_id=self.group_id,
-            membership_id=self.id,
-            membership_type=self.type,
-        )
-
 
 @attrs.frozen(kw_only=True)
 class GroupMember:
     """Represents information about joined groups/clans for a member."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     inactive_memberships: collections.Mapping[int, bool] | None
     """The member's inactive memberships if provided. This will be `None` if not provided."""
@@ -356,21 +194,6 @@ class GroupMember:
 
     group: Clan
     """The member's group/clan object that represents the group member."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_clan_from_id",
-    )
-    async def fetch_self_clan(self) -> Clan:
-        """Fetch an up-to-date clan/group object of the current group.
-
-        Returns
-        -------
-        `Clan`
-            The clan object.
-        """
-        return await self.app.request.fetch_clan_from_id(self.group_id)
 
     def __int__(self) -> int:
         return self.group_id
@@ -448,339 +271,7 @@ class Clan:
 
     @helpers.deprecated(
         since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.edit_clan_options",
-    )
-    async def edit_options(
-        self,
-        access_token: str,
-        /,
-        *,
-        invite_permissions_override: bool | None = None,
-        update_culture_permissionOverride: bool | None = None,
-        host_guided_game_permission_override: typing.Literal[0, 1, 2] | None = None,
-        update_banner_permission_override: bool | None = None,
-        join_level: enums.ClanMemberType | int | None = None,
-    ) -> None:
-        """Edit this clan's options.
-
-        Notes
-        -----
-        * This request requires OAuth2: oauth2: `AdminGroups` scope.
-        * All arguments will be ignored if set to `None`. This does not include `access_token`
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        invite_permissions_override : `aiobungie.bool | None`
-            Minimum Member Level allowed to invite new members to group
-            Always Allowed: Founder, Acting Founder
-            True means admins have this power, false means they don't
-            Default is False for clans, True for groups.
-        update_culture_permissionOverride : `aiobungie.bool | None`
-            Minimum Member Level allowed to update group culture
-            Always Allowed: Founder, Acting Founder
-            True means admins have this power, false means they don't
-            Default is False for clans, True for groups.
-        host_guided_game_permission_override : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
-            Minimum Member Level allowed to host guided games
-            Always Allowed: Founder, Acting Founder, Admin
-            Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
-            Default is Member for clans, None for groups, although this means nothing for groups.
-        update_banner_permission_override : `aiobungie.bool | None`
-            Minimum Member Level allowed to update banner
-            Always Allowed: Founder, Acting Founder
-            True means admins have this power, false means they don't
-            Default is False for clans, True for groups.
-        join_level : `aiobungie.ClanMemberType`
-            Level to join a member at when accepting an invite, application, or joining an open clan.
-            Default is `aiobungie.ClanMemberType.BEGINNER`
-        """
-        await self.app.request.rest.edit_clan_options(
-            access_token,
-            group_id=self.id,
-            invite_permissions_override=invite_permissions_override,
-            update_culture_permissionOverride=update_culture_permissionOverride,
-            host_guided_game_permission_override=host_guided_game_permission_override,
-            update_banner_permission_override=update_banner_permission_override,
-            join_level=join_level,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.edit_clan",
-    )
-    async def edit(
-        self,
-        access_token: str,
-        /,
-        *,
-        name: str | None = None,
-        about: str | None = None,
-        motto: str | None = None,
-        theme: str | None = None,
-        tags: collections.Sequence[str] | None = None,
-        is_public: bool | None = None,
-        locale: str | None = None,
-        avatar_image_index: int | None = None,
-        membership_option: enums.MembershipOption | int | None = None,
-        allow_chat: bool | None = None,
-        chat_security: typing.Literal[0, 1] | None = None,
-        call_sign: str | None = None,
-        homepage: typing.Literal[0, 1, 2] | None = None,
-        enable_invite_messaging_for_admins: bool | None = None,
-        default_publicity: typing.Literal[0, 1, 2] | None = None,
-        is_public_topic_admin: bool | None = None,
-    ) -> None:
-        """Edit this clan.
-
-        Notes
-        -----
-        * This request requires OAuth2: oauth2: `AdminGroups` scope.
-        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        name : `aiobungie.str | None`
-            The name to edit the clan with.
-        about : `aiobungie.str | None`
-            The about section to edit the clan with.
-        motto : `aiobungie.str | None`
-            The motto section to edit the clan with.
-        theme : `aiobungie.str | None`
-            The theme name to edit the clan with.
-        tags : `aiobungie.typedefs.NoneOr[collections.Sequence[str]]`
-            A sequence of strings to replace the clan tags with.
-        is_public : `aiobungie.bool | None`
-            If provided and set to `True`, The clan will set to private.
-            If provided and set to `False`, The clan will set to public whether it was or not.
-        locale : `aiobungie.str | None`
-            The locale section to edit the clan with.
-        avatar_image_index : `aiobungie.int | None`
-            The clan avatar image index to edit the clan with.
-        membership_option : `aiobungie.typedefs.NoneOr[aiobungie.aiobungie.MembershipOption | int]` # noqa: E501 # Line too long
-            The clan membership option to edit it with.
-        allow_chat : `aiobungie.bool | None`
-            If provided and set to `True`, The clan members will be allowed to chat.
-            If provided and set to `False`, The clan members will not be allowed to chat.
-        chat_security : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1]]`
-            If provided and set to `0`, The clan chat security will be edited to `Group` only.
-            If provided and set to `1`, The clan chat security will be edited to `Admin` only.
-        call_sign : `aiobungie.str | None`
-            The clan call sign to edit it with.
-        homepage : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
-            If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
-            If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
-            If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
-        enable_invite_messaging_for_admins : `aiobungie.bool | None`
-            ???
-        default_publicity : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
-            If provided and set to `0`, The clan chat publicity will be edited to `Public`.
-            If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
-            If provided and set to `2`, The clan chat publicity will be edited to `Private`.
-        is_public_topic_admin : `aiobungie.bool | None`
-            ???
-        """
-        await self.app.request.rest.edit_clan(
-            access_token,
-            group_id=self.id,
-            name=name,
-            about=about,
-            motto=motto,
-            theme=theme,
-            tags=tags,
-            is_public=is_public,
-            locale=locale,
-            avatar_image_index=avatar_image_index,
-            membership_option=membership_option,
-            allow_chat=allow_chat,
-            chat_security=chat_security,
-            call_sign=call_sign,
-            homepage=homepage,
-            enable_invite_messaging_for_admins=enable_invite_messaging_for_admins,
-            default_publicity=default_publicity,
-            is_public_topic_admin=is_public_topic_admin,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_available_clan_fireteams",
-    )
-    async def fetch_available_fireteams(
-        self,
-        access_token: str,
-        activity_type: fireteams.FireteamActivity | int,
-        *,
-        platform: fireteams.FireteamPlatform | int,
-        language: fireteams.FireteamLanguage | str,
-        date_range: fireteams.FireteamDate | int = fireteams.FireteamDate.ALL,
-        page: int = 0,
-        public_only: bool = False,
-        slots_filter: int = 0,
-    ) -> collections.Sequence[fireteams.Fireteam]:
-        """Fetch a clan's fireteams with open slots.
-
-        .. note::
-            This method requires OAuth2: ReadGroups scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        activity_type : `aiobungie.aiobungie.crates.FireteamActivity | int`
-            The fireteam activity type.
-
-        Other Parameters
-        ----------------
-        platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
-            If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
-            A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
-        date_range : `aiobungie.aiobungie.FireteamDate | int`
-            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
-        page : `int`
-            The page number. By default its `0` which returns all available activities.
-        public_only: `bool`
-            If set to True, Then only public fireteams will be returned.
-        slots_filter : `int`
-            Filter the returned fireteams based on available slots. Default is `0`
-        """
-        return await self.app.request.fetch_available_clan_fireteams(
-            access_token,
-            self.id,
-            activity_type,
-            platform=platform,
-            language=language,
-            date_range=date_range,
-            page=page,
-            public_only=public_only,
-            slots_filter=slots_filter,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_my_clan_fireteams",
-    )
-    async def fetch_fireteams(
-        self,
-        access_token: str,
-        *,
-        include_closed: bool = True,
-        platform: fireteams.FireteamPlatform | int,
-        language: fireteams.FireteamLanguage | str,
-        filtered: bool = True,
-        page: int = 0,
-    ) -> collections.Sequence[fireteams.AvailableFireteam]:
-        """Fetch this clan's available fireteams.
-
-        .. note::
-            This method requires OAuth2: ReadGroups scope.
-
-        Parameters
-        ----------
-        access_token : str
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        include_closed : bool
-            If provided and set to True, It will also return closed fireteams.
-            If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int
-            If this is provided. Then the results will be filtered with the given platform.
-            Defaults to aiobungie.crates.FireteamPlatform.ANY which returns all platforms.
-        language : aiobungie.crates.fireteams.FireteamLanguage | str
-            A locale language to filter the used language in that fireteam.
-            Defaults to aiobungie.crates.FireteamLanguage.ALL
-        filtered : bool
-            If set to True, it will filter by clan. Otherwise not. Default is True.
-        page : int
-            The page number. By default its 0 which returns all available activities.
-
-        Returns
-        -------
-        `collections.Sequence[aiobungie.crates.AvailableFireteam]`
-            A sequence of available fireteams objects.
-        """
-        return await self.app.request.fetch_my_clan_fireteams(
-            access_token,
-            self.id,
-            include_closed=include_closed,
-            platform=platform,
-            language=language,
-            filtered=filtered,
-            page=page,
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_clan_conversations",
-    )
-    async def fetch_conversations(self) -> collections.Sequence[ClanConversation]:
-        """Fetch the conversations/chat channels of this clan.
-
-        Returns
-        `collections.Sequence[aiobungie.crates.ClanConversation]`
-            A sequence of the clan chat channels.
-        """
-        return await self.app.request.fetch_clan_conversations(self.id)
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.add_optional_conversation",
-    )
-    async def add_optional_conversation(
-        self,
-        access_token: str,
-        /,
-        *,
-        name: str | None = None,
-        security: typing.Literal[0, 1] = 0,
-    ) -> None:
-        """Add a new chat channel to a group.
-
-        .. note::
-            This request requires OAuth2: AdminGroups scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other parameters
-        ----------------
-        name: `aiobungie.UndefinedOr[str]`
-            The chat name. Default to `UNDEFINED`
-        security: `typing.Literal[0, 1]`
-            The security level of the chat.
-
-            If provided and set to 0, It will be to `Group` only.
-            If provided and set to 1, It will be `Admins` only.
-            Default is `0`
-        """
-        await self.app.request.rest.add_optional_conversation(
-            access_token, self.id, name=name, security=security
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
+        removed_in="0.3.1",
         use_instead="{self}.app.request.fetch_clan_members",
     )
     async def fetch_members(
@@ -811,126 +302,6 @@ class Clan:
         """
         return await self.app.request.fetch_clan_members(self.id, type=type, name=name)
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.approve_all_pending_group_users",
-    )
-    async def approve_pending_members(
-        self,
-        access_token: str,
-        /,
-        *,
-        message: str | None = None,
-    ) -> None:
-        """Approve all pending users for this clan.
-
-        .. note::
-            This request requires OAuth2: AdminGroups scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        message: `aiobungie.UndefinedOr[str]`
-            A message to send with the request. Defaults to `UNDEFINED`
-        """
-        await self.app.request.rest.approve_all_pending_group_users(
-            access_token, self.id, message=message
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.rest.deny_all_pending_group_users",
-    )
-    async def deny_pending_members(
-        self,
-        access_token: str,
-        /,
-        *,
-        message: str | None = None,
-    ) -> None:
-        """Deny all pending users for this clan.
-
-        .. note::
-            This request requires OAuth2: AdminGroups scope.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Other Parameters
-        ----------------
-        message: `aiobungie.UndefinedOr[str]`
-            A message to send with the request. Defaults to `UNDEFINED`
-        """
-        await self.app.request.rest.deny_all_pending_group_users(
-            access_token, self.id, message=message
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
-        """Fetch members who has been banned from the clan.
-
-        .. warning::
-            This method is still not implemented.
-
-        Returns
-        --------
-        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
-            A sequence of clan members or are banned.
-        """
-        return NotImplemented
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
-        """Fetch members who are waiting to get accepted.
-
-        .. warning::
-            This method is still not implemented.
-
-        Returns
-        --------
-        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
-            A sequence of clan members who are awaiting
-            to get accepted to the clan.
-        """
-        return NotImplemented
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
-        """Fetch members who has been invited.
-
-        .. warning::
-            This method is still not implemented.
-
-        Returns
-        --------
-        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
-            A sequence of members who have been invited.
-        """
-        return NotImplemented
-
     @property
     def url(self) -> str:
         return f"{url.BASE}/en/ClanV2/Index?groupId={self.id}"
-
-    def __int__(self) -> int:
-        return self.id
-
-    def __str__(self) -> str:
-        return self.name

@@ -20,21 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie socials and friends."""
+"""Basic implementation of Bungie socials and friends resources."""
 
 from __future__ import annotations
 
-__all__ = ["Friend", "FriendRequestView"]
+__all__ = ("Friend", "FriendRequestView")
 
 import typing
 
 import attrs
 
+from aiobungie.crates import user as user_
+
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
-    from aiobungie.crates import user as user_
     from aiobungie.internal import enums
 
 
@@ -50,11 +50,8 @@ class FriendRequestView:
 
 
 @attrs.frozen(kw_only=True)
-class Friend:
+class Friend(user_.Unique):
     """Represents a bungie friend in your account."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     id: int
     """The friend's last seen at id."""
@@ -79,14 +76,3 @@ class Friend:
 
     user: user_.BungieUser | None
     """The friend's bungie user account. This field is optional and can be None in some states."""
-
-    @property
-    def unique_name(self) -> str:
-        """Friend's global unique display name."""
-        return f"{self.name}#{self.code}"
-
-    def __str__(self) -> str:
-        return self.unique_name
-
-    def __int__(self) -> int:
-        return self.id

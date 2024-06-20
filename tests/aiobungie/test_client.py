@@ -100,13 +100,6 @@ class TestActivities:
         assert len(a.players) >= 1
 
     @staticmethod
-    async def test_activity_is_flawless():
-        a = await client.fetch_post_activity(9710513682)
-        assert a.is_flawless
-        assert a.is_solo
-        assert a.is_solo_flawless
-
-    @staticmethod
     async def test_aggregated_activity():
         a = await client.fetch_aggregated_activity_stats(
             config.PRIMARY_CHARACTER_ID,
@@ -159,8 +152,6 @@ class TestClans:
             config.PRIMARY_MEMBERSHIP_ID, config.PRIMARY_MEMBERSHIP_TYPE
         )
         assert obj
-        up_to_date_clan_obj = await obj[0].fetch_self_clan()
-        assert isinstance(up_to_date_clan_obj, aiobungie.crates.Clan)
 
     @staticmethod
     async def test_potential_groups_for_member():
@@ -256,8 +247,6 @@ class TestProfile:
         assert pf.character_render_data
         for _, data in pf.character_render_data.items():
             assert isinstance(data, aiobungie.crates.RenderedData)
-            items_ = await data.fetch_my_items(limit=2)
-            assert len(items_) == 2
 
         assert pf.character_progressions
         for config.PRIMARY_CHARACTER_ID, prog in pf.character_progressions.items():

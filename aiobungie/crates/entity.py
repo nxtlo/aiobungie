@@ -20,7 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie entity and definitions."""
+"""Implementation of `some` Bungie definitions resources.
+
+Unfortunately this doesn't implement all of the definitions, But the most important ones such as `InventoryItemEntity` and `ActivityEntity`.
+"""
 
 from __future__ import annotations
 
@@ -42,12 +45,10 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie.crates import activity
     from aiobungie.internal import assets
@@ -107,11 +108,6 @@ class EntityBase(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def app(self) -> traits.Send:
-        """A reference to the client that fetched this resource."""
-
-    @property
-    @abc.abstractmethod
     def name(self) -> str | None:
         """Entity's name. This can be `UNDEFINED` if not found."""
 
@@ -135,12 +131,6 @@ class EntityBase(abc.ABC):
     def hash(self) -> int:
         """Entity's hash."""
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.hash
-
 
 @attrs.frozen(kw_only=True)
 class Entity(EntityBase):
@@ -150,9 +140,6 @@ class Entity(EntityBase):
     This is the core object which all other entities should inherit from.
     It holds core information that all bungie entities has.
     """
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     hash: int
     """Entity's hash."""
@@ -180,9 +167,6 @@ class SearchableEntity(EntityBase):
     suggested_words: collections.Sequence[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     hash: int
     """Entity's hash."""
 
@@ -203,32 +187,6 @@ class SearchableEntity(EntityBase):
 
     weight: float
     """The ranking value for sorting that we calculated using our relevance formula."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-        hint="{self}.entity_type and {self}.hash can be used here.",
-    )
-    async def fetch_self_item(self) -> InventoryEntity:
-        """Fetch an item definition of this partial entity.
-
-        Returns
-        -------
-        `InventoryEntity`
-            An inventory item entity or `None` if its not.
-
-        Raises
-        ------
-        `TypeError`
-            If the entity type is not `DestinyInventoryItemDefinition`.
-        """
-        if self.entity_type != "DestinyInventoryItemDefinition":
-            raise TypeError(
-                f"Entity type is not `DestinyInventoryItemDefinition`: {self.entity_type}."
-            )
-
-        return await self.app.request.fetch_inventory_item(self.hash)
 
 
 # We separate the JSON objects within the InventoryEntity from the object itself
@@ -621,12 +579,4 @@ class PlaylistActivityEntity:
     """The hash identifiers for Activity Modes relevant to this entry."""
 
     mode_types: collections.Sequence[enums.GameMode]
-    """A sequence of the activity gamemode types."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    async def fetch_self(self) -> ActivityEntity:
-        """Fetch the definition of this activity."""
-        return NotImplemented
+    """A sequence of the activity game-mode types."""

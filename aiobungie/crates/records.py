@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie records/triumphs."""
+"""Basic implementation of Bungie records/triumphs resources."""
 
 from __future__ import annotations
 
@@ -37,13 +37,9 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
-
-    from aiobungie import traits
-    from aiobungie.crates import entity
 
 
 @typing.final
@@ -83,8 +79,6 @@ class Node:
 class Objective:
     """Represents a Destiny 2 record objective."""
 
-    app: traits.Send = attrs.field(repr=False, hash=False, eq=False)
-
     hash: int
     """The objective hash."""
 
@@ -108,21 +102,6 @@ class Objective:
     """If the Objective has an Activity associated with it,
     this is the unique identifier of the Activity being referred to.
     """
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_objective_entity",
-    )
-    async def fetch_self(self) -> entity.ObjectiveEntity:
-        """Perform an HTTP request fetching this objective entity definition.
-
-        Returns
-        -------
-        `aiobungie.crates.ObjectiveEntity`
-            An objective entity definition.
-        """
-        return await self.app.request.fetch_objective_entity(self.hash)
 
 
 @attrs.mutable(kw_only=True)

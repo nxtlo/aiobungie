@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie milestones."""
+"""Basic implementation of Bungie milestones components."""
 
 from __future__ import annotations
 
@@ -41,14 +41,10 @@ import typing
 
 import attrs
 
-from aiobungie.internal import helpers
-
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import traits
-    from aiobungie.crates import entity
     from aiobungie.crates import records
 
 
@@ -115,8 +111,6 @@ class MilestoneActivity:
 class QuestStatus:
     """Information that an available quest status has."""
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-
     quest_hash: int
     """The quest hash."""
 
@@ -149,41 +143,10 @@ class QuestStatus:
     If you care about that, this is the instance ID of that item.
     """
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-    )
-    async def fetch_quest(self) -> entity.InventoryEntity:
-        """Fetch the definition of this quest.
-
-        Returns
-        -------
-        `aiobungie.crates.InventoryEntity`
-            The fetched inventory item definition/entity.
-        """
-        return await self.app.request.fetch_inventory_item(self.quest_hash)
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.app.request.fetch_inventory_item",
-    )
-    async def fetch_step(self) -> entity.InventoryEntity:
-        """Fetch the definition of this quest step.
-
-        Returns
-        -------
-        `aiobungie.crates.InventoryEntity`
-            The fetched inventory item definition/entity.
-        """
-        return await self.app.request.fetch_inventory_item(self.step_hash)
-
 
 @attrs.frozen(kw_only=True)
 class MilestoneQuest:
     item_hash: int
-
     status: QuestStatus
 
 
@@ -192,7 +155,6 @@ class MilestoneVendor:
     """Represents a vendor found inside a milestone object."""
 
     vendor_hash: int
-
     preview_itemhash: int | None
 
 

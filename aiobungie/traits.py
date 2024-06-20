@@ -61,7 +61,7 @@ class Send(typing.Protocol):
 
     @property
     def request(self) -> client.Client:
-        """A read-only `Compact` instance used for external requests."""
+        """A read-only `aiobungie.Client` instance used for external requests."""
         raise NotImplementedError
 
 

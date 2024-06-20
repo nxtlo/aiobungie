@@ -299,10 +299,10 @@ class Framework(abc.ABC):
     # Application
 
     @abc.abstractmethod
-    def deserialize_app_owner(
+    def deserialize_application_member(
         self, payload: typedefs.JSONObject
-    ) -> application.ApplicationOwner:
-        """Deserialize a JSON payload of Bungie Developer portal application owner information.
+    ) -> application.ApplicationMember:
+        """Deserialize a JSON payload of a Bungie developer portal application member.
 
         Parameters
         ----------
@@ -311,12 +311,14 @@ class Framework(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crates.application.ApplicationOwner`
-            An application owner.
+        `aiobungie.crates.application.ApplicationMember`
+            An application member.
         """
 
     @abc.abstractmethod
-    def deserialize_app(self, payload: typedefs.JSONObject) -> application.Application:
+    def deserialize_application(
+        self, payload: typedefs.JSONObject
+    ) -> application.Application:
         """Deserialize a JSON payload of Bungie Developer portal application information.
 
         Parameters
@@ -953,7 +955,7 @@ class Framework(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_fireteam_destiny_users(
+    def deserialize_fireteam_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
         """Deserialize a JSON payload of Bungie fireteam destiny users information.

@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.11...HEAD)
 
 ### Added
+
 * An option to use a specific executor for downloading the manifest and `Image.save` method.
+
 ```py
 import concurrent.futures
 # Use process pool executor to write the manifest data.
@@ -18,9 +20,112 @@ await rest.download_json_manifest(
 )
 ```
 
-## Changed
+* `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
+* `code` field to `PartialBungieUser`
+* `origin` field to `Application`
+
+### Changed
+
+* `interfaces` dir is renamed to `api`.
+* `factory` renamed to `framework` and exported to top level, no longer an `internal` package
+* `factory.Factory` is now `framework.Framework`.
+* `interfaces.RESTInterface` renamed to `api.RESTClient` which matches `rest.RESTClient`.
+* `interfaces.FactoryInterface` renamed to `api.Framework` which matches `framework.Framework`.
+* trait `Netrunner` renamed to `Send`.
+* trait `Serializable` renamed to `Deserialize` and its method `factory` renamed to `framework`.
+* trait `ClientApp` renamed to `Compact`.
+* `Client.factory` is now `Client.framework`.
+* `factory.EmptyFactory` is now `framework.Empty`, this is not exported to top level.
+* The associated crates attribute `.net` is renamed to `.app`.
+* `UserLike` abstract class renamed to `Unique`.
+* methods that were scheduled for removal in this version will get removed in the next version instead, The ones in the `Removed` section are excluded.
+* `Framework.deserialize_fireteam_destiny_users` renamed to `deserialize_fireteam_destiny_membership`
+* `FireteamMember.destiny_user` renamed to `FireteamMember.membership`
+* `deserialize_app` renamed to `deserialize_application`.
+* `deserialize_app_owner` renamed to `deserialize_application_member`
+* `ApplicationOwner` is now `ApplicationMember` and the user fields are accessible through `.user`
+* `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
+* The `.app` field is now removed from objects that doesn't perform any external HTTP requests.
 
 ## Removed
+
+The following methods were scheduled to be removed in this version.
+
+* `ProfileItemImpl.is_transferable`
+* `ProfileItemImpl.collect_characters`
+* `ProfileItemImpl.fetch_self`
+* `QuesStatus.fetch_quest`
+* `QuestStatus.fetch_step`
+* `Objective.fetch_self`
+* `ItemsComponent.any`
+* `ItemsComponent.all`
+* `Challenges.fetch_objective`
+* `Rewards.fetch_self`
+* `Activity.is_solo`
+* `Activity.is_flawless`
+* `Activity.is_solo_flawless`
+* `Activity.fetch_post`
+* `Character.transfer_item`
+* `Character.equip_item`
+* `Character.equip_items`
+* `Character.pull_item`
+* `Character.fetch_activities`
+* `RenderedData.fetch_my_items`
+* `MinimalEquipments.fetch_my_item`
+* `AvailableActivity.fetch_self`
+* `ClanMember.ban`
+* `ClanMember.unban`
+* `ClanMember.kick`
+* `GroupMember.fetch_self_clan`
+* `Clan.deny_pending_members`
+* `Clan.approve_pending_members`
+* `Clan.add_optional_conversations`
+* `Clan.fetch_banned_members`
+* `Clan.fetch_pending_members`
+* `Clan.fetch_invited_members`
+* `Clan.fetch_conversations`
+* `Clan.fetch_available_fireteams`
+* `Clan.fetch_fireteams`
+* `Clan.edit`
+* `Clan.edit_options`
+* `ClanConversation.edit`
+* `CraftablesComponent.fetch_craftables`
+* `SearchableEntity.fetch_self_item`
+
+These methods above are still accessible via the both clients, either the `RESTClient` or `Client`.
+
+ok but how do i got about this?
+
+```py
+client = aiobungie.Client("...")
+
+async def character_transfer_item() -> None:
+    # Instead of: await character.transfer_item(...)
+    await client.rest.transfer_item(token, char_id, item_id)
+
+async def character_fetch_activities() -> None:
+    # Instead of: await character.fetch_activities(...)
+    await client.fetch_activities(cid, mid, mode, ...)
+```
+
+ok but why? there're multiple reasons why those got removed.
+
+good practices; at the beginning, those methods were meant to provide a higher-level abstraction over the object itself,
+so you can call them directly on the object, while it is a nice QoL thing, it can, if misused, end up with worse overall code.
+this change should forward users with developing good code and practices and making the requests directly using the `client` and `client.rest`.
+
+conflict and unsafety; since those methods can also be accessed via an empty deserializer results, this introduces bugs for the user of this lib,
+aiobungie crates are meant to be a stand-alone representation of the fetched API results. which payloads deserializes into. so those methods won't really fit in.
+
+The following were removed for inconsistency.
+
+* `UserLike.icon`
+* `UserLike.last_seen_name`
+* `UserLike.is_public`
+
+### Fixed
+
+* deserializing `Friend` object was raising `KeyError` due to `name` field.
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

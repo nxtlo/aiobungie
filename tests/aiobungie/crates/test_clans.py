@@ -98,7 +98,6 @@ class TestClanMember:
     def obj(self):
         mock_bungie_user = mock.Mock(crates.PartialBungieUser)
         return crates.ClanMember(
-            app=mock.Mock(),
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
@@ -121,16 +120,6 @@ class TestClanMember:
 
     def test_is_founder_property(self, obj: crates.ClanMember):
         assert not obj.is_founder
-
-    @pytest.mark.asyncio()
-    async def test_fetch_clan(self, obj: crates.ClanMember):
-        obj.app.request.fetch_clan_from_id = mock.AsyncMock()
-
-        assert await obj.fetch_clan() is obj.app.request.fetch_clan_from_id.return_value
-
-        assert obj.app.request.fetch_clan_from_id.call_count == 1
-
-        obj.app.request.fetch_clan_from_id.assert_awaited_once_with(obj.group_id)
 
     @pytest.mark.asyncio()
     async def test_clan_member_ban(self, obj: crates.ClanMember): ...
@@ -172,7 +161,6 @@ class TestClan:
         mock_owner = mock.Mock(spec_set=crates.ClanMember)
         mock_features = mock.Mock(spec_set=crates.clans.ClanFeatures)
         return crates.Clan(
-            app=mock.Mock(),
             id=998271,
             type=aiobungie.GroupType.CLAN,
             name="Cool clan",
@@ -204,20 +192,3 @@ class TestClan:
 
     def test_clan_about(self, obj: crates.Clan):
         assert obj.about == "A cool clan."
-
-    @pytest.mark.asyncio()
-    async def test_fetch_clan_members(self, obj: crates.Clan):
-        first_member = mock.Mock(spec_set=crates.ClanMember)
-        first_member.type = aiobungie.MembershipType.XBOX
-
-        another_member = mock.Mock(spec_set=crates.ClanMember)
-        another_member.type = aiobungie.MembershipType.STEAM
-
-        mock_members = mock.Mock(spec_set=[first_member, another_member])
-        obj.app.request.fetch_clan_members = mock.AsyncMock(return_value=mock_members)
-        members = await obj.fetch_members()
-
-        obj.app.request.fetch_clan_members.assert_awaited_once_with(
-            obj.id, type=aiobungie.MembershipType.NONE, name=None
-        )
-        assert members is obj.app.request.fetch_clan_members.return_value

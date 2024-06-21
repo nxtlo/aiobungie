@@ -42,16 +42,12 @@ import typing
 import attrs
 
 from aiobungie import url
-from aiobungie.crates import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     from datetime import datetime
-
-    from aiobungie import traits
 
 
 class Unique(abc.ABC):
@@ -135,9 +131,6 @@ class PartialBungieUser(Unique):
         by using `PartialBungieUser.fetch_self()` method.
     """
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     name: str | None
     """The user's name. Field may be `None` if not found."""
 
@@ -161,21 +154,6 @@ class PartialBungieUser(Unique):
 
     icon: assets.Image
     """The user's icon."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.1",
-        use_instead="{self}.app.request.fetch_bungie_user",
-    )
-    async def fetch_self(self) -> BungieUser:
-        """Fetch the Bungie user of this partial user.
-
-        Returns
-        -------
-        `aiobungie.crates.BungieUser`
-            A Bungie net user.
-        """
-        return await self.app.request.fetch_bungie_user(self.id)
 
 
 @attrs.frozen(kw_only=True)
@@ -267,9 +245,6 @@ class BungieUser(Unique):
 class DestinyMembership(Unique):
     """Represents a Bungie user's Destiny 2 membership."""
 
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
-
     id: int
     """The member's id."""
 
@@ -296,40 +271,6 @@ class DestinyMembership(Unique):
 
     crossave_override: enums.MembershipType
     """The member's crossave override membership type."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.1",
-        use_instead="{self}.app.request.fetch_profile",
-    )
-    async def fetch_self_profile(
-        self,
-        components: collections.Sequence[enums.ComponentType],
-        auth: str | None = None,
-    ) -> components_.Component:
-        """Fetch this user's profile.
-
-        Parameters
-        ----------
-        components : `collections.Sequence[aiobungie.ComponentType]`
-            A list of profile components to collect and return.
-            This either can be arguments of integers or `aiobungie.ComponentType`.
-
-        Other Parameters
-        ----------------
-        auth : `str | None`
-            A Bearer access_token to make the request with.
-            This is optional and limited to components that only requires an Authorization token.
-
-        Returns
-        --------
-        `aiobungie.crates.Component`
-            A Destiny 2 player profile with its components.
-            Only passed components will be available if they exists. Otherwise they will be `None`
-        """
-        return await self.app.request.fetch_profile(
-            self.id, self.type, components, auth
-        )
 
 
 @attrs.frozen(kw_only=True)

@@ -112,7 +112,7 @@ class Client(traits.Compact):
             debug=debug,
         )
 
-        self._framework = framework.Framework(self)
+        self._framework = framework.Framework()
 
     @property
     def framework(self) -> api.Framework:

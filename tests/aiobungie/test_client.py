@@ -58,7 +58,7 @@ class TestUser:
         # This method only uses STEAM IDs.
         @staticmethod
         async def test_hard_types():
-            uht = await client.fetch_hard_types(config.PRIMARY_STEAM_ID)
+            uht = await client.fetch_hard_types(config.PRIMARY_STEAM_ID)  # type: ignore
             assert isinstance(uht, aiobungie.crates.HardLinkedMembership)
 
     @staticmethod
@@ -87,9 +87,6 @@ class TestActivities:
             config.PRIMARY_CHARACTER_ID,
             aiobungie.GameMode.RAID,
         )
-        post = await a.next().fetch_post()
-        assert isinstance(post, aiobungie.crates.PostActivity)
-
         for act in a:
             assert isinstance(act, aiobungie.crates.Activity)
 
@@ -322,12 +319,6 @@ class TestMeta:
         )
         for weapon in w:
             assert isinstance(weapon, aiobungie.crates.ExtendedWeaponValues)
-
-    @staticmethod
-    async def test_client_metadata():
-        client.metadata[0] = None
-        clan = await client.fetch_clan("Math Class")
-        assert clan.app.request.metadata[0] is None
 
     # FIXME: There's currently a problem with this API route from Bungie's side
     # where it returns an HTML not found page.

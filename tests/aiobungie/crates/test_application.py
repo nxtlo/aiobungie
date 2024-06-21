@@ -37,7 +37,6 @@ class TestAppMember:
             role=1,
             api_eula_version=2,
             user=crates.PartialBungieUser(
-                app=mock.Mock(),
                 name="buh",
                 code=9999,
                 id=123,

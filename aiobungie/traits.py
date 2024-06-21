@@ -42,6 +42,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import client
 
 
+# this isn't used anywhere right now. but we're keeping it for the future.
 @typing.runtime_checkable
 class Send(typing.Protocol):
     """Types that can send HTTP requests from an external resource.

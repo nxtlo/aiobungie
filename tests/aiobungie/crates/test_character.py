@@ -150,7 +150,6 @@ class TestCharacter:
     @pytest.fixture()
     def model(self) -> crates.Character:
         return crates.Character(
-            app=mock.Mock(),
             id=2110,
             member_id=4321,
             member_type=aiobungie.MembershipType.STEAM,
@@ -201,17 +200,3 @@ class TestCharacter:
             model.emblem_icon is not None
             and model.emblem_icon.url == assets.Image(path="emblemiconpath.jpg").url
         )
-
-    @pytest.mark.asyncio()
-    async def test_fetch_activities(self, model: crates.Character) -> None:
-        model.app.request.fetch_activities = mock.AsyncMock()
-        activities = await model.fetch_activities(aiobungie.GameMode.RAID)
-        model.app.request.fetch_activities.assert_called_once_with(
-            model.member_id,
-            model.id,
-            aiobungie.GameMode.RAID,
-            membership_type=model.member_type,
-            limit=250,
-            page=0,
-        )
-        assert activities is model.app.request.fetch_activities.return_value

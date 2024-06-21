@@ -31,29 +31,31 @@ await rest.download_json_manifest(
 * `factory.Factory` is now `framework.Framework`.
 * `interfaces.RESTInterface` renamed to `api.RESTClient` which matches `rest.RESTClient`.
 * `interfaces.FactoryInterface` renamed to `api.Framework` which matches `framework.Framework`.
-* trait `Netrunner` renamed to `Send`.
+* trait `Netrunner` renamed to `Send` and is no longer used, currently kept for future plans.
 * trait `Serializable` renamed to `Deserialize` and its method `factory` renamed to `framework`.
 * trait `ClientApp` renamed to `Compact`.
 * `Client.factory` is now `Client.framework`.
-* `factory.EmptyFactory` is now `framework.Empty`, this is not exported to top level.
-* The associated crates attribute `.net` is renamed to `.app`.
+* `factory.EmptyFactory` is now `framework.Empty` and is currently deprecated, use `Framework` instead.
+* `Framework` doesn't require a `net` parameter anymore.
+* `.net` field removed from all objects.
 * `UserLike` abstract class renamed to `Unique`.
-* methods that were scheduled for removal in this version will get removed in the next version instead, The ones in the `Removed` section are excluded.
 * `Framework.deserialize_fireteam_destiny_users` renamed to `deserialize_fireteam_destiny_membership`
 * `FireteamMember.destiny_user` renamed to `FireteamMember.membership`
 * `deserialize_app` renamed to `deserialize_application`.
 * `deserialize_app_owner` renamed to `deserialize_application_member`
 * `ApplicationOwner` is now `ApplicationMember` and the user fields are accessible through `.user`
 * `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
-* The `.app` field is now removed from objects that doesn't perform any external HTTP requests.
+* `Client.run` is deprecated and will be removed in the next major release.
 
 ## Removed
 
 The following methods were scheduled to be removed in this version.
 
+* `PartialBungieUser.fetch_self()`
 * `ProfileItemImpl.is_transferable`
 * `ProfileItemImpl.collect_characters`
 * `ProfileItemImpl.fetch_self`
+* `DestinyMembership.fetch_self_profile`
 * `QuesStatus.fetch_quest`
 * `QuestStatus.fetch_step`
 * `Objective.fetch_self`
@@ -76,6 +78,7 @@ The following methods were scheduled to be removed in this version.
 * `ClanMember.ban`
 * `ClanMember.unban`
 * `ClanMember.kick`
+* `ClanMember.fetch_clan`
 * `GroupMember.fetch_self_clan`
 * `Clan.deny_pending_members`
 * `Clan.approve_pending_members`
@@ -86,35 +89,52 @@ The following methods were scheduled to be removed in this version.
 * `Clan.fetch_conversations`
 * `Clan.fetch_available_fireteams`
 * `Clan.fetch_fireteams`
+* `Clan.fetch_members`
 * `Clan.edit`
 * `Clan.edit_options`
 * `ClanConversation.edit`
 * `CraftablesComponent.fetch_craftables`
 * `SearchableEntity.fetch_self_item`
 
-These methods above are still accessible via the both clients, either the `RESTClient` or `Client`.
+these methods above are still accessible via the both clients, either the `RESTClient` or `Client`,
+their abstraction on the object just got removed not that actual implementation of the method.
 
-ok but how do i got about this?
+> ok but how do i reproduce those?
 
 ```py
 client = aiobungie.Client("...")
 
 async def character_transfer_item() -> None:
     # Instead of: await character.transfer_item(...)
+    # call it from the client directly.
     await client.rest.transfer_item(token, char_id, item_id)
 
 async def character_fetch_activities() -> None:
     # Instead of: await character.fetch_activities(...)
+    # call it from the client directly.
     await client.fetch_activities(cid, mid, mode, ...)
 ```
 
 ok but why? there're multiple reasons why those got removed.
 
 good practices; at the beginning, those methods were meant to provide a higher-level abstraction over the object itself,
-so you can call them directly on the object, while it is a nice QoL thing, it can, if misused, end up with worse overall code.
-this change should forward users with developing good code and practices and making the requests directly using the `client` and `client.rest`.
+so you can call them directly from the object, while it is a nice QoL thing, it can, *if misused*, end up with worse overall code.
+this change should forward users with developing good code and practices and them more aware of `client` and `client.rest`.
 
 conflict and unsafety; since those methods can also be accessed via an empty deserializer results, this introduces bugs for the user of this lib,
+
+Example:
+
+```py
+framework = aiobungie.framework.Empty()
+
+response = requests.get(...)
+user_object = framework.deserialize_user(response.json())
+
+# this is undefined behavior, since an empty deserializer doesn't have a client associated with it.
+await user_object.fetch_self()
+```
+
 aiobungie crates are meant to be a stand-alone representation of the fetched API results. which payloads deserializes into. so those methods won't really fit in.
 
 The following were removed for inconsistency.

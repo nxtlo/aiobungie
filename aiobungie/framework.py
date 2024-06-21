@@ -52,6 +52,7 @@ from aiobungie.crates import season
 from aiobungie.crates import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import iterators
 from aiobungie.internal import time
 
@@ -59,19 +60,51 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import traits
+    # from aiobungie import traits
 
 
 class Framework(api.Framework):
     """The base deserialization framework implementation.
 
     This framework is used to deserialize JSON responses from the REST client and turning them into a `aiobungie.crates` Python classes.
+
+    Example
+    --------
+    ```py
+    import aiobungie
+
+    from aiobungie import traits
+    from aiobungie import framework
+    from aiobungie import crates
+
+    class MyClient(traits.Deserialize):
+        rest = aiobungie.RESTClient("token")
+        my_name = "Fate怒"
+        my_code = 4275
+
+        @property # required method.
+        def framework(self) -> framework.Empty:
+            return framework.Empty()
+
+        async def my_memberships(self) -> tuple[crates.DestinyMembership, ...]:
+            # Note, Do not call methods within objects, Since this is an empty
+            # factory, The client reference that makes these calls will be `None`.
+            response = await self.rest.fetch_membership(self.my_name, self.my_code)
+            return self.factory.deserialize_destiny_memberships(response)
+
+    async def main() -> None:
+        client = MyClient()
+        async with client.rest:
+            print(await client.my_memberships())
+
+    asyncio.run(main())
+    ```
     """
 
     __slots__ = ("_app",)
 
-    def __init__(self, app: traits.Send) -> None:
-        self._app = app
+    def __init__(self) -> None:
+        super().__init__()
 
     def deserialize_bungie_user(self, data: typedefs.JSONObject) -> user.BungieUser:
         return user.BungieUser(
@@ -105,7 +138,6 @@ class Framework(api.Framework):
         self, payload: typedefs.JSONObject
     ) -> user.PartialBungieUser:
         return user.PartialBungieUser(
-            app=self._app,
             types=tuple(
                 enums.MembershipType(type_)
                 for type_ in payload.get("applicableMembershipTypes", ())
@@ -129,7 +161,6 @@ class Framework(api.Framework):
             name = typedefs.unknown(raw_name)
 
         return user.DestinyMembership(
-            app=self._app,
             id=int(payload["membershipId"]),
             name=name,
             code=payload.get("bungieGlobalDisplayNameCode", None),
@@ -191,12 +222,12 @@ class Framework(api.Framework):
     ) -> collections.Sequence[user.UserCredentials]:
         return tuple(
             user.UserCredentials(
-                type=enums.CredentialType(int(creds["credentialType"])),
-                display_name=creds["credentialDisplayName"],
-                is_public=creds["isPublic"],
-                self_as_string=creds.get("credentialAsString"),
+                type=enums.CredentialType(int(credit["credentialType"])),
+                display_name=credit["credentialDisplayName"],
+                is_public=credit["isPublic"],
+                self_as_string=credit.get("credentialAsString"),
             )
-            for creds in payload
+            for credit in payload
         )
 
     def deserialize_user_themes(
@@ -238,7 +269,6 @@ class Framework(api.Framework):
         }
 
         return clans.Clan(
-            app=self._app,
             id=int(data["groupId"]),
             name=data["name"],
             type=enums.GroupType(data["groupType"]),
@@ -281,7 +311,6 @@ class Framework(api.Framework):
     def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
         destiny_user = self.deserialize_destiny_membership(data["destinyUserInfo"])
         return clans.ClanMember(
-            app=self._app,
             last_seen_name=destiny_user.last_seen_name,
             id=destiny_user.id,
             name=destiny_user.name,
@@ -370,7 +399,6 @@ class Framework(api.Framework):
 
     def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
         return character.Character(
-            app=self._app,
             id=int(payload["characterId"]),
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),
@@ -1751,7 +1779,6 @@ class Framework(api.Framework):
         values = self._deserialize_activity_values(payload["values"])
 
         return activity.Activity(
-            app=self._app,
             hash=ref_id,
             instance_id=instance_id,
             mode=mode,
@@ -1881,7 +1908,6 @@ class Framework(api.Framework):
         is_private = details["isPrivate"]
         membership_type = enums.MembershipType(int(details["membershipType"]))
         return activity.PostActivity(
-            app=self._app,
             hash=ref_id,
             membership_type=membership_type,
             instance_id=instance_id,
@@ -2107,7 +2133,6 @@ class Framework(api.Framework):
     ) -> fireteams.FireteamUser:
         destiny_obj = self.deserialize_destiny_membership(payload)
         return fireteams.FireteamUser(
-            app=self._app,
             id=destiny_obj.id,
             code=destiny_obj.code,
             icon=destiny_obj.icon,
@@ -2141,7 +2166,6 @@ class Framework(api.Framework):
                     last_platform_invite_result=int(
                         member["lastPlatformInviteAttemptResult"]
                     ),
-                    app=self._app,
                     name=bungie_fields.name,
                     id=bungie_fields.id,
                     icon=bungie_fields.icon,
@@ -2418,46 +2442,13 @@ class Framework(api.Framework):
 
 
 @typing.final
+@helpers.deprecated(
+    since="0.3.0",
+    removed_in="0.3.1",
+    use_instead="aiobungie.Framework()",
+    hint="Framework doesn't need a client owner anymore.",
+)
 class Empty(Framework):
-    """A stand-alone framework that doesn't require a client owner.
-
-    Example
-    --------
-    ```py
-    import aiobungie
-    from aiobungie import traits
-    from aiobungie import framework
-    from aiobungie import crates
-
-    class MyClient(traits.Deserialize):
-        rest = aiobungie.RESTClient(env["CLIENT_TOKEN"])
-        my_name = "Fate怒"
-        my_code = 4275
-
-        @property # required method.
-        def framework(self) -> framework.Empty:
-            return framework.Empty()
-
-        async def my_memberships(self) -> Sequence[crates.DestinyMembership]:
-            # Note, Do not call methods within objects, Since this is an empty
-            # factory, The client reference that makes these calls will be `None`.
-            response = await self.rest.fetch_membership(self.my_name, self.my_code)
-            return self.factory.deserialize_destiny_memberships(response)
-
-        async def main() -> None:
-            client = MyClient()
-            async with client.rest:
-                print(await client.my_memberships())
-
-    asyncio.run(main())
-    ```
-    """
+    """A stand-alone framework that doesn't require a client owner."""
 
     __slots__ = ()
-
-    if typing.TYPE_CHECKING:
-        # We explicitly want this to be `None`.
-        _app: None
-
-    def __init__(self, app: None = None) -> None:
-        self._app = app

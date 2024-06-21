@@ -40,14 +40,11 @@ import attrs
 from aiobungie import url
 from aiobungie.crates import user
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import iterators
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     from datetime import datetime
 
-    from aiobungie import traits
     from aiobungie.crates import progressions as progressions_
     from aiobungie.internal import assets
 
@@ -150,22 +147,6 @@ class ClanMember(user.DestinyMembership):
         """Check whether this member is the clan founder or not."""
         return self.member_type is enums.ClanMemberType.FOUNDER
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.1",
-        use_instead="{self}.app.request.fetch_clan_from_id",
-        hint="You can use {self}.group_id to get the clan ID.",
-    )
-    async def fetch_clan(self) -> Clan:
-        """Fetch the clan this member belongs to.
-
-        Returns
-        -------
-        `Clan`
-            The clan admins clan.
-        """
-        return await self.app.request.fetch_clan_from_id(self.group_id)
-
 
 @attrs.frozen(kw_only=True)
 class GroupMember:
@@ -202,9 +183,6 @@ class GroupMember:
 @attrs.frozen(kw_only=True)
 class Clan:
     """Represents a Bungie clan."""
-
-    app: traits.Send = attrs.field(repr=False, eq=False, hash=False)
-    """A reference to the client that fetched this resource."""
 
     id: int
     """The clan id"""
@@ -268,39 +246,6 @@ class Clan:
 
     This maps from the membership type represented as a string to the authorized clan member.
     """
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.1",
-        use_instead="{self}.app.request.fetch_clan_members",
-    )
-    async def fetch_members(
-        self,
-        *,
-        name: str | None = None,
-        type: enums.MembershipType = enums.MembershipType.NONE,
-    ) -> iterators.Iterator[ClanMember]:
-        """Fetch the members of the clan.
-
-        Parameters
-        ----------
-        name : `str | None`
-            If provided, Only players matching this name will be returned.
-        type: `aiobungie.MembershipType`
-            Filters the membership types of the players to return.
-            Default is `aiobungie.MembershipType.NONE` which returns all membership types.
-
-        Returns
-        --------
-        `aiobungie.Iterator[ClanMember]`
-            An iterator over the clan members found in this clan.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The clan was not found.
-        """
-        return await self.app.request.fetch_clan_members(self.id, type=type, name=name)
 
     @property
     def url(self) -> str:

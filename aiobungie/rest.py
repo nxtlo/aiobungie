@@ -429,10 +429,12 @@ class RESTClient(api.RESTClient):
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
+        ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None:
+        ...
 
     @typing.final
     def build_oauth2_url(
@@ -1540,7 +1542,6 @@ class RESTClient(api.RESTClient):
             "itemId": item_id,
             "itemReferenceHash": item_hash,
             "stackSize": stack_size,
-            "transferToVault": vault,
         }
         await self._request(
             _POST,
@@ -1548,6 +1549,16 @@ class RESTClient(api.RESTClient):
             json=payload,
             auth=access_token,
         )
+        if vault:
+            await self.transfer_item(
+                access_token,
+                item_id=item_id,
+                item_hash=item_hash,
+                character_id=character_id,
+                member_type=member_type,
+                stack_size=stack_size,
+                vault=True,
+            )
 
     async def fetch_fireteams(
         self,

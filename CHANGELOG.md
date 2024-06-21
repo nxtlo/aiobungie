@@ -126,6 +126,7 @@ The following were removed for inconsistency.
 ### Fixed
 
 * deserializing `Friend` object was raising `KeyError` due to `name` field.
+* `vault` option in method `pull_item` now works as intended, thanks to [#418](https://github.com/nxtlo/aiobungie/issues/418) for opening the issue.
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

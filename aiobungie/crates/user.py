@@ -34,6 +34,7 @@ __all__ = (
     "DestinyMembership",
     "UserCredentials",
     "SearchableDestinyUser",
+    "SanitizedMembership",
 )
 
 import abc
@@ -352,6 +353,26 @@ class UserThemes:
 
     def __int__(self) -> int:
         return self.id
+
+
+@attrs.frozen(kw_only=True)
+class SanitizedMembership:
+    """Collections of display names linked to a membership."""
+
+    epic_games: str | None
+    """The membership's EpicGames username if it's linked."""
+
+    psn: str | None
+    """The membership's Playstation Network username if it's linked."""
+
+    steam: str | None
+    """The membership's Steam username if it's linked."""
+
+    twitch: str | None
+    """The membership's Twitch username if it's linked."""
+
+    xbox: str | None
+    """The membership's Xbox username if it's linked."""
 
 
 @attrs.frozen(kw_only=True)

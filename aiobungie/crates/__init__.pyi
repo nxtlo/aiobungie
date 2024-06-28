@@ -39,6 +39,9 @@ __all__ = [
     "CustomizationOptions",
     "CharacterProgression",
     "Clan",
+    "Group",
+    "ClanInfo",
+    "GroupDate",
     "ClanMember",
     "ClanFeatures",
     "ClanConversation",
@@ -142,6 +145,7 @@ __all__ = [
 #   ClanBanner
 #   ClanConversation
 #   ClanFeatures
+#   ClanInfo
 #   ClanMember
 #   Collectible
 #   Component
@@ -163,6 +167,8 @@ __all__ = [
 #   FireteamUser
 #   Friend
 #   FriendRequestView
+#   Group
+#   GroupDate
 #   GroupMember
 #   GuidedGame
 #   HardLinkedMembership

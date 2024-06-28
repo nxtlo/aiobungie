@@ -33,9 +33,13 @@ from aiobungie import typedefs
 __all__ = ("Compact", "Send", "Deserialize", "RESTful")
 
 import typing
+import logging
+import sys
+import pathlib
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+    import os
 
     from aiobungie import api
     from aiobungie import builders
@@ -128,11 +132,73 @@ class RESTful(typing.Protocol):
         """Returns `True` if the REST client is alive and `False` otherwise."""
         raise NotImplementedError
 
-    @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
+    @typing.final
+    def with_debug(
+        self,
+        level: typing.Literal["TRACE"] | bool | int = True,
+        file: str | os.PathLike[str] | None = None,
+    ) -> None:
+        """Enable debugging for this client with a level. Defaults to `True`.
+
+        Parameters
+        ----------
+        level: `NotRequired[int | bool | typing.Literal["TRACE"] | None]`
+            The level of the logger. This field is not required.
+        file: `pathlib.Path | str | None`
+            An optional file to write the logs into.
+
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
+        """
+        logging.logThreads = False
+        logging.logMultiprocessing = False
+        logging.logProcesses = False
+        logging.captureWarnings(True)
+
+        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
+
+        # early exit, don't bother doing anything.
+        if not level:
+            return
+
+        # something has already initialized this.
+        if len(logging.root.handlers) != 0:
+            return
+
+        if isinstance(file, str):
+            path = pathlib.Path(file)
+            if path.expanduser().exists():
+                file = path
+
+        file_handler = (
+            logging.FileHandler(file)
+            if file is not None
+            else logging.StreamHandler(sys.stdout),
+        )
+        if level == "TRACE" or level == logging.DEBUG - 5:
+            logging.basicConfig(
+                level=logging.getLevelName(logging.DEBUG - 5),
+                format=format,
+                handlers=file_handler,
+            )
+
+        elif level is True:
+            logging.basicConfig(
+                level=logging.DEBUG, format=format, handlers=file_handler
+            )
+        else:
+            logging.basicConfig(level=level, format=format, handlers=file_handler)
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
+        ...
+
+    @typing.overload
+    def build_oauth2_url(self) -> builders.OAuthURL | None:
+        ...
 
     def build_oauth2_url(
         self, client_id: int | None = None

@@ -26,11 +26,14 @@ from __future__ import annotations
 
 __all__ = (
     "Clan",
+    "Group",
+    "ClanInfo",
     "ClanMember",
     "ClanFeatures",
     "ClanConversation",
     "ClanBanner",
     "GroupMember",
+    "GroupDate",
 )
 
 import typing
@@ -47,6 +50,15 @@ if typing.TYPE_CHECKING:
 
     from aiobungie.crates import progressions as progressions_
     from aiobungie.internal import assets
+
+
+@typing.final
+class GroupDate(int, enums.Enum):
+    ALL = 0
+    PAST_DAY = 1
+    PAST_WEEK = 2
+    PAST_MONTH = 3
+    PAST_YEAR = 4
 
 
 @attrs.frozen(kw_only=True)
@@ -105,10 +117,10 @@ class ClanBanner:
     """The banner's id."""
 
     foreground: assets.Image
-    """The banner's foreground. This field can be `UNDEFINED` if not found."""
+    """The banner's foreground."""
 
     background: assets.Image
-    """The banner's background. This field can be `UNDEFINED` if not found."""
+    """The banner's background."""
 
 
 @attrs.frozen(kw_only=True)
@@ -178,6 +190,47 @@ class GroupMember:
 
     def __int__(self) -> int:
         return self.group_id
+
+
+@typing.final
+class ClanInfo(typing.TypedDict):
+    """This contract contains clan-specific group information. It does not include any investment data."""
+
+    call_sign: str
+    banner_data: collections.Mapping[str, int]
+    """A key-value mapping that maps the clan's banner property name to its value"""
+
+
+@attrs.frozen(kw_only=True)
+class Group:
+    """Basic information about a group."""
+
+    group_id: int
+    """The group id."""
+    name: str
+    """The group name."""
+    group_type: enums.GroupType
+    """The group type."""
+    creation_date: datetime
+    """The group creation date."""
+    about: str
+    """The about section of the group."""
+    motto: str | None
+    """The motto section of the group."""
+    member_count: int
+    """The amount of members in this group."""
+    locale: str
+    """The group's locale"""
+    membership_option: int
+    """THe membership option of the group."""
+    capabilities: int
+    """The capabilities of the group. See [Capabilities](https://bungie-net.github.io/multi/schema_GroupsV2-Capabilities.html#schema_GroupsV2-Capabilities)"""
+    remote_group_id: int | None
+    clan_info: ClanInfo | None
+    """Information about this group, It doesn't include any investment data."""
+    avatar_path: assets.Image
+    """The avatar of the group represented as an image object."""
+    theme: str
 
 
 @attrs.frozen(kw_only=True)

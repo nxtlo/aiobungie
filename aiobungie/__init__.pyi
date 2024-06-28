@@ -16,7 +16,7 @@ from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 
 from .crates.activity import Difficulty as Difficulty
-from .crates.components import ComponentFields as ComponentFields
+from .crates.clans import GroupDate as GroupDate
 from .crates.components import ComponentPrivacy as ComponentPrivacy
 from .crates.entity import GatingScope as GatingScope
 from .crates.entity import ObjectiveUIStyle as ObjectiveUIStyle

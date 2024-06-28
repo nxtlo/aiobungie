@@ -318,6 +318,24 @@ class Client(traits.Compact):
 
         return self._framework.deserialize_user_credentials(resp)
 
+    async def fetch_sanitized_membership(
+        self, membership_id: int, /
+    ) -> user.SanitizedMembership:
+        """Fetch a list of all display names linked to `membership_id`, Which is profanity filtered.
+
+        Parameters
+        ----------
+        membership_id: `int`
+            The membership ID to fetch
+
+        Returns
+        -------
+        `aiobungie.crates.SanitizedMembership`
+            A JSON object contains all the available display names.
+        """
+        response = await self._rest.fetch_sanitized_membership(membership_id)
+        return self._framework.deserialize_sanitized_membership(response)
+
     # * Destiny 2.
 
     async def fetch_profile(
@@ -904,6 +922,79 @@ class Client(traits.Compact):
         resp = await self.rest.fetch_clan_weekly_rewards(clan_id)
 
         return self._framework.deserialize_milestone(resp)
+
+    async def search_group(
+        self,
+        name: str,
+        group_type: enums.GroupType | int,
+        *,
+        creation_date: clans.GroupDate | int = 0,
+        sort_by: int | None = None,
+        group_member_count_filter: typing.Literal[0, 1, 2, 3] | None = None,
+        locale_filter: str | None = None,
+        tag_text: str | None = None,
+        items_per_page: int | None = None,
+        current_page: int | None = None,
+        request_token: str | None = None,
+    ) -> collections.Sequence[clans.Group]:
+        """Search for groups.
+
+        .. note::
+            If the group type is set to `CLAN`, then parameters `group_member_count_filter`,
+            `locale_filter` and `tag_text` must be `None`, otherwise `ValueError` will be raised.
+
+        Parameters
+        ----------
+        name : `str`
+            The group name.
+        group_type : `aiobungie.GroupType | int`
+            The group type that's being searched for.
+
+        Other Parameters
+        ----------------
+        creation_date : `aiobungie.GroupDate | int`
+            The creation date of the group. Defaults to `0` which is all time.
+        sort_by : `int | None`
+            ...
+        group_member_count_filter : `int | None`
+            ...
+        locale_filter : `str | None`
+            ...
+        tag_text : `str | None`
+            ...
+        items_per_page : `int | None`
+            ...
+        current_page : `int | None`
+            ...
+        request_token : `str | None`
+            ...
+
+        Returns
+        --------
+        `collections.Sequence[aiobungie.crates.Group]`
+            An array that contains the groups that match the search criteria.
+
+        Raises
+        ------
+        `ValueError`
+            If the group type is `aiobungie.GroupType.CLAN` and `group_member_count_filter`,
+            `locale_filter` and `tag_text` are not `None`.
+        """
+        response = await self._rest.search_group(
+            name,
+            group_type,
+            sort_by=sort_by,
+            creation_date=creation_date,
+            group_member_count_filter=group_member_count_filter,
+            locale_filter=locale_filter,
+            tag_text=tag_text,
+            items_per_page=items_per_page,
+            current_page=current_page,
+            request_token=request_token,
+        )
+        return tuple(
+            self._framework.deserialize_group(result) for result in response["results"]
+        )
 
     # * Destiny 2 Entities aka Definitions.
 

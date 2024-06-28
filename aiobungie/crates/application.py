@@ -84,7 +84,7 @@ class Application:
     """Scopes that're supported by this application."""
 
     team: collections.Sequence[ApplicationMember]
-    """A sequence of application members."""
+    """A sequence of the application members."""
 
     origin: str
     """Origin field of this application."""

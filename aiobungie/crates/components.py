@@ -68,14 +68,6 @@ class ComponentPrivacy(int, enums.Enum):
     PRIVATE = 2
 
 
-@typing.final
-class ComponentFields(enums.Enum):
-    """An enum that provides fields found in a base component response."""
-
-    PRIVACY = ComponentPrivacy.NONE
-    DISABLED = False
-
-
 # Main component cannot inherit from multiple classes that have `__slots__`
 # Which's why some components have no slots.
 @attrs.frozen(kw_only=True, slots=False)

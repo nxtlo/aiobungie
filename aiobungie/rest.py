@@ -31,6 +31,7 @@ import contextlib
 import datetime
 import http
 import logging
+import logging.config
 import os
 import pathlib
 import sys
@@ -46,6 +47,7 @@ from aiobungie import error
 from aiobungie import metadata
 from aiobungie import typedefs
 from aiobungie import url
+from aiobungie.crates import clans
 from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
@@ -429,10 +431,12 @@ class RESTClient(api.RESTClient):
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
+        ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None:
+        ...
 
     @typing.final
     def build_oauth2_url(
@@ -443,48 +447,6 @@ class RESTClient(api.RESTClient):
             return None
 
         return builders.OAuthURL(client_id=client_id)
-
-    @typing.final
-    def with_debug(
-        self,
-        level: typing.Literal["TRACE"] | bool | int = True,
-        file: str | pathlib.Path | None = None,
-    ) -> None:
-        """Enable debugging for this client with a level. Defaults to `True`.
-
-        Parameters
-        ----------
-        level: `NotRequired[int | bool | typing.Literal["TRACE"] | None]`
-            The level of the logger. This field is not required.
-        file: `pathlib.Path | str | None`
-            An optional file to write the logs into.
-
-        Logging Levels
-        --------------
-        * `False`: This will disable logging.
-        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-        * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
-        """
-        logging.logThreads = False
-        logging.logMultiprocessing = False
-        logging.logProcesses = False
-        logging.captureWarnings(True)
-
-        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
-
-        file_handler = (logging.FileHandler(file),) if file else None
-        if level == "TRACE" or level == TRACE:
-            logging.basicConfig(
-                level=TRACE, format=format, stream=sys.stdout, handlers=file_handler
-            )
-
-        elif level is True:
-            logging.basicConfig(
-                level=logging.DEBUG,
-                format=format,
-                stream=sys.stdout,
-                handlers=file_handler,
-            )
 
     async def _request(
         self,
@@ -774,6 +736,15 @@ class RESTClient(api.RESTClient):
         assert isinstance(resp, list)
         return resp
 
+    async def fetch_sanitized_membership(
+        self, membership_id: int, /
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET, f"User/GetSanitizedPlatformDisplayNames/{membership_id}/"
+        )
+        assert isinstance(response, dict)
+        return response
+
     async def search_users(self, name: str, /) -> typedefs.JSONObject:
         resp = await self._request(
             _POST,
@@ -801,6 +772,49 @@ class RESTClient(api.RESTClient):
         resp = await self._request(
             _GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
         )
+        assert isinstance(resp, dict)
+        return resp
+
+    async def search_group(
+        self,
+        name: str,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
+        *,
+        creation_date: clans.GroupDate | int = 0,
+        sort_by: int | None = None,
+        group_member_count_filter: typing.Literal[0, 1, 2, 3] | None = None,
+        locale_filter: str | None = None,
+        tag_text: str | None = None,
+        items_per_page: int | None = None,
+        current_page: int | None = None,
+        request_token: str | None = None,
+    ) -> typedefs.JSONObject:
+        payload: collections.MutableMapping[str, typing.Any] = {"name": name}
+
+        # as the official documentation says, you're not allowed to use those fields
+        # on a clan search. it is safe to send the request with them being `null` but not filled with a value.
+        if (
+            group_type == enums.GroupType.CLAN
+            and group_member_count_filter is not None
+            and locale_filter
+            and tag_text
+        ):
+            raise ValueError(
+                "If you're searching for clans, (group_member_count_filter, locale_filter, tag_text) must be None."
+            )
+
+        payload["groupType"] = int(group_type)
+        payload["creationDate"] = int(creation_date)
+        payload["sortBy"] = sort_by
+        payload["groupMemberCount"] = group_member_count_filter
+        payload["locale"] = locale_filter
+        payload["tagText"] = tag_text
+        payload["itemsPerPage"] = items_per_page
+        payload["currentPage"] = current_page
+        payload["requestToken"] = request_token
+        payload["requestContinuationToken"] = request_token
+
+        resp = await self._request(_POST, "GroupV2/Search/", json=payload)
         assert isinstance(resp, dict)
         return resp
 

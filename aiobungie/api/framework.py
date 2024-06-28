@@ -196,6 +196,23 @@ class Framework(abc.ABC):
             A sequence of user's credentials.
         """
 
+    @abc.abstractmethod
+    def deserialize_sanitized_membership(
+        self, payload: typedefs.JSONObject
+    ) -> user.SanitizedMembership:
+        """Deserialize a raw JSON payload of a sanitized Destiny 2 membership display names.
+
+        Parameters
+        ----------
+        payload: `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crates.SanitizedMembership`
+            A sanitized Destiny 2 membership that contains the display names.
+        """
+
     # Clans, Groups.
 
     @abc.abstractmethod
@@ -294,6 +311,22 @@ class Framework(abc.ABC):
         -------
         `collections.Sequence[aiobungie.crates.ClanBanner]`
             A sequence of clan banners of the deserialized payload.
+        """
+
+    @abc.abstractmethod
+    def deserialize_group(self, payload: typedefs.JSONObject) -> clans.Group:
+        """Deserialize a `GroupV2Card` payload into a `Group` object.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            THe payload to deserialize
+
+
+        Returns
+        -------
+        `aiobungie.crates.Group`
+            A group object
         """
 
     # Application

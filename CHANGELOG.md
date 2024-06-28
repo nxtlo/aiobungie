@@ -23,6 +23,8 @@ await rest.download_json_manifest(
 * `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
 * `code` field to `PartialBungieUser`
 * `origin` field to `Application`
+* `fetch_sanitized_membership` method on both client APIs
+* `search_groups` method on both client APIs
 
 ### Changed
 
@@ -35,7 +37,7 @@ await rest.download_json_manifest(
 * trait `Serializable` renamed to `Deserialize` and its method `factory` renamed to `framework`.
 * trait `ClientApp` renamed to `Compact`.
 * `Client.factory` is now `Client.framework`.
-* `factory.EmptyFactory` is now `framework.Empty` and is currently deprecated, use `Framework` instead.
+* `factory.EmptyFactory` is now `framework.Empty` and is now deprecated, use `Framework()` instead.
 * `Framework` doesn't require a `net` parameter anymore.
 * `.net` field removed from all objects.
 * `UserLike` abstract class renamed to `Unique`.
@@ -46,6 +48,7 @@ await rest.download_json_manifest(
 * `ApplicationOwner` is now `ApplicationMember` and the user fields are accessible through `.user`
 * `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
 * `Client.run` is deprecated and will be removed in the next major release.
+* `RESTClient.with_debug` has been moved to `traits.RESTful` with a default final impl.
 
 ## Removed
 
@@ -142,11 +145,13 @@ The following were removed for inconsistency.
 * `UserLike.icon`
 * `UserLike.last_seen_name`
 * `UserLike.is_public`
+* `ComponentFields` enum
 
 ### Fixed
 
 * deserializing `Friend` object was raising `KeyError` due to `name` field.
 * `vault` option in method `pull_item` now works as intended, thanks to [#418](https://github.com/nxtlo/aiobungie/issues/418) for opening the issue.
+* `ComponentType.CHARACTER_PROGRESSIONS` enum field name type fixed.
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

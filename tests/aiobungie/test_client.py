@@ -169,6 +169,11 @@ class TestClans:
         r = await client.fetch_clan_weekly_rewards(config.PRIMARY_CLAN_ID)
         assert isinstance(r, aiobungie.crates.Milestone)
 
+    @staticmethod
+    async def test_search_groups():
+        r = await client.search_group("Fate", 0)
+        assert len(r) > 1
+
 
 # *->> Application tests <<-*
 class TestApplication:

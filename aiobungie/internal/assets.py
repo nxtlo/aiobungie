@@ -72,7 +72,7 @@ def _write(
         file.write(data)
 
 
-@attrs.frozen(kw_only=True, weakref_slot=False)
+@attrs.frozen(weakref_slot=False)
 class Image:
     """Representation of an image/avatar/picture Bungie resource.
 
@@ -122,13 +122,13 @@ class Image:
         Example
         -------
         ```py
-        img = Image.default_or_else(None)
+        img = Image.default_or_else()
         print(img.url()) # https://www.bungie.net/img/misc/missing_icon_d2.png
 
         img = Image.default_or_else("/some_path/image.png")
         ```
         """
-        return cls(path=path or Image.default())
+        return cls(path=path or cls.default())
 
     def create_url(self) -> str:
         """Creates a full URL to the image path.

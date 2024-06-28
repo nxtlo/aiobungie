@@ -56,6 +56,9 @@ __all__ = (
     "CharacterProgression",
     # clans.py
     "Clan",
+    "Group",
+    "ClanInfo",
+    "GroupDate",
     "ClanMember",
     "ClanFeatures",
     "ClanConversation",

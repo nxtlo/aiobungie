@@ -197,6 +197,17 @@ class Framework(api.Framework):
             primary_membership_id=primary_membership_id,
         )
 
+    def deserialize_sanitized_membership(
+        self, payload: typedefs.JSONObject
+    ) -> user.SanitizedMembership:
+        return user.SanitizedMembership(
+            epic_games=payload.get("EgsId"),
+            psn=payload.get("PsnId"),
+            steam=payload.get("SteamId"),
+            xbox=payload.get("XboxId"),
+            twitch=payload.get("TwitchId"),
+        )
+
     def deserialize_searched_user(
         self, payload: typedefs.JSONObject
     ) -> user.SearchableDestinyUser:
@@ -242,6 +253,32 @@ class Framework(api.Framework):
                 else None,
             )
             for entry in payload
+        )
+
+    def deserialize_group(self, payload: typedefs.JSONObject) -> clans.Group:
+        clan_info_obj: typedefs.JSONObject | None = None
+        if raw_clan_info := payload.get("clanInfo"):
+            clan_info_obj = clans.ClanInfo(
+                call_sign=raw_clan_info["clanCallsign"],
+                banner_data=raw_clan_info["clanBannerData"],
+            )
+        return clans.Group(
+            group_id=int(payload["groupId"]),
+            name=payload["name"],
+            creation_date=time.clean_date(payload["creationDate"]),
+            about=payload["about"],
+            clan_info=clan_info_obj,
+            motto=payload.get("motto"),
+            member_count=int(payload["memberCount"]),
+            locale=payload["locale"],
+            membership_option=int(payload["membershipOption"]),
+            capabilities=int(payload["capabilities"]),
+            remote_group_id=int(payload["remoteGroupId"])
+            if "remoteGroupId" in payload
+            else None,
+            group_type=enums.GroupType(int(payload["groupType"])),
+            avatar_path=assets.Image(payload["avatarPath"]),
+            theme=payload["theme"],
         )
 
     def _deserialize_group_details(

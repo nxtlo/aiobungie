@@ -54,8 +54,10 @@ from aiobungie.rest import *
 # Activity enums
 from .crates.activity import Difficulty
 
+# Clans enums
+from .crates.clans import GroupDate
+
 # Components enums
-from .crates.components import ComponentFields
 from .crates.components import ComponentPrivacy
 
 # Entity enums

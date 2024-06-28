@@ -45,6 +45,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import builders
     from aiobungie import typedefs
+    from aiobungie.crates import clans
     from aiobungie.crates import fireteams
 
 
@@ -235,6 +236,23 @@ class RESTClient(traits.RESTful, abc.ABC):
         -------
         `aiobungie.typedefs.JSONArray`
             A JSON array of user themes.
+        """
+
+    @abc.abstractmethod
+    async def fetch_sanitized_membership(
+        self, membership_id: int, /
+    ) -> typedefs.JSONObject:
+        """Fetch a list of all display names linked to `membership_id`, Which is profanity filtered.
+
+        Parameters
+        ----------
+        membership_id: `int`
+            The membership ID to fetch
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains all the available display names.
         """
 
     @abc.abstractmethod
@@ -561,6 +579,65 @@ class RESTClient(traits.RESTful, abc.ABC):
         ------
         `aiobungie.NotFound`
             The clan was not found.
+        """
+
+    @abc.abstractmethod
+    async def search_group(
+        self,
+        name: str,
+        group_type: enums.GroupType | int,
+        *,
+        creation_date: clans.GroupDate | int = 0,
+        sort_by: int | None = None,
+        group_member_count_filter: typing.Literal[0, 1, 2, 3] | None = None,
+        locale_filter: str | None = None,
+        tag_text: str | None = None,
+        items_per_page: int | None = None,
+        current_page: int | None = None,
+        request_token: str | None = None,
+    ) -> typedefs.JSONObject:
+        """Search for groups.
+
+        .. note::
+            If the group type is set to `CLAN`, then parameters `group_member_count_filter`,
+            `locale_filter` and `tag_text` must be `None`, otherwise `ValueError` will be raised.
+
+        Parameters
+        ----------
+        name : `str`
+            The group name.
+        group_type : `aiobungie.GroupType | int`
+            The group type that's being searched for.
+
+        Other Parameters
+        ----------------
+        creation_date : `aiobungie.GroupDate | int`
+            The creation date of the group. Defaults to `0` which is all time.
+        sort_by : `int | None`
+            ...
+        group_member_count_filter : `int | None`
+            ...
+        locale_filter : `str | None`
+            ...
+        tag_text : `str | None`
+            ...
+        items_per_page : `int | None`
+            ...
+        current_page : `int | None`
+            ...
+        request_token : `str | None`
+            ...
+
+        Returns
+        --------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object of the search results.
+
+        Raises
+        ------
+        `ValueError`
+            If the group type is `aiobungie.GroupType.CLAN` and `group_member_count_filter`,
+            `locale_filter` and `tag_text` are not `None`.
         """
 
     @abc.abstractmethod

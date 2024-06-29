@@ -32,10 +32,10 @@ from aiobungie import typedefs
 
 __all__ = ("Compact", "Send", "Deserialize", "RESTful")
 
-import typing
 import logging
-import sys
 import pathlib
+import sys
+import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -193,12 +193,10 @@ class RESTful(typing.Protocol):
             logging.basicConfig(level=level, format=format, handlers=file_handler)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
-        ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None:
-        ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
 
     def build_oauth2_url(
         self, client_id: int | None = None

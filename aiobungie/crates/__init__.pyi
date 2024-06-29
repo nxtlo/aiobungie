@@ -33,6 +33,8 @@ __all__ = [
     "AggregatedActivityValues",
     "Application",
     "Character",
+    "Loadout",
+    "LoadoutItem",
     "Dye",
     "MinimalEquipments",
     "RenderedData",
@@ -181,6 +183,8 @@ __all__ = [
 #   ItemStatsView
 #   ItemsComponent
 #   LinkedProfile
+#   Loadout
+#   LoadoutItem
 #   Location
 #   Matchmaking
 #   Milestone

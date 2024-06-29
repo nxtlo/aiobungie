@@ -49,6 +49,8 @@ __all__ = (
     "Application",
     # character.py
     "Character",
+    "Loadout",
+    "LoadoutItem",
     "Dye",
     "MinimalEquipments",
     "RenderedData",

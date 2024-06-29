@@ -431,12 +431,10 @@ class RESTClient(api.RESTClient):
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
-        ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None:
-        ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
 
     @typing.final
     def build_oauth2_url(

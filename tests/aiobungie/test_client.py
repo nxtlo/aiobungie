@@ -262,6 +262,7 @@ class TestProfile:
         assert pf.metrics
         assert isinstance(pf.item_components, aiobungie.crates.ItemsComponent)
         assert pf.character_craftables
+        assert pf.character_loadouts
 
     @staticmethod
     async def test_linked_profiles():

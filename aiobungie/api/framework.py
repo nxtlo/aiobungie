@@ -486,6 +486,11 @@ class Framework(abc.ABC):
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.CharacterProgression]: ...
 
+    @abc.abstractmethod
+    def deserialize_character_loadout(
+        self, payload: typedefs.JSONObject
+    ) -> character.Loadout: ...
+
     # Profiles.
 
     @abc.abstractmethod

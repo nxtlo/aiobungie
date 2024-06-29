@@ -955,13 +955,38 @@ class Framework(api.Framework):
             uninstanced_item_objectives=uninstanced_item_objectives,
         )
 
-    # fmt: off
-    def deserialize_character_progressions_mapping(self, payload: typedefs.JSONObject) -> collections.Mapping[int, character.CharacterProgression]:
-        character_progressions: collections.MutableMapping[int, character.CharacterProgression] = {}
+    def deserialize_character_progressions_mapping(
+        self, payload: typedefs.JSONObject
+    ) -> collections.Mapping[int, character.CharacterProgression]:
+        character_progressions: collections.MutableMapping[
+            int, character.CharacterProgression
+        ] = {}
         for char_id, data in payload["data"].items():
-            character_progressions[int(char_id)] = self.deserialize_character_progressions(data)
+            character_progressions[int(char_id)] = (
+                self.deserialize_character_progressions(data)
+            )
         return character_progressions
-    # fmt: on
+
+    def _deserialize_character_loadout_item(
+        self, payload: typedefs.JSONObject
+    ) -> character.LoadoutItem:
+        return character.LoadoutItem(
+            instance_id=payload["itemInstanceId"],
+            plug_hashes=tuple(payload["plugItemHashes"]),
+        )
+
+    def deserialize_character_loadout(
+        self, payload: typedefs.JSONObject
+    ) -> character.Loadout:
+        return character.Loadout(
+            color_hash=payload["colorHash"],
+            icon_hash=payload["iconHash"],
+            name_hash=payload["nameHash"],
+            items=tuple(
+                self._deserialize_character_loadout_item(item)
+                for item in payload["items"]
+            ),
+        )
 
     def deserialize_characters_records(
         self,
@@ -1278,6 +1303,19 @@ class Framework(api.Framework):
                     for char_id, craftable in raw_character_craftables["data"].items()
                 }
 
+        character_loadouts: (
+            collections.Mapping[int, collections.Sequence[character.Loadout]] | None
+        ) = None
+        if raw_character_loadouts := payload.get("characterLoadouts"):
+            if "data" in raw_character_loadouts:
+                character_loadouts = {
+                    int(char_id): tuple(
+                        self.deserialize_character_loadout(loadout)
+                        for loadout in raw_loadouts["loadouts"]
+                    )
+                    for char_id, raw_loadouts in raw_character_loadouts["data"].items()
+                }
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1306,6 +1344,7 @@ class Framework(api.Framework):
             platform_silver=platform_silver,
             character_currency_lookups=character_currency_lookups,
             character_craftables=character_craftables,
+            character_loadouts=character_loadouts,
         )
 
     def deserialize_items_component(

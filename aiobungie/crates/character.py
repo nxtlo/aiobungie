@@ -28,6 +28,8 @@ from __future__ import annotations
 
 __all__ = (
     "Character",
+    "Loadout",
+    "LoadoutItem",
     "Dye",
     "MinimalEquipments",
     "RenderedData",
@@ -51,6 +53,27 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import season
     from aiobungie.internal import assets
     from aiobungie.internal import enums
+
+
+@attrs.frozen(kw_only=True)
+class Loadout:
+    """Represents a character's loadout component in Destiny 2."""
+
+    color_hash: int
+    icon_hash: int
+    name_hash: int
+    items: collections.Sequence[LoadoutItem]
+    """A sequence of this loadout's items."""
+
+
+@attrs.frozen(kw_only=True)
+class LoadoutItem:
+    """Represents a single item in a character's loadout in Destiny 2."""
+
+    instance_id: int = attrs.field(converter=int)
+    """The item instance ID."""
+    plug_hashes: collections.Sequence[int]
+    """A sequence of this item's plug hashes."""
 
 
 @attrs.frozen(kw_only=True)
@@ -139,7 +162,7 @@ class CharacterProgression:
 
 @attrs.frozen(kw_only=True)
 class Character:
-    """An implementation for a Bungie character."""
+    """A Destiny 2 character."""
 
     id: int
     """Character's id"""

@@ -436,10 +436,7 @@ class Component(
         # Assuming the component requires an auth token
         auth="ACCESS_TOKEN"
     )
-    if items := profile.profile_inventories:
-        for item in items:
-            if item.hash == 1946491241:
-                print(await item.fetch_self())
+    print(profile.profiles, profile.characters, profile.profile_inventories)
     ```
     """
 
@@ -581,6 +578,15 @@ class Component(
     -----
     * This will always be `None` unless `auth="access_token"` is passed to the request.
     * This will always be `None` unless `aiobungie.ComponentType.CURRENCY_LOOKUPS`
+    is passed to the request components.
+    """
+
+    character_loadouts: (
+        collections.Mapping[int, collections.Sequence[character_.Loadout]] | None
+    )
+    """A mapping from each character ID to a sequence of its loadouts.
+
+    This component will always be `None` unless `aiobungie.ComponentType.CHARACTER_LOADOUTS`
     is passed to the request components.
     """
 

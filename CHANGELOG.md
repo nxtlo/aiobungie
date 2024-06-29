@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### methods
+
+* `fetch_sanitized_membership` method on both client APIs
+* `search_groups` method on both client APIs
+
+#### components
+
+* Fully implemented the `CHARACTER LOADOUTS` component along with its framework methods, You can access it via `Components.character_loadouts`
+after fetching a profile.
+
+#### object fields
+
+* `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
+* `code` field to `PartialBungieUser`
+* `origin` field to `Application`
+
+#### misc
+
 * An option to use a specific executor for downloading the manifest and `Image.save` method.
 
 ```py
@@ -19,12 +37,6 @@ await rest.download_json_manifest(
   executor=concurrent.futures.ProcessPoolExecutor()
 )
 ```
-
-* `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
-* `code` field to `PartialBungieUser`
-* `origin` field to `Application`
-* `fetch_sanitized_membership` method on both client APIs
-* `search_groups` method on both client APIs
 
 ### Changed
 

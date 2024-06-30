@@ -49,9 +49,9 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
+    from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crates import activity
-    from aiobungie.internal import assets
 
 
 @typing.final
@@ -113,7 +113,7 @@ class EntityBase(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.Image:
+    def icon(self) -> builders.Image:
         """An optional entity's icon if its filled."""
 
     @property
@@ -153,7 +153,7 @@ class Entity(EntityBase):
     description: str | None
     """Entity's description, `None` if the entity description was empty."""
 
-    icon: assets.Image
+    icon: builders.Image
     """Entity's icon."""
 
     has_icon: bool = attrs.field(repr=False)
@@ -179,7 +179,7 @@ class SearchableEntity(EntityBase):
     description: str | None
     """Entity's description. `None` if not set."""
 
-    icon: assets.Image
+    icon: builders.Image
     """Entity's icon."""
 
     has_icon: bool
@@ -319,28 +319,28 @@ class InventoryEntity(Entity):
     collectible_hash: int | None = attrs.field(repr=False)
     """If this item has a collectible related to it, this is the hash identifier of that collectible entry."""
 
-    watermark_icon: assets.Image | None = attrs.field(repr=False)
+    watermark_icon: builders.Image | None = attrs.field(repr=False)
     """Entity's water mark."""
 
-    watermark_shelved: assets.Image | None = attrs.field(repr=False)
+    watermark_shelved: builders.Image | None = attrs.field(repr=False)
     """If available, this is the 'shelved' release watermark overlay for the icon."""
 
-    secondary_icon: assets.Image | None = attrs.field(repr=False)
+    secondary_icon: builders.Image | None = attrs.field(repr=False)
     """A secondary icon associated with the item.
 
     Currently this is used in very context specific applications, such as Emblem Nameplates.
     """
 
-    secondary_overlay: assets.Image | None = attrs.field(repr=False)
+    secondary_overlay: builders.Image | None = attrs.field(repr=False)
     """The "secondary background" of the secondary icon."""
 
-    secondary_special: assets.Image | None = attrs.field(repr=False)
+    secondary_special: builders.Image | None = attrs.field(repr=False)
     """The "special" background for the item. For Emblems"""
 
     background_colors: collections.Mapping[str, bytes] = attrs.field(repr=False)
     """Most emblems have a background colour, This field represents them."""
 
-    screenshot: assets.Image | None = attrs.field(repr=False)
+    screenshot: builders.Image | None = attrs.field(repr=False)
     """Entity's screenshot."""
 
     ui_display_style: str | None = attrs.field(repr=False)
@@ -475,7 +475,7 @@ class ActivityEntity(Entity):
     This derives from `DestinyActivityDefinition` definition.
     """
 
-    release_icon: assets.Image
+    release_icon: builders.Image
     """The release icon of this activity if it has one."""
 
     release_time: int
@@ -496,7 +496,7 @@ class ActivityEntity(Entity):
     tier: activity.Difficulty
     """Activity's difficulty tier."""
 
-    image: assets.Image
+    image: builders.Image
     """Activity's pgcr image."""
 
     rewards: collections.Sequence[activity.Rewards] | None

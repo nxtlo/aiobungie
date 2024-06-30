@@ -10,7 +10,6 @@ from aiobungie import url as url
 from aiobungie.client import Client as Client
 from aiobungie.error import *
 from aiobungie.internal import iterators as iterators
-from aiobungie.internal.assets import Image as Image
 from aiobungie.internal.enums import *
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *

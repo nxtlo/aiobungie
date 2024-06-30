@@ -47,11 +47,11 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
+    from aiobungie import builders
     from aiobungie.crates import milestones as milestones_
     from aiobungie.crates import progressions as progressions_
     from aiobungie.crates import records
     from aiobungie.crates import season
-    from aiobungie.internal import assets
     from aiobungie.internal import enums
 
 
@@ -182,10 +182,10 @@ class Character:
     race: enums.Race
     """Character's race"""
 
-    emblem: assets.Image | None
+    emblem: builders.Image | None
     """Character's emblem, If included."""
 
-    emblem_icon: assets.Image | None
+    emblem_icon: builders.Image | None
     """Character's emblem icon, If included."""
 
     emblem_hash: int | None

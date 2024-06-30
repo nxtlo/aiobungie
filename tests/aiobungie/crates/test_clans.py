@@ -29,7 +29,6 @@ import pytest
 
 import aiobungie
 from aiobungie import crates
-from aiobungie.internal import assets
 
 
 class TestClanFeatures:
@@ -82,15 +81,21 @@ class TestClanBanner:
     def model(self):
         return crates.ClanBanner(
             id=2934,
-            foreground=assets.Image(path="brrr.png"),
-            background=assets.Image(path="xo.jpg"),
+            foreground=aiobungie.builders.Image(path="brrr.png"),
+            background=aiobungie.builders.Image(path="xo.jpg"),
         )
 
     def test_foreground(self, model: crates.ClanBanner):
-        assert model.foreground.__str__() == assets.Image(path="brrr.png").url
+        assert (
+            model.foreground.__str__()
+            == aiobungie.builders.Image(path="brrr.png").create_url()
+        )
 
     def test_background(self, model: crates.ClanBanner):
-        assert model.background.__str__() == assets.Image(path="xo.jpg").url
+        assert (
+            model.background.__str__()
+            == aiobungie.builders.Image(path="xo.jpg").create_url()
+        )
 
 
 class TestClanMember:
@@ -101,7 +106,7 @@ class TestClanMember:
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
-            icon=assets.Image(path="someIconPath.jpg"),
+            icon=aiobungie.builders.Image(path="someIconPath.jpg"),
             is_public=True,
             group_id=998271,
             is_online=True,
@@ -168,8 +173,8 @@ class TestClan:
             member_count=2,
             motto="Cool motto",
             is_public=True,
-            banner=assets.Image(path="xxx.jpg"),
-            avatar=assets.Image(path="zzz.jpg"),
+            banner=aiobungie.builders.Image(path="xxx.jpg"),
+            avatar=aiobungie.builders.Image(path="zzz.jpg"),
             about="A cool clan.",
             tags=["Raids", "Tag", "Another tag"],
             owner=mock_owner,

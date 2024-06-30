@@ -34,6 +34,7 @@ __all__ = ("Framework", "Empty")
 import typing
 
 from aiobungie import api
+from aiobungie import builders
 from aiobungie import typedefs
 from aiobungie.crates import activity
 from aiobungie.crates import application
@@ -50,7 +51,6 @@ from aiobungie.crates import progressions
 from aiobungie.crates import records
 from aiobungie.crates import season
 from aiobungie.crates import user
-from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import iterators
@@ -122,7 +122,7 @@ class Framework(api.Framework):
             egs_name=data.get("egsDisplayName", None),
             status=data["statusText"],
             locale=data["locale"],
-            picture=assets.Image(path=data["profilePicturePath"]),
+            picture=builders.Image(path=data["profilePicturePath"]),
             code=data.get("cachedBungieGlobalDisplayNameCode", None),
             unique_name=data.get("uniqueName", None),
             theme_id=int(data["profileTheme"]),
@@ -148,7 +148,7 @@ class Framework(api.Framework):
             id=int(payload["membershipId"]),
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             is_public=payload["isPublic"],
-            icon=assets.Image(path=payload.get("iconPath", "")),
+            icon=builders.Image(path=payload.get("iconPath", "")),
             type=enums.MembershipType(payload["membershipType"]),
             code=payload.get("bungieGlobalDisplayNameCode"),
         )
@@ -170,7 +170,7 @@ class Framework(api.Framework):
             type=enums.MembershipType(payload["membershipType"]),
             is_public=payload["isPublic"],
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
-            icon=assets.Image(path=payload.get("iconPath", "")),
+            icon=builders.Image(path=payload.get("iconPath", "")),
             types=tuple(
                 enums.MembershipType(type_)
                 for type_ in payload.get("applicableMembershipTypes", ())
@@ -277,7 +277,7 @@ class Framework(api.Framework):
             if "remoteGroupId" in payload
             else None,
             group_type=enums.GroupType(int(payload["groupType"])),
-            avatar_path=assets.Image(payload["avatarPath"]),
+            avatar_path=builders.Image(payload["avatarPath"]),
             theme=payload["theme"],
         )
 
@@ -314,8 +314,8 @@ class Framework(api.Framework):
             motto=data["motto"],
             about=data["about"],
             is_public=data["isPublic"],
-            banner=assets.Image(path=data["bannerPath"]),
-            avatar=assets.Image(path=data["avatarPath"]),
+            banner=builders.Image(path=data["bannerPath"]),
+            avatar=builders.Image(path=data["avatarPath"]),
             tags=tuple(data["tags"]),
             features=features_obj,
             owner=clan_founder,
@@ -440,10 +440,10 @@ class Framework(api.Framework):
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),
             class_type=enums.Class(payload["classType"]),
-            emblem=assets.Image(path=payload["emblemBackgroundPath"])
+            emblem=builders.Image(path=payload["emblemBackgroundPath"])
             if "emblemBackgroundPath" in payload
             else None,
-            emblem_icon=assets.Image(path=payload["emblemPath"])
+            emblem_icon=builders.Image(path=payload["emblemPath"])
             if "emblemPath" in payload
             else None,
             emblem_hash=int(payload["emblemHash"]) if "emblemHash" in payload else None,
@@ -1545,7 +1545,7 @@ class Framework(api.Framework):
             name=name,
             description=description,
             has_icon=properties["hasIcon"],
-            icon=assets.Image.default_or_else(properties.get("icon")),
+            icon=builders.Image(properties.get("icon")),
         )
 
     def deserialize_inventory_results(
@@ -1563,7 +1563,7 @@ class Framework(api.Framework):
                     description=typedefs.unknown(
                         data["displayProperties"]["description"]
                     ),
-                    icon=assets.Image(path=data["displayProperties"]["icon"]),
+                    icon=builders.Image(path=data["displayProperties"]["icon"]),
                 )
                 for data in payload["results"]["results"]
             ]
@@ -1606,29 +1606,29 @@ class Framework(api.Framework):
         if raw_collectible_hash := payload.get("collectibleHash"):
             collectible_hash = int(raw_collectible_hash)
 
-        secondary_icon: assets.Image | None = None
+        secondary_icon: builders.Image | None = None
         if raw_second_icon := payload.get("secondaryIcon"):
-            secondary_icon = assets.Image(path=raw_second_icon)
+            secondary_icon = builders.Image(path=raw_second_icon)
 
-        secondary_overlay: assets.Image | None = None
+        secondary_overlay: builders.Image | None = None
         if raw_second_overlay := payload.get("secondaryOverlay"):
-            secondary_overlay = assets.Image(path=raw_second_overlay)
+            secondary_overlay = builders.Image(path=raw_second_overlay)
 
-        secondary_special: assets.Image | None = None
+        secondary_special: builders.Image | None = None
         if raw_second_special := payload.get("secondarySpecial"):
-            secondary_special = assets.Image(path=raw_second_special)
+            secondary_special = builders.Image(path=raw_second_special)
 
-        screenshot: assets.Image | None = None
+        screenshot: builders.Image | None = None
         if raw_screenshot := payload.get("screenshot"):
-            screenshot = assets.Image(path=raw_screenshot)
+            screenshot = builders.Image(path=raw_screenshot)
 
-        watermark_icon: assets.Image | None = None
+        watermark_icon: builders.Image | None = None
         if raw_watermark_icon := payload.get("iconWatermark"):
-            watermark_icon = assets.Image(path=raw_watermark_icon)
+            watermark_icon = builders.Image(path=raw_watermark_icon)
 
-        watermark_shelved: assets.Image | None = None
+        watermark_shelved: builders.Image | None = None
         if raw_watermark_shelved := payload.get("iconWatermarkShelved"):
-            watermark_shelved = assets.Image(path=raw_watermark_shelved)
+            watermark_shelved = builders.Image(path=raw_watermark_shelved)
 
         about: str | None = None
         if raw_about := payload.get("flavorText"):
@@ -2089,8 +2089,8 @@ class Framework(api.Framework):
             banner_obj = tuple(
                 clans.ClanBanner(
                     id=int(k),
-                    foreground=assets.Image(path=v["foregroundPath"]),
-                    background=assets.Image(path=v["backgroundPath"]),
+                    foreground=builders.Image(path=v["foregroundPath"]),
+                    background=builders.Image(path=v["backgroundPath"]),
                 )
                 for k, v in banners.items()
             )
@@ -2465,7 +2465,7 @@ class Framework(api.Framework):
 
         return items.ItemPerk(
             hash=perk_hash,
-            icon=assets.Image(path=payload["iconPath"]),
+            icon=builders.Image(path=payload["iconPath"]),
             is_active=payload["isActive"],
             is_visible=payload["visible"],
         )

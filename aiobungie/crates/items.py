@@ -48,7 +48,7 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie.internal import assets
+    from aiobungie import builders
 
 
 @typing.final
@@ -191,7 +191,7 @@ class ItemPerk:
     hash: int | None
     """Perk's hash."""
 
-    icon: assets.Image
+    icon: builders.Image
     """Perk's icon."""
 
     is_active: bool

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * `fetch_sanitized_membership` method on both client APIs
 * `search_groups` method on both client APIs
+* `Image.stream`
+* `Image.chunks`
 
 #### components
 
@@ -61,6 +63,9 @@ await rest.download_json_manifest(
 * `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
 * `Client.run` is deprecated and will be removed in the next major release.
 * `RESTClient.with_debug` has been moved to `traits.RESTful` with a default final impl.
+* `internal.assets` which contained `Image` has been moved to `aiobungie.builders`
+* `Image.default_or_else` is now just `Image.default`
+* `Image` now accepts `None` as a default path.
 
 ## Removed
 
@@ -152,18 +157,17 @@ await user_object.fetch_self()
 
 aiobungie crates are meant to be a stand-alone representation of the fetched API results. which payloads deserializes into. so those methods won't really fit in.
 
-The following were removed for inconsistency.
-
 * `UserLike.icon`
 * `UserLike.last_seen_name`
 * `UserLike.is_public`
 * `ComponentFields` enum
+* `Image.url`, use `Image.create_url` instead.
 
 ### Fixed
 
 * deserializing `Friend` object was raising `KeyError` due to `name` field.
 * `vault` option in method `pull_item` now works as intended, thanks to [#418](https://github.com/nxtlo/aiobungie/issues/418) for opening the issue.
-* `ComponentType.CHARACTER_PROGRESSIONS` enum field name type fixed.
+* `ComponentType.CHARACTER_PROGRESSIONS` enum field name typo fixed.
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

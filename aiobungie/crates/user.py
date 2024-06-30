@@ -42,8 +42,8 @@ import typing
 
 import attrs
 
+from aiobungie import builders
 from aiobungie import url
-from aiobungie.internal import assets
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -153,7 +153,7 @@ class PartialBungieUser(Unique):
     is_public: bool
     """The user's privacy."""
 
-    icon: assets.Image
+    icon: builders.Image
     """The user's icon."""
 
 
@@ -224,7 +224,7 @@ class BungieUser(Unique):
     locale: str | None
     """The user's locale."""
 
-    picture: assets.Image
+    picture: builders.Image
     """The user's profile picture."""
 
     code: int | None
@@ -261,7 +261,7 @@ class DestinyMembership(Unique):
     types: collections.Sequence[enums.MembershipType]
     """A sequence of the member's membership types."""
 
-    icon: assets.Image
+    icon: builders.Image
     """The member's icon if it was present."""
 
     code: int | None

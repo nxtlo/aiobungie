@@ -48,8 +48,8 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     from datetime import datetime
 
+    from aiobungie import builders
     from aiobungie.crates import progressions as progressions_
-    from aiobungie.internal import assets
 
 
 @typing.final
@@ -116,10 +116,10 @@ class ClanBanner:
     id: int
     """The banner's id."""
 
-    foreground: assets.Image
+    foreground: builders.Image
     """The banner's foreground."""
 
-    background: assets.Image
+    background: builders.Image
     """The banner's background."""
 
 
@@ -228,7 +228,7 @@ class Group:
     remote_group_id: int | None
     clan_info: ClanInfo | None
     """Information about this group, It doesn't include any investment data."""
-    avatar_path: assets.Image
+    avatar_path: builders.Image
     """The avatar of the group represented as an image object."""
     theme: str
 
@@ -258,10 +258,10 @@ class Clan:
     is_public: bool
     """Clan's privacy status."""
 
-    banner: assets.Image
+    banner: builders.Image
     """Clan's banner"""
 
-    avatar: assets.Image
+    avatar: builders.Image
     """Clan's avatar"""
 
     about: str

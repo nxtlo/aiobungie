@@ -23,27 +23,357 @@
 
 from __future__ import annotations
 
-__all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL")
+__all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL", "Image")
 
+import asyncio
 import functools
+import pathlib
 import typing
 import uuid
 
+import aiohttp
 import attrs
 
-from aiobungie import url
+from . import error
+from . import url
+from .internal import enums
+from .internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+    import concurrent.futures
+    import types
 
     from typing_extensions import Self
 
     from aiobungie import typedefs
 
 
+@typing.final
+class MimeType(str, enums.Enum):
+    """Image mime types enum."""
+
+    JPEG = "jpeg"
+    PNG = "png"
+    WEBP = "webp"
+    JPG = "jpg"
+    GIF = "gif"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+def _open_write_path(path: pathlib.Path) -> typing.BinaryIO:
+    return path.open("wb")
+
+
+@typing.final
+class Image:
+    """A stream-able Bungie resource.
+
+    Example
+    -------
+    ```py
+    from aiobungie import Image
+    img = Image("img/destiny_content/pgcr/raid_eclipse.jpg")
+    print(img)
+    # https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg
+
+    # Save the image to a file.
+    async with img:
+        await img.save(
+            "file_name",
+            "/my/path/to/save/to",
+            mime_type="png"
+        )
+    ```
+
+    Parameters
+    ----------
+    path : `str | None`
+        A valid Bungie resource path. if left `None`, `Image.DEFAULT_PATH` will be used.
+    """
+
+    __slots__ = ("path", "_client_session", "_call")
+    DEFAULT_PATH: typing.ClassVar[str] = "/img/misc/missing_icon_d2.png"
+    """Returns the path to the missing Bungie image.
+
+    This returns the path only, If you want an actual image object use `Image.default()`
+    """
+
+    def __init__(self, path: str | None = None) -> None:
+        self.path = self.DEFAULT_PATH if not path else path
+        self._client_session: aiohttp.ClientSession = NotImplemented
+        self._call: aiohttp.ClientResponse = NotImplemented
+
+    @property
+    def is_missing(self) -> bool:
+        """Returns `True` if the path of this image is missing.
+
+        Example
+        -------
+        ```py
+        # default returns a missing destiny 2 icon.
+        image = Image.default()
+        assert image.is_missing
+
+        # applies to empty strings as well
+        image = Image("")
+        assert image.is_missing
+        ```
+        """
+        return not self.path or self.path == self.DEFAULT_PATH
+
+    @staticmethod
+    def default() -> Image:
+        """Return the default image.
+
+        Some Bungie resources can be nullable, aiobungie usually replaces them with this instance.
+        but not always, they might be `Image | None` in certain cases.
+
+        Example
+        -------
+        ```py
+        missing = Image.default()
+        print(missing.create_url()) # https://www.bungie.net/img/misc/missing_icon_d2.png
+        ```
+        """
+        return _DEFAULT_IMAGE
+
+    def create_url(self) -> str:
+        """Creates a full URL to the image path.
+
+        Example
+        -------
+        ```py
+        img = Image("img/destiny_content/pgcr/raid_eclipse.jpg")
+        print(img.create_url())
+        # https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg
+        ```
+
+        Returns
+        -------
+        `str`
+            The URL to the image.
+        """
+        return url.BASE + "/" + self.path
+
+    async def _request(self) -> aiohttp.ClientResponse:
+        client_session = aiohttp.ClientSession()
+        request = client_session.request(
+            "GET", self.create_url(), raise_for_status=True
+        )
+        try:
+            await client_session.__aenter__()
+            response = await request.__aenter__()
+            try:
+                if 300 >= response.status >= 200:
+                    self._client_session = client_session
+                    self._call = response
+                    return response
+                else:
+                    raise await error.panic(response)
+
+            except Exception as e:
+                await response.__aexit__(type(e), e, e.__traceback__)
+                raise
+
+        except Exception:
+            await client_session.close()
+            raise
+
+    async def save(
+        self,
+        file_name: str,
+        path: pathlib.Path | str,
+        *,
+        mime_type: MimeType | str = MimeType.JPEG,
+        executor: concurrent.futures.Executor | None = None,
+    ) -> None:
+        """Saves this image to a file.
+
+        Parameters
+        ----------
+        file_name : `str`
+            A name for the file to save the image to.
+        path : `pathlib.Path | str`
+            A path tp save the image to.
+
+        Other Parameters
+        ----------------
+        mime_type : `MimeType | str`
+            MIME type of the image. Defaults to JPEG.
+        executor : `concurrent.futures.Executor | None`
+            An optional executor to use for writing the bytes of this image.
+
+        Raises
+        ------
+        `FileNotFoundError`
+            If the path provided does not exist.
+        `RuntimeError`
+            If the image could not be saved.
+        `PermissionError`
+            If the path provided is not writable or does not have write permissions.
+        """
+        if isinstance(path, pathlib.Path) and not path.exists():
+            raise FileNotFoundError(f"File does not exist: {path!r}")
+
+        # empty str, nothing to do here.
+        if self.is_missing and self.path != self.DEFAULT_PATH:
+            return
+
+        path = pathlib.Path(path) / f"{file_name}.{mime_type}"
+        loop = helpers.get_or_make_loop()
+        file = await loop.run_in_executor(executor, _open_write_path, path)
+
+        reader = await self._request()
+        try:
+            async for chunk in reader.content:
+                await loop.run_in_executor(executor, file.write, chunk)
+
+        except asyncio.CancelledError:
+            pass
+
+        except Exception as err:
+            raise RuntimeError("Encountered an error while saving image.") from err
+
+    async def read(self) -> bytes:
+        """Perform an HTTP call reading this image's entire bytes into memory.
+
+        Example
+        -------
+        ```py
+        image = Image.default()
+        # you can fetch the bytes in two different ways
+        # they do the exact same thing.
+        async with image:
+            bytes = await image.read() or await image
+        ```
+
+        Returns
+        -------
+        `bytes`:
+            The bytes of this image.
+        """
+        return await (await self._request()).read()
+
+    async def stream(self) -> aiohttp.streams.AsyncStreamIterator[bytes]:
+        """Stream this image's data.
+
+        Example
+        -------
+        ```py
+        # it must be awaited to fetch the image first.
+        image = Image.default()
+        async with image:
+            stream = await image.stream()
+            async for byte in stream:
+                # write chunk to file
+            ...
+        ```
+
+        Returns
+        -------
+        `AsyncStreamIterator[bytes]`:
+            A lazy async iterator that is ready in memory.
+        """
+        return (await self._request()).content.iter_any()
+
+    async def chunks(self, size: int) -> aiohttp.streams.AsyncStreamIterator[bytes]:
+        """Stream this image's data in chunks.
+
+        Example
+        -------
+        ```py
+        # it must be awaited to fetch the image first.
+        buffer_size = 1024
+        image = Image.default()
+
+        async with image:
+            chunks = await image.chunks(buffer_size)
+            while True:
+                next_chunk = await anext(chunks)
+                if not next_chunk:
+                    break
+                # write chunk to file
+        ```
+
+        Returns
+        -------
+        `AsyncStreamIterator[bytes]`:
+            lazy async iterator that is ready in memory.
+        """
+        return (await self._request()).content.iter_chunked(size)
+
+    async def iter(self) -> collections.AsyncGenerator[bytes, None]:
+        """Yield each byte in this image from start to end.
+
+        Example
+        -------
+        ```py
+        resource = Image.default()
+        async with resource:
+            async for byte in resource.iter():
+                print(byte)
+        ```
+
+        Returns
+        -------
+        `collections.AsyncGenerator[bytes, None]`
+            An async generator that yields this image's bytes.
+        """
+
+        reader = await self.chunks(1024)
+        async for chunk in reader:
+            yield chunk
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        exc_tb: types.TracebackType | None,
+    ) -> None:
+        await self._client_session.close()
+        await self._call.__aexit__(exc_type, exc, exc_tb)
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, str):
+            return self.path == other
+        elif isinstance(other, Image):
+            return self.path == other.path
+
+        return NotImplemented
+
+    def __ne__(self, value: object, /) -> bool:
+        return not self.__eq__(value)
+
+    def __hash__(self) -> int:
+        return hash(self.path)
+
+    def __repr__(self) -> str:
+        return f"Image({self.create_url()})"
+
+    def __str__(self) -> str:
+        return self.create_url()
+
+    def __await__(self) -> collections.Generator[None, None, bytes]:
+        return self.read().__await__()
+
+
+_DEFAULT_IMAGE: typing.Final[Image] = Image(Image.DEFAULT_PATH)
+"""A const default image.
+
+This is always returned by calling `Image.default()`
+"""
+
+
+@typing.final
 @attrs.frozen(kw_only=True, repr=False)
 class OAuth2Response:
-    """Represents a proxy object for returned information from an OAuth2 successful response."""
+    """The result of fetching or refreshing an OAuth2 token."""
 
     access_token: str
     """The returned OAuth2 `access_token` field."""
@@ -123,9 +453,10 @@ class OAuthURL:
         return self.compile()
 
 
+@typing.final
 @attrs.frozen(kw_only=True)
 class PlugSocketBuilder:
-    """A helper for building insert socket plugs.
+    """A helper class for quickly building socket plugs.
 
     Example
     -------

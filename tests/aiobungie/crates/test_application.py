@@ -44,7 +44,7 @@ class TestAppMember:
                 types=(),
                 crossave_override=aiobungie.MembershipType.NONE,
                 is_public=True,
-                icon=aiobungie.Image.default_or_else(),
+                icon=aiobungie.builders.Image(),
             ),
         )
 
@@ -81,9 +81,7 @@ class TestAppMember:
     def test_app_owner_icon(self, obj: crates.ApplicationMember):
         with (
             pytest.raises(attrs.exceptions.FrozenInstanceError),
-            mock.patch.object(
-                obj.user, "icon", new=aiobungie.Image.default_or_else()
-            ) as icon,
+            mock.patch.object(obj.user, "icon", new=aiobungie.builders.Image()) as icon,
         ):
             assert obj.user.icon == icon
 

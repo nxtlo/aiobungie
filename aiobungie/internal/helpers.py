@@ -233,7 +233,7 @@ def dumps(
         return _json.dumps(x).encode("UTF-8")
 
     try:
-        import orjson  # type: ignore[reportMissingImports]
+        import orjson
 
         default_dumps = orjson.dumps  # type: ignore[UnknownMemberType]  # noqa: F811
     except ModuleNotFoundError:
@@ -245,7 +245,7 @@ def dumps(
             pass
 
     try:
-        return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
+        return default_dumps(obj)
     except TypeError:
         return _json.dumps(obj).encode("UTF-8")
 
@@ -253,9 +253,9 @@ def dumps(
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
     default_loads = _json.loads
     try:
-        import orjson  # pyright: ignore[reportMissingImports]
+        import orjson
 
-        default_loads = orjson.loads  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+        default_loads = orjson.loads
 
     except ModuleNotFoundError:
         try:
@@ -265,4 +265,4 @@ def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
         except ModuleNotFoundError:
             pass
 
-    return default_loads(obj)  # pyright: ignore[reportUnknownVariableType]
+    return default_loads(obj)

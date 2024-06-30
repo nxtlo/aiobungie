@@ -23,8 +23,6 @@
 
 from __future__ import annotations
 
-from aiobungie.internal import iterators
-
 __all__ = ("Framework",)
 
 import abc
@@ -32,6 +30,8 @@ import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+
+    from sain import Iterator
 
     from aiobungie import typedefs
     from aiobungie.crates import activity
@@ -265,7 +265,7 @@ class Framework(abc.ABC):
     @abc.abstractmethod
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> iterators.Iterator[clans.ClanMember]:
+    ) -> Iterator[clans.ClanMember]:
         """Deserialize a JSON payload of a clan members information.
 
         Parameters
@@ -275,8 +275,8 @@ class Framework(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
-            An iterator of clan members of the deserialized payload.
+        `Iterator[aiobungie.crates.ClanMember]`
+            An iterator over the clan members of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -706,7 +706,7 @@ class Framework(abc.ABC):
     @abc.abstractmethod
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[entity.SearchableEntity]:
+    ) -> Iterator[entity.SearchableEntity]:
         """Deserialize results of searched Destiny2 entities.
 
         Parameters
@@ -716,7 +716,7 @@ class Framework(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.SearchableEntity]`
+        `Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found searched entities.
         """
 
@@ -759,7 +759,7 @@ class Framework(abc.ABC):
     @abc.abstractmethod
     def deserialize_activities(
         self, payload: typedefs.JSONObject, /
-    ) -> iterators.Iterator[activity.Activity]:
+    ) -> Iterator[activity.Activity]:
         """Deserialize a JSON payload of an array of activity history information.
 
         Parameters
@@ -769,7 +769,7 @@ class Framework(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.Activity]`
+        `Iterator[aiobungie.crates.Activity]`
             Am iterator over activity objects of the deserialized payload.
         """
 
@@ -846,7 +846,7 @@ class Framework(abc.ABC):
     @abc.abstractmethod
     def deserialize_aggregated_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[activity.AggregatedActivity]:
+    ) -> Iterator[activity.AggregatedActivity]:
         """Deserialize a JSON payload of an array of aggregated activities.
 
         Parameters
@@ -856,7 +856,7 @@ class Framework(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.AggregatedActivity]`
+        `Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator over aggregated activities objects.
         """
 

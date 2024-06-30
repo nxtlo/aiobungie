@@ -28,6 +28,8 @@ __all__ = ("Client",)
 
 import typing
 
+import sain
+
 from aiobungie import framework
 from aiobungie import rest as rest_
 from aiobungie import traits
@@ -35,7 +37,6 @@ from aiobungie.crates import fireteams
 from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import iterators
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -187,7 +188,7 @@ class Client(traits.Compact):
 
     async def search_users(
         self, name: str, /
-    ) -> iterators.Iterator[user.SearchableDestinyUser]:
+    ) -> sain.Iterator[user.SearchableDestinyUser]:
         """Search for players and return all players that matches the same name.
 
         Parameters
@@ -201,11 +202,9 @@ class Client(traits.Compact):
             A sequence of the found users with this name.
         """
         payload = await self.rest.search_users(name)
-        return iterators.Iterator(
-            [
-                self._framework.deserialize_searched_user(user)
-                for user in payload["searchResults"]
-            ]
+        return sain.Iter(
+            self._framework.deserialize_searched_user(user)
+            for user in payload["searchResults"]
         )
 
     async def fetch_user_themes(self) -> collections.Sequence[user.UserThemes]:
@@ -533,7 +532,7 @@ class Client(traits.Compact):
         membership_type: enums.MembershipType | int = enums.MembershipType.ALL,
         page: int = 0,
         limit: int = 250,
-    ) -> iterators.Iterator[activity.Activity]:
+    ) -> sain.Iterator[activity.Activity]:
         """Fetch a Destiny 2 activity for the specified character id.
 
         Parameters
@@ -556,7 +555,7 @@ class Client(traits.Compact):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.Activity]`
+        `Iterator[aiobungie.crates.Activity]`
             An iterator of the player's activities.
 
         Raises
@@ -597,7 +596,7 @@ class Client(traits.Compact):
         character_id: int,
         membership_id: int,
         membership_type: enums.MembershipType | int,
-    ) -> iterators.Iterator[activity.AggregatedActivity]:
+    ) -> sain.Iterator[activity.AggregatedActivity]:
         """Fetch aggregated activity stats for a character.
 
         Parameters
@@ -611,7 +610,7 @@ class Client(traits.Compact):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.AggregatedActivity]`
+        `Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator of the player's activities.
 
         Raises
@@ -715,7 +714,7 @@ class Client(traits.Compact):
 
     async def fetch_clan_admins(
         self, clan_id: int, /
-    ) -> iterators.Iterator[clans.ClanMember]:
+    ) -> sain.Iterator[clans.ClanMember]:
         """Fetch the clan founder and admins.
 
         Parameters
@@ -822,7 +821,7 @@ class Client(traits.Compact):
         *,
         name: str | None = None,
         type: enums.MembershipType | int = enums.MembershipType.NONE,
-    ) -> iterators.Iterator[clans.ClanMember]:
+    ) -> sain.Iterator[clans.ClanMember]:
         """Fetch Bungie clan members.
 
         Parameters
@@ -842,7 +841,7 @@ class Client(traits.Compact):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
+        `Iterator[aiobungie.crates.ClanMember]`
             An iterator over the bungie clan members.
 
         Raises
@@ -1034,7 +1033,7 @@ class Client(traits.Compact):
 
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
-    ) -> iterators.Iterator[entity.SearchableEntity]:
+    ) -> sain.Iterator[entity.SearchableEntity]:
         """Search for Destiny2 entities given a name and its type.
 
         Parameters
@@ -1052,7 +1051,7 @@ class Client(traits.Compact):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.SearchableEntity]`
+        `Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found results matching the provided name.
         """
         resp = await self.rest.search_entities(name, entity_type, page=page)

@@ -75,7 +75,7 @@ class TestUser:
     @staticmethod
     async def test_search_users():
         x = await client.search_users("Fate")
-        assert isinstance(x.next(), aiobungie.crates.SearchableDestinyUser)
+        assert isinstance(x.next().unwrap(), aiobungie.crates.SearchableDestinyUser)
 
 
 # *->> Activities tests <<-*
@@ -103,7 +103,7 @@ class TestActivities:
             config.PRIMARY_MEMBERSHIP_ID,
             config.PRIMARY_MEMBERSHIP_TYPE,
         )
-        assert isinstance(a.next(), aiobungie.crates.AggregatedActivity)
+        assert isinstance(a.next().unwrap(), aiobungie.crates.AggregatedActivity)
 
 
 # *->> Clan tests <<-*
@@ -284,7 +284,7 @@ class TestEntities:
     @staticmethod
     async def test_search_entities():
         acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
-        assert "Scourge of the Past" in acts.next().name
+        assert "Scourge of the Past" in acts.next().unwrap().name
 
 
 # *->> Functions that doesn't fall under any of the above <<-*

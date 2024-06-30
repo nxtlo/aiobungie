@@ -29,6 +29,7 @@ after fetching a profile.
 
 #### misc
 
+* [`sain`](https://github.com/nxtlo/sain) as a required dependency. this is used mainly to replace `iterators`
 * An option to use a specific executor for downloading the manifest and `Image.save` method.
 
 ```py
@@ -66,6 +67,8 @@ await rest.download_json_manifest(
 * `internal.assets` which contained `Image` has been moved to `aiobungie.builders`
 * `Image.default_or_else` is now just `Image.default`
 * `Image` now accepts `None` as a default path.
+* [`sain`](https://github.com/nxtlo/sain) package is now used as the default iterator builder.
+it is a dependency free that's developed by me so it won't really have any side-effects.
 
 ## Removed
 
@@ -162,6 +165,7 @@ aiobungie crates are meant to be a stand-alone representation of the fetched API
 * `UserLike.is_public`
 * `ComponentFields` enum
 * `Image.url`, use `Image.create_url` instead.
+* `iterators` package in favor of [`sain`](https://github.com/nxtlo/sain)
 
 ### Fixed
 

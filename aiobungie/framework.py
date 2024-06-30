@@ -33,6 +33,8 @@ __all__ = ("Framework", "Empty")
 
 import typing
 
+import sain
+
 from aiobungie import api
 from aiobungie import builders
 from aiobungie import typedefs
@@ -53,7 +55,6 @@ from aiobungie.crates import season
 from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import iterators
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
@@ -369,8 +370,8 @@ class Framework(api.Framework):
 
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> iterators.Iterator[clans.ClanMember]:
-        return iterators.Iterator(
+    ) -> sain.Iterator[clans.ClanMember]:
+        return sain.Iter(
             self.deserialize_clan_member(member) for member in data["results"]
         )
 
@@ -1550,23 +1551,19 @@ class Framework(api.Framework):
 
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[entity.SearchableEntity]:
-        return iterators.Iterator(
-            [
-                entity.SearchableEntity(
-                    hash=data["hash"],
-                    entity_type=data["entityType"],
-                    weight=data["weight"],
-                    suggested_words=payload["suggestedWords"],
-                    name=data["displayProperties"]["name"],
-                    has_icon=data["displayProperties"]["hasIcon"],
-                    description=typedefs.unknown(
-                        data["displayProperties"]["description"]
-                    ),
-                    icon=builders.Image(path=data["displayProperties"]["icon"]),
-                )
-                for data in payload["results"]["results"]
-            ]
+    ) -> sain.Iterator[entity.SearchableEntity]:
+        return sain.Iter(
+            entity.SearchableEntity(
+                hash=data["hash"],
+                entity_type=data["entityType"],
+                weight=data["weight"],
+                suggested_words=payload["suggestedWords"],
+                name=data["displayProperties"]["name"],
+                has_icon=data["displayProperties"]["hasIcon"],
+                description=typedefs.unknown(data["displayProperties"]["description"]),
+                icon=builders.Image(path=data["displayProperties"]["icon"]),
+            )
+            for data in payload["results"]["results"]
         )
 
     def _deserialize_inventory_item_objects(
@@ -1867,12 +1864,9 @@ class Framework(api.Framework):
 
     def deserialize_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[activity.Activity]:
-        return iterators.Iterator(
-            [
-                self.deserialize_activity(activity_)
-                for activity_ in payload["activities"]
-            ]
+    ) -> sain.Iterator[activity.Activity]:
+        return sain.Iter(
+            self.deserialize_activity(activity_) for activity_ in payload["activities"]
         )
 
     def deserialize_extended_weapon_values(
@@ -2047,12 +2041,10 @@ class Framework(api.Framework):
 
     def deserialize_aggregated_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[activity.AggregatedActivity]:
-        return iterators.Iterator(
-            [
-                self.deserialize_aggregated_activity(activity)
-                for activity in payload["activities"]
-            ]
+    ) -> sain.Iterator[activity.AggregatedActivity]:
+        return sain.Iter(
+            self.deserialize_aggregated_activity(activity)
+            for activity in payload["activities"]
         )
 
     def deserialize_linked_profiles(

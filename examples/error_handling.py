@@ -1,6 +1,7 @@
 """An example on how to handle errors with aiobungie."""
 
 import aiobungie
+import asyncio
 
 client = aiobungie.Client("TOKEN")
 CHAR_ID = 0  # You character ID
@@ -48,4 +49,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    client.run(main())
+    asyncio.run(main())

@@ -287,6 +287,39 @@ class RESTPool:
         """Pool's Metadata. This is different from client instance metadata."""
         return self._metadata
 
+    @typing.overload
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
+
+    @typing.overload
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
+
+    @typing.final
+    def build_oauth2_url(
+        self, client_id: int | None = None
+    ) -> builders.OAuthURL | None:
+        """Construct a new `OAuthURL` url object.
+
+        You can get the complete string representation of the url by calling `.compile()` on it.
+
+        Parameters
+        ----------
+        client_id : `int | None`
+            An optional client id to provide, If left `None` it will roll back to the id passed
+            to the `RESTClient`, If both is `None` this method will return `None`.
+
+        Returns
+        -------
+        `aiobungie.builders.OAuthURL | None`
+            * If `client_id` was provided as a parameter, It guarantees to return a complete `OAuthURL` object
+            * If `client_id` is set to `aiobungie.RESTClient` will be.
+            * If both are `None` this method will return `None.
+        """
+        client_id = client_id or self._client_id
+        if client_id is None:
+            return None
+
+        return builders.OAuthURL(client_id=client_id)
+
     @typing.final
     def acquire(self) -> RESTClient:
         """Acquires a new `RESTClient` instance from this pool.
@@ -481,8 +514,10 @@ class RESTClient(api.RESTClient):
             endpoint = endpoint + url.REST_EP
 
         if oauth2:
-            assert self._client_id
-            assert self._client_secret
+            assert self._client_id, "Client ID is required to make authorized requests."
+            assert (
+                self._client_secret
+            ), "Client secret is required to make authorized requests."
             headers["client_secret"] = self._client_secret
 
             headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -511,10 +546,10 @@ class RESTClient(api.RESTClient):
                 response_time = (time.monotonic() - taken_time) * 1_000
 
                 _LOGGER.debug(
-                    "%s %s %s Time %.4fms",
+                    "METHOD: %s ROUTE: %s STATUS: %i ELAPSED: %.4fms",
                     method,
                     f"{endpoint}/{route}",
-                    f"{response.status} {response.reason}",
+                    response.status,
                     response_time,
                 )
 
@@ -562,14 +597,6 @@ class RESTClient(api.RESTClient):
                     )
 
                 json_data = self._loads(await response.read())
-
-                _LOGGER.debug(
-                    "%s %s %s Time %.4fms",
-                    method,
-                    f"{endpoint}/{route}",
-                    f"{response.status} {response.reason}",
-                    response_time,
-                )
 
                 if _LOGGER.isEnabledFor(TRACE):
                     _LOGGER.log(
@@ -1108,7 +1135,7 @@ class RESTClient(api.RESTClient):
     ) -> pathlib.Path:
         complete_path = _get_path(name, path, sql=True)
 
-        if complete_path.exists() and force:
+        if complete_path.exists():
             if force:
                 _LOGGER.info(
                     f"Found manifest in {complete_path!s}. Forcing to Re-Download."
@@ -1373,6 +1400,26 @@ class RESTClient(api.RESTClient):
             _POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
+            auth=access_token,
+        )
+
+    async def report_player(
+        self,
+        access_token: str,
+        /,
+        activity_id: int,
+        character_id: int,
+        reason_hashes: collections.Sequence[int],
+        reason_category_hashes: collections.Sequence[int],
+    ) -> None:
+        await self._request(
+            _POST,
+            f"Destiny2/Stats/PostGameCarnageReport/{activity_id}/Report/",
+            json={
+                "reasonCategoryHashes": reason_category_hashes,
+                "reasonHashes": reason_hashes,
+                "offendingCharacterId": character_id,
+            },
             auth=access_token,
         )
 
@@ -2317,3 +2364,63 @@ class RESTClient(api.RESTClient):
             auth=access_token,
         )
         assert isinstance(response, int)
+
+    async def force_drops_repair(self, access_token: str, /) -> bool:
+        response = await self._request(
+            _POST, "Tokens/Partner/ForceDropsRepair/", auth=access_token
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def claim_partner_offer(
+        self,
+        access_token: str,
+        /,
+        *,
+        offer_id: str,
+        bungie_membership_id: int,
+        transaction_id: str,
+    ) -> bool:
+        response = await self._request(
+            _POST,
+            "Tokens/Partner/ClaimOffer/",
+            json={
+                "PartnerOfferId": offer_id,
+                "BungieNetMembershipId": bungie_membership_id,
+                "TransactionId": transaction_id,
+            },
+            auth=access_token,
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def fetch_bungie_rewards_for_user(
+        self, access_token: str, /, membership_id: int
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET,
+            f"Tokens/Rewards/GetRewardsForUser/{membership_id}/",
+            auth=access_token,
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_bungie_rewards_for_platform(
+        self,
+        access_token: str,
+        /,
+        membership_id: int,
+        membership_type: enums.MembershipType | int,
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET,
+            f"Tokens/Rewards/GetRewardsForPlatformUser/{membership_id}/{int(membership_type)}",
+            auth=access_token,
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_bungie_rewards(self) -> typedefs.JSONObject:
+        response = await self._request(_GET, "Tokens/Rewards/BungieRewards/")
+        assert isinstance(response, dict)
+        return response

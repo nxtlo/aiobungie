@@ -214,9 +214,9 @@ class RESTful(typing.Protocol):
         Returns
         -------
         `aiobungie.builders.OAuthURL | None`
-            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
-            A complete OAuthURL object will be returned.
-            Otherwise `None` will be returned.
+            * If `client_id` was provided as a parameter, It guarantees to return a complete `OAuthURL` object
+            * If `client_id` is set to `aiobungie.RESTClient` will be.
+            * If both are `None` this method will return `None.
         """
         raise NotImplementedError
 

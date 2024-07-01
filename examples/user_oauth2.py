@@ -17,9 +17,8 @@ async def home(request: web.Request) -> web.Response:
     # constructor.
     client: aiobungie.RESTPool = request.app["client"]
 
-    # Acquire a new RESTClient instance.
-    async with client.acquire() as rest:
-        oauth_url = rest.build_oauth2_url()
+    # Build an authorization URL for the user to login.
+    oauth_url = client.build_oauth2_url()
 
     if oauth_url is None:
         return web.json_response(
@@ -51,7 +50,7 @@ async def redirect(request: web.Request) -> web.Response:
         # Redirect to "/me" route with the access token.
         raise web.HTTPFound(location="/me", reason="OAuth2 success")
     else:
-        # Otherwise return 404 and couldn't authenticate.
+        # Otherwise return 400
         return web.json_response(
             {"error": "code not found and couldn't authenticate."}, status=400
         )
@@ -71,7 +70,9 @@ async def my_user(request: web.Request) -> web.Response:
         return web.json_response(my_user)
     else:
         # Otherwise return unauthorized if no access token found.
-        return web.json_response({"No access token found, Unauthorized."}, status=401)
+        return web.json_response(
+            {"error": "No access token found, Unauthorized."}, status=401
+        )
 
 
 # When the app start, We initialize our rest pool and add it to the app storage.

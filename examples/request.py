@@ -28,9 +28,6 @@ def main():
         # Deserialize the JSON response into a Clan Python object.
         clan = framework.deserialize_clan(json_response["Response"])
         print(f"Clan: {clan}, Owner: {clan.owner}, Description: {clan.motto}")
-
-        # NOTE: An attempt to use any methods will most likely raise an error since
-        # The dummy client doesn't implement anything.
     else:
         print(f"Encountered an error! {response.status_code}; {response.json()}")
 

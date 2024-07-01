@@ -217,7 +217,7 @@ class Framework(abc.ABC):
 
     @abc.abstractmethod
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
-        """Deserialize a raw JSON payload of Bungie clan information.
+        """Deserialize a raw JSON payload of Destiny clan information.
 
         Parameters
         ----------
@@ -227,7 +227,7 @@ class Framework(abc.ABC):
         Returns
         -------
         `aiobungie.crates.Clan`
-            A clan owner.
+            A Destiny clan object.
         """
 
     @abc.abstractmethod
@@ -259,7 +259,7 @@ class Framework(abc.ABC):
         Returns
         -------
         `aiobungie.crates.ClanMember`
-            A clan member.
+            A Destiny clan member.
         """
 
     @abc.abstractmethod

@@ -1,14 +1,13 @@
 """A simple example on how aiobungie functions."""
 
 import aiobungie
+import asyncio
 
 client = aiobungie.Client("...")
 
 
 async def fetch_me() -> None:
-    # fetch a Destiny 2 membership.
-
-    # returns all Destiny 2 available memberships for the player.
+    # Fetch all Destiny 2 available memberships bound to a player.
     async with client.rest:
         memberships = await client.fetch_membership("Fate怒", 4275)
 
@@ -16,10 +15,10 @@ async def fetch_me() -> None:
         for membership in memberships:
             print(membership)
 
-            # A player cant have multiple memberships, Check if the membership is steam.
+            # A player may have multiple memberships, check if the membership is steam.
             if membership.type is aiobungie.MembershipType.STEAM:
                 print(f"Found steam membership! {membership!s}")
 
 
 if __name__ == "__main__":
-    client.run(fetch_me())
+    asyncio.run(fetch_me())

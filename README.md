@@ -88,7 +88,7 @@ asyncio.run(main())
 
 * aiohttp
 * attrs
-* [`sain`](https://github.com/nxtlo/sain), this is a dependency free package.
+* [`sain`](https://github.com/nxtlo/sain), this is a dependency free utility package.
 * `backports.datetime_fromisoformat`, required for `Python 3.10` only.
 
 ### Features

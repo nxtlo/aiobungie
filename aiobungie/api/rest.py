@@ -477,6 +477,39 @@ class RESTClient(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    async def report_player(
+        self,
+        access_token: str,
+        /,
+        activity_id: int,
+        character_id: int,
+        reason_hashes: collections.Sequence[int],
+        reason_category_hashes: collections.Sequence[int],
+    ) -> None:
+        """Report a player that you met in an activity that was engaging in ToS-violating activities.
+
+        .. note::
+            This method requires `BnetWrite` OAuth2 scope.
+
+        Both you and the offending player must have played in the `activity_id` passed in.
+        Please use this judiciously and only when you have strong suspicions of violation, pretty please.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        activity_id: `int`
+            The activity where you ran into the person you're reporting.
+        character_id: `int`
+            The character ID of the person you're reporting.
+        reason_hashes: `Sequence[int]`
+            [See](https://bungie-net.github.io/multi/schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest.html#schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest)
+        reason_category_hashes: `Sequence[int]`
+            [See](https://bungie-net.github.io/multi/schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest.html#schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest)
+        """
+
+    @abc.abstractmethod
     async def fetch_clan_from_id(
         self, id: int, /, access_token: str | None = None
     ) -> typedefs.JSONObject:
@@ -2698,4 +2731,118 @@ class RESTClient(traits.RESTful, abc.ABC):
             The character ID to equip the loadout to.
         membership_type : `aiobungie.MembershipType | int`
             The membership type of the account.
+        """
+
+    @abc.abstractmethod
+    async def force_drops_repair(self, access_token: str, /) -> bool:
+        """Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
+
+        .. note::
+            This operation requires `PartnerOfferGrant` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+
+        Returns
+        -------
+        `bool`
+            The nature of this response is a `boolean`.
+        """
+
+    @abc.abstractmethod
+    async def claim_partner_offer(
+        self,
+        access_token: str,
+        /,
+        *,
+        offer_id: str,
+        bungie_membership_id: int,
+        transaction_id: str,
+    ) -> bool:
+        """Claim a partner offer as the authenticated user.
+
+        .. note::
+            This operation requires `PartnerOfferGrant` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        offer_id: `str`
+            The partner offer ID
+        bungie_membership_id: `int`
+            The associated Bungie.net membership ID
+        transaction_id: `str`
+            The transaction ID
+
+        Returns
+        -------
+        `bool`
+            The nature of this response is a `boolean`.
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards_for_user(
+        self, access_token: str, /, membership_id: int
+    ) -> typedefs.JSONObject:
+        """Returns the bungie rewards for the targeted user.
+
+        .. note::
+            This operation requires `ReadAndApplyTokens` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        membership_id: `int`
+            The associated membership ID to fetch the rewards for.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards_for_platform(
+        self,
+        access_token: str,
+        /,
+        membership_id: int,
+        membership_type: enums.MembershipType | int,
+    ) -> typedefs.JSONObject:
+        """Returns the bungie rewards for the targeted user and membership.
+
+        .. note::
+            This operation requires `ReadAndApplyTokens` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        membership_id: `int`
+            The associated membership ID to fetch the rewards for.
+        membership_type: `aiobungie.MembershipType | int`
+            The associated membership type for the user.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards(self) -> typedefs.JSONObject:
+        """Returns a list of the current bungie rewards.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
         """

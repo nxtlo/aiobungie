@@ -11,8 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### methods
 
-* `fetch_sanitized_membership` method on both client APIs
-* `search_groups` method on both client APIs
+* `fetch_sanitized_membership`, available on both client APIs
+* `search_groups`, available on both client APIs
+* `RESTClient.report_player`
+* `RESTClient.force_drops_repair`
+* `RESTClient.claim_partner_offer`
+* `RESTClient.fetch_bungie_rewards_for_user`
+* `RESTClient.fetch_bungie_rewards_for_platform`
+* `RESTClient.fetch_bungie_rewards`
 * `Image.stream`
 * `Image.chunks`
 
@@ -69,6 +75,18 @@ await rest.download_json_manifest(
 * `Image` now accepts `None` as a default path.
 * [`sain`](https://github.com/nxtlo/sain) package is now used as the default iterator builder.
 it is a dependency free that's developed by me so it won't really have any side-effects.
+* If you're a `RESTPool` user, it is possible to call `build_oauth2_url` without acquiring a client instance
+this is a good change for performance improvements since acquiring a client instance also means opening a TCP connection,
+which is useless when you're still not making any requests.
+
+```py
+pool = aiobungie.RESTPool("token", client_id=0000, client_secret="secret")
+url = pool.build_oauth2_url()
+
+# same as
+async with pool.acquire() as client:
+  url = client.build_oauth2_url()
+```
 
 ## Removed
 

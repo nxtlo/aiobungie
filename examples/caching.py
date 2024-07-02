@@ -31,7 +31,7 @@ async def main() -> None:
 
     # We call this `get_item` 5 times concurrently, The first call will be an HTTP request,
     # The rest will be retrieved from the cache.
-    item_tasks = asyncio.create_task(*(get_item(2203) for _ in range(5)))
+    item_tasks = (asyncio.create_task(get_item(item_id)) for item_id in range(5))
     items = await asyncio.gather(*item_tasks)
     for item in items:
         ...

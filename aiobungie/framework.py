@@ -436,6 +436,16 @@ class Framework(api.Framework):
         )
 
     def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
+        if raw_emblem_color := payload.get("emblemColor"):
+            emblem_color: tuple[int, int, int, int] = (
+                int(raw_emblem_color["red"]),
+                int(raw_emblem_color["green"]),
+                int(raw_emblem_color["blue"]),
+                int(raw_emblem_color["alpha"]),
+            )
+        else:
+            emblem_color = (0, 0, 0, 0)
+
         return character.Character(
             id=int(payload["characterId"]),
             gender=enums.Gender(payload["genderType"]),
@@ -456,6 +466,11 @@ class Framework(api.Framework):
             title_hash=payload.get("titleRecordHash", None),
             light=payload["light"],
             stats={enums.Stat(int(k)): v for k, v in payload["stats"].items()},
+            emblem_color=emblem_color,
+            minutes_played_this_session=int(payload["minutesPlayedThisSession"])
+            if "minutesPlayedThisSession" in payload
+            else 0,
+            percent_to_next_level=float(payload["percentToNextLevel"]),
         )
 
     def deserialize_profile(self, payload: typedefs.JSONObject, /) -> profile.Profile:

@@ -171,6 +171,9 @@ class TestCharacter:
                 aiobungie.Stat.STRENGTH: 78,
                 aiobungie.Stat.DISCIPLINE: 67,
             },
+            emblem_color=(0, 0, 0, 0),
+            minutes_played_this_session=10,
+            percent_to_next_level=55.55,
         )
 
     def test_url(self, model: crates.Character) -> None:

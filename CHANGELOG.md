@@ -32,6 +32,9 @@ after fetching a profile.
 * `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
 * `code` field to `PartialBungieUser`
 * `origin` field to `Application`
+* `emblem_color` field to `Character`
+* `minutes_played_this_session` field to `Character`
+* `percent_to_next_level` field to `Character`
 
 #### misc
 

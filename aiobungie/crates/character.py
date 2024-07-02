@@ -162,56 +162,81 @@ class CharacterProgression:
 
 @attrs.frozen(kw_only=True)
 class Character:
-    """A Destiny 2 character."""
+    """Base properties of a Destiny 2 character component."""
 
     id: int
-    """Character's id"""
+    """This character's id"""
 
     member_id: int
-    """The character's member id."""
+    """The membership ID that is bound to this character."""
 
     member_type: enums.MembershipType
-    """The character's membership type."""
+    """The membership type that is bound to this character."""
 
     light: int
-    """Character's light"""
+    """This character's light, currently known as power level."""
 
     gender: enums.Gender
-    """Character's gender"""
+    """This character's gender. i.e., Male, Female."""
 
     race: enums.Race
-    """Character's race"""
+    """This character's race, i.e., EXO, Awoken, etc."""
 
     emblem: builders.Image | None
-    """Character's emblem, If included."""
+    """If this character has an emblem equipped and isn't undefined. This field will be populated."""
 
     emblem_icon: builders.Image | None
-    """Character's emblem icon, If included."""
+    """If this character has an emblem equipped and isn't undefined. This field will be populated with its icon."""
 
     emblem_hash: int | None
-    """Character's emblem hash, If included."""
+    """If this character has an emblem equipped and isn't undefined. This field will be populated with its hash."""
+
+    emblem_color: tuple[int, int, int, int]
+    """A shortcut for getting the background color of the user's currently equipped emblem without having to do a DestinyInventoryItemDefinition lookup.
+
+    The tuple contains 4 integers represented as `(R, G, B, A)`
+    """
 
     last_played: datetime.datetime
-    """Character's last played date."""
+    """The last date that the user played Destiny on this character."""
+
+    minutes_played_this_session: int
+    """If the user is currently playing, this is how long they've been playing. """
 
     total_played_time: int
-    """Character's total played time in seconds."""
+    """Character's total played time in minutes."""
 
     class_type: enums.Class
-    """Character's class."""
+    """This character's class."""
 
     title_hash: int | None
-    """Character's equipped title hash."""
+    """If this character has a title equipped, you can use this hash to get its information from the manifest.
+
+    The manifest definition is `DestinyRecordDefinition`
+    """
 
     level: int
-    """Character's base level."""
+    """The base level of this character."""
+
+    percent_to_next_level: float
+    """A number between 0 and 100, indicating the whole and fractional % remaining to get to the next character level."""
 
     stats: collections.Mapping[enums.Stat, int]
-    """A mapping of the character stats and its level."""
+    """A mapping from the character stats detail to its value.
+
+    This include stuff like `Mobility`, `Recovery`, `Intellect`, etc.
+
+    Example
+    -------
+    ```py
+    for stat_name, stat_value in stats.items():
+        print(stat_name.name.title(), stat_value)
+    ```
+    """
 
     @property
     def power_level(self) -> int:
-        """An alias to the player's light level."""
+        """An alias to `Character.light`"""
         return self.light
 
     @property

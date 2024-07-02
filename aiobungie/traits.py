@@ -30,79 +30,66 @@ from __future__ import annotations
 
 from aiobungie import typedefs
 
-__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
+__all__ = ("Compact", "Send", "Deserialize", "RESTful")
 
+import logging
+import pathlib
+import sys
 import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+    import os
 
+    from aiobungie import api
     from aiobungie import builders
     from aiobungie import client
-    from aiobungie import interfaces
-    from aiobungie.internal import factory as factory_
 
 
+# this isn't used anywhere right now. but we're keeping it for the future.
 @typing.runtime_checkable
-class Netrunner(typing.Protocol):
-    """Types that can run external requests.
+class Send(typing.Protocol):
+    """Types that can send HTTP requests from an external resource.
 
     These requests are performed by a reference of your `aiobungie.Client` instance.
 
     Example
     -------
     ```py
-    import aiobungie
-
     membership = aiobungie.crates.DestinyMembership(…)
     # Access the base client that references this membership.
-    external_request = await membership.net.request.fetch_user(…)
+    external_request = await membership.app.request.fetch_user(…)
     ```
-
-    Implementers
-    ------------
-    * `ClientApp`
     """
 
     __slots__ = ()
 
     @property
     def request(self) -> client.Client:
-        """A readonly `ClientApp` instance used for external requests."""
+        """A read-only `aiobungie.Client` instance used for external requests."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
-class Serializable(typing.Protocol):
-    """Types which can deserialize REST payloads responses
-    into a `aiobungie.crates` implementation using the `Serializable.factory` property.
+class Deserialize(typing.Protocol):
+    """Types which can deserialize REST payloads responses into a `aiobungie.crates`.
 
-    Implementers
-    ------------
-    * `ClientApp`
+    They're responsible for turning a REST payload (`collections/bytes/etc`) into a `aiobungie.crates` basic implementation.
     """
 
     __slots__ = ()
 
     @property
-    def factory(self) -> factory_.Factory:
-        """Returns the marshalling factory for the client."""
+    def framework(self) -> api.Framework:
+        """An implementation of a `aiobungie.api.Framework` object used by your client."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """Types which it is possible to interact with the API directly
-    which provides RESTful functionalities.
+    """Types that interact with the API directly, they're able to perform REST calls.
 
-    Only `aiobungie.RESTClient` implement this trait,
-
-    .. note::
-        `ClientApp` may access its RESTClient using `ClientApp.rest` property.
-
-    Implementer
-    ----------
-    * `aiobungie.RESTClient`
+    This trait is automatically implemented for `aiobungie.RESTClient`, for `aiobungie.Client` also which can be accessed via `aiobungie.Client.rest`.
     """
 
     __slots__ = ()
@@ -145,6 +132,66 @@ class RESTful(typing.Protocol):
         """Returns `True` if the REST client is alive and `False` otherwise."""
         raise NotImplementedError
 
+    @typing.final
+    def with_debug(
+        self,
+        level: typing.Literal["TRACE"] | bool | int = True,
+        file: str | os.PathLike[str] | None = None,
+    ) -> None:
+        """Enable debugging for this client with a level. Defaults to `True`.
+
+        Parameters
+        ----------
+        level: `NotRequired[int | bool | typing.Literal["TRACE"] | None]`
+            The level of the logger. This field is not required.
+        file: `pathlib.Path | str | None`
+            An optional file to write the logs into.
+
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
+        """
+        logging.logThreads = False
+        logging.logMultiprocessing = False
+        logging.logProcesses = False
+        logging.captureWarnings(True)
+
+        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
+
+        # early exit, don't bother doing anything.
+        if not level:
+            return
+
+        # something has already initialized this.
+        if len(logging.root.handlers) != 0:
+            return
+
+        if isinstance(file, str):
+            path = pathlib.Path(file)
+            if path.expanduser().exists():
+                file = path
+
+        file_handler = (
+            logging.FileHandler(file)
+            if file is not None
+            else logging.StreamHandler(sys.stdout),
+        )
+        if level == "TRACE" or level == logging.DEBUG - 5:
+            logging.basicConfig(
+                level=logging.getLevelName(logging.DEBUG - 5),
+                format=format,
+                handlers=file_handler,
+            )
+
+        elif level is True:
+            logging.basicConfig(
+                level=logging.DEBUG, format=format, handlers=file_handler
+            )
+        else:
+            logging.basicConfig(level=level, format=format, handlers=file_handler)
+
     @typing.overload
     def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
 
@@ -154,9 +201,9 @@ class RESTful(typing.Protocol):
     def build_oauth2_url(
         self, client_id: int | None = None
     ) -> builders.OAuthURL | None:
-        """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
+        """Construct a new `OAuthURL` url object.
 
-        You can't get the complete string URL by using `.compile()` method.
+        You can get the complete string representation of the url by calling `.compile()` on it.
 
         Parameters
         ----------
@@ -167,9 +214,9 @@ class RESTful(typing.Protocol):
         Returns
         -------
         `aiobungie.builders.OAuthURL | None`
-            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
-            A complete OAuthURL object will be returned.
-            Otherwise `None` will be returned.
+            * If `client_id` was provided as a parameter, It guarantees to return a complete `OAuthURL` object
+            * If `client_id` is set to `aiobungie.RESTClient` will be.
+            * If both are `None` this method will return `None.
         """
         raise NotImplementedError
 
@@ -231,14 +278,10 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class ClientApp(Netrunner, Serializable, typing.Protocol):
-    """Core trait for the standard `aiobungie.Client` implementation.
+class Compact(Send, Deserialize, typing.Protocol):
+    """A Structural super-type that can perform all actions that other traits provide.
 
-    This trait includes all aiobungie traits.
-
-    Implementers
-    ------------
-    * `aiobungie.Client`
+    This trait includes all aiobungie traits. is also automatically implemented for `aiobungie.Client`
     """
 
     __slots__ = ()
@@ -247,6 +290,10 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
         """Runs a coroutine function until its complete.
 
         This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
+
+        Warning
+        -------
+        This method is scheduled to be removed in future versions. Please use `asyncio.run` instead.
 
         Parameters
         ----------
@@ -267,7 +314,7 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
         """
 
     @property
-    def rest(self) -> interfaces.RESTInterface:
+    def rest(self) -> api.RESTClient:
         """Returns the REST client for the this client."""
         raise NotImplementedError
 

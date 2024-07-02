@@ -23,9 +23,7 @@
 
 from __future__ import annotations
 
-from aiobungie.internal import iterators
-
-__all__ = ("FactoryInterface",)
+__all__ = ("Framework",)
 
 import abc
 import typing
@@ -33,7 +31,8 @@ import typing
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
+    from sain import Iterator
+
     from aiobungie import typedefs
     from aiobungie.crates import activity
     from aiobungie.crates import application
@@ -52,13 +51,10 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import user
 
 
-class FactoryInterface(abc.ABC):
-    """An API interface that documents and describes the implementation of the marshaller factory."""
+class Framework(abc.ABC):
+    """An API interface for functionality that a deserialization framework implementation provides."""
 
     __slots__ = ()
-
-    if typing.TYPE_CHECKING:
-        _net: traits.Netrunner
 
     # Users, Memberships.
 
@@ -200,11 +196,28 @@ class FactoryInterface(abc.ABC):
             A sequence of user's credentials.
         """
 
+    @abc.abstractmethod
+    def deserialize_sanitized_membership(
+        self, payload: typedefs.JSONObject
+    ) -> user.SanitizedMembership:
+        """Deserialize a raw JSON payload of a sanitized Destiny 2 membership display names.
+
+        Parameters
+        ----------
+        payload: `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crates.SanitizedMembership`
+            A sanitized Destiny 2 membership that contains the display names.
+        """
+
     # Clans, Groups.
 
     @abc.abstractmethod
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
-        """Deserialize a raw JSON payload of Bungie clan information.
+        """Deserialize a raw JSON payload of Destiny clan information.
 
         Parameters
         ----------
@@ -214,7 +227,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crates.Clan`
-            A clan owner.
+            A Destiny clan object.
         """
 
     @abc.abstractmethod
@@ -246,13 +259,13 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crates.ClanMember`
-            A clan member.
+            A Destiny clan member.
         """
 
     @abc.abstractmethod
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> iterators.Iterator[clans.ClanMember]:
+    ) -> Iterator[clans.ClanMember]:
         """Deserialize a JSON payload of a clan members information.
 
         Parameters
@@ -262,8 +275,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
-            An iterator of clan members of the deserialized payload.
+        `Iterator[aiobungie.crates.ClanMember]`
+            An iterator over the clan members of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -300,13 +313,29 @@ class FactoryInterface(abc.ABC):
             A sequence of clan banners of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_group(self, payload: typedefs.JSONObject) -> clans.Group:
+        """Deserialize a `GroupV2Card` payload into a `Group` object.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            THe payload to deserialize
+
+
+        Returns
+        -------
+        `aiobungie.crates.Group`
+            A group object
+        """
+
     # Application
 
     @abc.abstractmethod
-    def deserialize_app_owner(
+    def deserialize_application_member(
         self, payload: typedefs.JSONObject
-    ) -> application.ApplicationOwner:
-        """Deserialize a JSON payload of Bungie Developer portal application owner information.
+    ) -> application.ApplicationMember:
+        """Deserialize a JSON payload of a Bungie developer portal application member.
 
         Parameters
         ----------
@@ -315,12 +344,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crates.application.ApplicationOwner`
-            An application owner.
+        `aiobungie.crates.application.ApplicationMember`
+            An application member.
         """
 
     @abc.abstractmethod
-    def deserialize_app(self, payload: typedefs.JSONObject) -> application.Application:
+    def deserialize_application(
+        self, payload: typedefs.JSONObject
+    ) -> application.Application:
         """Deserialize a JSON payload of Bungie Developer portal application information.
 
         Parameters
@@ -454,6 +485,11 @@ class FactoryInterface(abc.ABC):
     def deserialize_character_progressions_mapping(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.CharacterProgression]: ...
+
+    @abc.abstractmethod
+    def deserialize_character_loadout(
+        self, payload: typedefs.JSONObject
+    ) -> character.Loadout: ...
 
     # Profiles.
 
@@ -670,7 +706,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[entity.SearchableEntity]:
+    ) -> Iterator[entity.SearchableEntity]:
         """Deserialize results of searched Destiny2 entities.
 
         Parameters
@@ -680,7 +716,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.SearchableEntity]`
+        `Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found searched entities.
         """
 
@@ -723,7 +759,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_activities(
         self, payload: typedefs.JSONObject, /
-    ) -> iterators.Iterator[activity.Activity]:
+    ) -> Iterator[activity.Activity]:
         """Deserialize a JSON payload of an array of activity history information.
 
         Parameters
@@ -733,7 +769,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.Activity]`
+        `Iterator[aiobungie.crates.Activity]`
             Am iterator over activity objects of the deserialized payload.
         """
 
@@ -810,7 +846,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_aggregated_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.Iterator[activity.AggregatedActivity]:
+    ) -> Iterator[activity.AggregatedActivity]:
         """Deserialize a JSON payload of an array of aggregated activities.
 
         Parameters
@@ -820,7 +856,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.Iterator[aiobungie.crates.AggregatedActivity]`
+        `Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator over aggregated activities objects.
         """
 
@@ -957,7 +993,7 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_fireteam_destiny_users(
+    def deserialize_fireteam_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
         """Deserialize a JSON payload of Bungie fireteam destiny users information.

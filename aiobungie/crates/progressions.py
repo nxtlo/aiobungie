@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Standard Bungie progression objects and entities."""
+"""Basic implementation of Bungie progression resources."""
 
 from __future__ import annotations
 
@@ -32,8 +32,6 @@ import attrs
 @attrs.frozen(kw_only=True)
 class Progression:
     """The base progression class that all progression objects must inherit from."""
-
-    # net: traits.Netrunner = attrs.field(repr=False)
 
     hash: int
     """The progression's hash."""

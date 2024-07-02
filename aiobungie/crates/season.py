@@ -22,8 +22,7 @@
 
 """A basic implementations of stuff that a Destiny 2 season contains.
 
-This includes all season that can be found in a regular season i.e,
-season artifact, season content, season pass, etc.
+This includes all season that can be found in a regular season i.e, season artifact, season content, season pass, etc.
 """
 
 from __future__ import annotations
@@ -48,18 +47,14 @@ if typing.TYPE_CHECKING:
 @attrs.frozen(kw_only=True)
 class ArtifactTierItem:
     hash: int
-
     is_active: bool
 
 
 @attrs.frozen(kw_only=True)
 class ArtifactTier:
     hash: int
-
     is_unlocked: bool
-
     points_to_unlock: int
-
     items: collections.Sequence[ArtifactTierItem]
 
 
@@ -68,11 +63,8 @@ class CharacterScopedArtifact:
     """Represents per-character artifact data."""
 
     hash: int
-
     points_used: int
-
     reset_count: int
-
     tiers: collections.Sequence[ArtifactTier]
 
 

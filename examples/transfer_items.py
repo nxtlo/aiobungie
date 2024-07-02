@@ -7,6 +7,7 @@ This example must be used for an authorized membership. See user_oauth2 example.
 """
 
 import aiobungie
+import asyncio
 
 client = aiobungie.Client("TOKEN")
 
@@ -16,7 +17,7 @@ MEMBERSHIP_ID = 4403
 MEMBERSHIP_TYPE = aiobungie.MembershipType.STEAM
 
 
-async def fetch_my_titan_inventory():
+async def fetch_my_titan_inventory(auth_token: str):
     """A helper function to fetch our titan character and return both character and inventory components."""
     character = await client.fetch_character(
         MEMBERSHIP_ID,
@@ -26,6 +27,9 @@ async def fetch_my_titan_inventory():
         [
             aiobungie.ComponentType.CHARACTER_INVENTORY,
         ],
+        # The character inventory component requires the request to be authenticated.
+        # otherwise the component will just return None
+        auth=auth_token,
     )
     # No reason to return the inventory if it was empty.
     if not character.inventory:
@@ -37,7 +41,7 @@ async def fetch_my_titan_inventory():
 async def transfer() -> None:
     """A helper function to transfer our items from a character to another."""
 
-    inventory = await fetch_my_titan_inventory()
+    inventory = await fetch_my_titan_inventory("auth-token")
 
     for item in inventory:
         # Try to transfer the item.
@@ -60,7 +64,7 @@ async def transfer() -> None:
                 # * CHAR_HAS_WEAPON -> VAULT -> CHAR_NEEDS_WEAPON.
 
                 await client.rest.transfer_item(
-                    "BEARER_TOKEN",
+                    "auth-token",
                     item.instance_id,
                     item.hash,
                     # From titan to vault.
@@ -69,7 +73,7 @@ async def transfer() -> None:
                     vault=True,
                 )
                 await client.rest.transfer_item(
-                    "BEARER_TOKEN",
+                    "auth-token",
                     item.instance_id,
                     item.hash,
                     # From vault to hunter.
@@ -90,4 +94,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    client.run(main())
+    asyncio.run(main())

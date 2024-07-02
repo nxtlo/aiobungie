@@ -31,8 +31,6 @@ import pytest
 
 import aiobungie
 from aiobungie import crates
-from aiobungie.internal import assets
-from aiobungie.internal import helpers
 
 
 class TestDye:
@@ -79,7 +77,6 @@ class TestMinimalEquipments:
     @pytest.fixture()
     def equipment(self) -> crates.MinimalEquipments:
         return crates.MinimalEquipments(
-            net=mock.Mock(),
             item_hash=123,
             dyes=[mock.Mock(spec_set=crates.Dye), mock.Mock(spec_set=crates.Dye)],
         )
@@ -90,22 +87,11 @@ class TestMinimalEquipments:
     def test_dyes(self, equipment: crates.MinimalEquipments):
         assert equipment.dyes
 
-    @pytest.mark.asyncio()
-    async def test_fetch_my_item(self, equipment: crates.MinimalEquipments) -> None:
-        equipment.net.request.fetch_inventory_item = mock.AsyncMock()
-        item = await equipment.fetch_my_item()
-
-        equipment.net.request.fetch_inventory_item.assert_awaited_once_with(
-            equipment.item_hash
-        )
-        assert item is equipment.net.request.fetch_inventory_item.return_value
-
 
 class TestRenderedData:
     @pytest.fixture()
     def model(self) -> crates.RenderedData:
         return crates.RenderedData(
-            net=mock.Mock(),
             custom_dyes=[
                 mock.Mock(spec_set=crates.Dye),
                 mock.Mock(spec_set=crates.Dye),
@@ -116,18 +102,6 @@ class TestRenderedData:
 
     def test_custom_dyes(self, model: crates.RenderedData):
         assert model.custom_dyes
-
-    @pytest.mark.asyncio()
-    async def test_fetch_my_items(self, model: crates.RenderedData) -> None:
-        model.net.request.fetch_inventory_item = mock.AsyncMock()
-        helpers.awaits = mock.AsyncMock()
-
-        items = await model.fetch_my_items()
-        assert all(
-            item is model.net.request.fetch_inventory_item.return_value
-            for item in items
-        )
-        model.net.request.fetch_inventory_item.assert_has_calls([])
 
 
 class TestCharacterProgression:
@@ -175,15 +149,14 @@ class TestCharacter:
     @pytest.fixture()
     def model(self) -> crates.Character:
         return crates.Character(
-            net=mock.Mock(),
             id=2110,
             member_id=4321,
             member_type=aiobungie.MembershipType.STEAM,
             light=1310,
             gender=aiobungie.Gender.MALE,
             race=aiobungie.Race.EXO,
-            emblem=assets.Image(path="emblempath.jpg"),
-            emblem_icon=assets.Image(path="emblemiconpath.jpg"),
+            emblem=aiobungie.builders.Image(path="emblempath.jpg"),
+            emblem_icon=aiobungie.builders.Image(path="emblemiconpath.jpg"),
             emblem_hash=998877,
             last_played=datetime.datetime(2021, 9, 1),
             total_played_time=2020,
@@ -198,10 +171,10 @@ class TestCharacter:
                 aiobungie.Stat.STRENGTH: 78,
                 aiobungie.Stat.DISCIPLINE: 67,
             },
+            emblem_color=(0, 0, 0, 0),
+            minutes_played_this_session=10,
+            percent_to_next_level=55.55,
         )
-
-    def test___int__(self, model: crates.Character) -> None:
-        assert int(model) == model.id
 
     def test_url(self, model: crates.Character) -> None:
         assert (
@@ -219,91 +192,14 @@ class TestCharacter:
         assert model.title_hash is None
 
     def test_emblem(self, model: crates.Character) -> None:
-        assert model.emblem == assets.Image(path="emblempath.jpg")
+        assert model.emblem == aiobungie.builders.Image(path="emblempath.jpg")
 
     def test_emblem___str__(self, model: crates.Character) -> None:
-        assert str(model.emblem) == str(assets.Image(path="emblempath.jpg"))
+        assert str(model.emblem) == str(aiobungie.builders.Image(path="emblempath.jpg"))
 
     def test_emblem_icon(self, model: crates.Character) -> None:
         assert (
             model.emblem_icon is not None
-            and model.emblem_icon.url == assets.Image(path="emblemiconpath.jpg").url
-        )
-
-    @pytest.mark.asyncio()
-    async def test_fetch_activities(self, model: crates.Character) -> None:
-        model.net.request.fetch_activities = mock.AsyncMock()
-        activities = await model.fetch_activities(aiobungie.GameMode.RAID)
-        model.net.request.fetch_activities.assert_called_once_with(
-            model.member_id,
-            model.id,
-            aiobungie.GameMode.RAID,
-            membership_type=model.member_type,
-            limit=250,
-            page=0,
-        )
-        assert activities is model.net.request.fetch_activities.return_value
-
-    @pytest.mark.asyncio()
-    async def test_transfer_item(self, model: crates.Character) -> None:
-        model.net.request.rest.transfer_item = mock.AsyncMock()
-        await model.transfer_item(
-            "token",
-            item_id=123,
-            item_hash=293,
-        )
-        model.net.request.rest.transfer_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            item_hash=293,
-            member_type=model.member_type,
-            vault=False,
-            stack_size=1,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_pull_item(self, model: crates.Character) -> None:
-        model.net.request.rest.pull_item = mock.AsyncMock()
-        await model.pull_item(
-            "token",
-            item_id=123,
-            item_hash=293,
-        )
-        model.net.request.rest.pull_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            item_hash=293,
-            member_type=model.member_type,
-            vault=False,
-            stack_size=1,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_equip_item(self, model: crates.Character) -> None:
-        model.net.request.rest.equip_item = mock.AsyncMock()
-        await model.equip_item(
-            "token",
-            123,
-        )
-        model.net.request.rest.equip_item.assert_called_once_with(
-            "token",
-            item_id=123,
-            character_id=model.id,
-            membership_type=model.member_type,
-        )
-
-    @pytest.mark.asyncio()
-    async def test_equip_items(self, model: crates.Character) -> None:
-        model.net.request.rest.equip_items = mock.AsyncMock()
-        await model.equip_items(
-            "token",
-            [123, 234],
-        )
-        model.net.request.rest.equip_items.assert_called_once_with(
-            "token",
-            item_ids=[123, 234],
-            character_id=model.id,
-            membership_type=model.member_type,
+            and model.emblem_icon.create_url()
+            == aiobungie.builders.Image(path="emblemiconpath.jpg").create_url()
         )

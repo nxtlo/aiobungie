@@ -20,7 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie entity and definitions."""
+"""Implementation of `some` Bungie definitions resources.
+
+Unfortunately this doesn't implement all of the definitions, But the most important ones such as `InventoryItemEntity` and `ActivityEntity`.
+"""
 
 from __future__ import annotations
 
@@ -42,15 +45,13 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
+    from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crates import activity
-    from aiobungie.internal import assets
 
 
 @typing.final
@@ -107,17 +108,12 @@ class EntityBase(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-
-    @property
-    @abc.abstractmethod
     def name(self) -> str | None:
         """Entity's name. This can be `UNDEFINED` if not found."""
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.Image:
+    def icon(self) -> builders.Image:
         """An optional entity's icon if its filled."""
 
     @property
@@ -135,12 +131,6 @@ class EntityBase(abc.ABC):
     def hash(self) -> int:
         """Entity's hash."""
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.hash
-
 
 @attrs.frozen(kw_only=True)
 class Entity(EntityBase):
@@ -150,9 +140,6 @@ class Entity(EntityBase):
     This is the core object which all other entities should inherit from.
     It holds core information that all bungie entities has.
     """
-
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
 
     hash: int
     """Entity's hash."""
@@ -166,7 +153,7 @@ class Entity(EntityBase):
     description: str | None
     """Entity's description, `None` if the entity description was empty."""
 
-    icon: assets.Image
+    icon: builders.Image
     """Entity's icon."""
 
     has_icon: bool = attrs.field(repr=False)
@@ -180,9 +167,6 @@ class SearchableEntity(EntityBase):
     suggested_words: collections.Sequence[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
-
     hash: int
     """Entity's hash."""
 
@@ -195,7 +179,7 @@ class SearchableEntity(EntityBase):
     description: str | None
     """Entity's description. `None` if not set."""
 
-    icon: assets.Image
+    icon: builders.Image
     """Entity's icon."""
 
     has_icon: bool
@@ -203,32 +187,6 @@ class SearchableEntity(EntityBase):
 
     weight: float
     """The ranking value for sorting that we calculated using our relevance formula."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
-        hint="{self}.entity_type and {self}.hash can be used here.",
-    )
-    async def fetch_self_item(self) -> InventoryEntity:
-        """Fetch an item definition of this partial entity.
-
-        Returns
-        -------
-        `InventoryEntity`
-            An inventory item entity or `None` if its not.
-
-        Raises
-        ------
-        `TypeError`
-            If the entity type is not `DestinyInventoryItemDefinition`.
-        """
-        if self.entity_type != "DestinyInventoryItemDefinition":
-            raise TypeError(
-                f"Entity type is not `DestinyInventoryItemDefinition`: {self.entity_type}."
-            )
-
-        return await self.net.request.fetch_inventory_item(self.hash)
 
 
 # We separate the JSON objects within the InventoryEntity from the object itself
@@ -361,28 +319,28 @@ class InventoryEntity(Entity):
     collectible_hash: int | None = attrs.field(repr=False)
     """If this item has a collectible related to it, this is the hash identifier of that collectible entry."""
 
-    watermark_icon: assets.Image | None = attrs.field(repr=False)
+    watermark_icon: builders.Image | None = attrs.field(repr=False)
     """Entity's water mark."""
 
-    watermark_shelved: assets.Image | None = attrs.field(repr=False)
+    watermark_shelved: builders.Image | None = attrs.field(repr=False)
     """If available, this is the 'shelved' release watermark overlay for the icon."""
 
-    secondary_icon: assets.Image | None = attrs.field(repr=False)
+    secondary_icon: builders.Image | None = attrs.field(repr=False)
     """A secondary icon associated with the item.
 
     Currently this is used in very context specific applications, such as Emblem Nameplates.
     """
 
-    secondary_overlay: assets.Image | None = attrs.field(repr=False)
+    secondary_overlay: builders.Image | None = attrs.field(repr=False)
     """The "secondary background" of the secondary icon."""
 
-    secondary_special: assets.Image | None = attrs.field(repr=False)
+    secondary_special: builders.Image | None = attrs.field(repr=False)
     """The "special" background for the item. For Emblems"""
 
     background_colors: collections.Mapping[str, bytes] = attrs.field(repr=False)
     """Most emblems have a background colour, This field represents them."""
 
-    screenshot: assets.Image | None = attrs.field(repr=False)
+    screenshot: builders.Image | None = attrs.field(repr=False)
     """Entity's screenshot."""
 
     ui_display_style: str | None = attrs.field(repr=False)
@@ -517,7 +475,7 @@ class ActivityEntity(Entity):
     This derives from `DestinyActivityDefinition` definition.
     """
 
-    release_icon: assets.Image
+    release_icon: builders.Image
     """The release icon of this activity if it has one."""
 
     release_time: int
@@ -538,7 +496,7 @@ class ActivityEntity(Entity):
     tier: activity.Difficulty
     """Activity's difficulty tier."""
 
-    image: assets.Image
+    image: builders.Image
     """Activity's pgcr image."""
 
     rewards: collections.Sequence[activity.Rewards] | None
@@ -621,12 +579,4 @@ class PlaylistActivityEntity:
     """The hash identifiers for Activity Modes relevant to this entry."""
 
     mode_types: collections.Sequence[enums.GameMode]
-    """A sequence of the activity gamemode types."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    async def fetch_self(self) -> ActivityEntity:
-        """Fetch the definition of this activity."""
-        return NotImplemented
+    """A sequence of the activity game-mode types."""

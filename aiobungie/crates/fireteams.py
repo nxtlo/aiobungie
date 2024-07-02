@@ -90,11 +90,11 @@ class FireteamActivity(int, enums.Enum):
     SHATTERED_THRONE = 33
     PROPHECY = 34
     PIT_OF_HERESY = 35
-    DOE = 36
+    DUNGEON_DOE = 36
     """Dares of Eternity."""
     DUNGEON_GOA = 37
     """Grasp of Avarice."""
-    VOW_OF_THE_DISCPILE = 38
+    VOW_OF_THE_DISCIPLE = 38
     CAMPAIGN = 39
     WELLSPRING = 40
     S16_BATTLEGROUNDS = 41
@@ -247,8 +247,8 @@ class FireteamUser(user.DestinyMembership):
 class FireteamMember(user.PartialBungieUser):
     """Represents a Bungie fireteam member."""
 
-    destiny_user: FireteamUser
-    """The destiny user info related to this fireteam member."""
+    membership: FireteamUser
+    """The Destiny2 membership related to this fireteam member."""
 
     character_id: int
     """Fireteam member's character id."""

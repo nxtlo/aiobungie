@@ -427,10 +427,10 @@ class ComponentType(Enum):
 
     # Ignores: We those are iterables, They're tuples.
     ALL = (
-        *ALL_PROFILES,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_CHARACTERS,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_VENDORS,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_ITEMS,  # pyright: ignore[reportGeneralTypeIssues]
+        *ALL_PROFILES,
+        *ALL_CHARACTERS,
+        *ALL_VENDORS,
+        *ALL_ITEMS,
         RECORDS,
         CURRENCY_LOOKUPS,
         PRESENTATION_NODES,

@@ -59,7 +59,7 @@ if typing.TYPE_CHECKING:
     import concurrent.futures
     import types
 
-_MANIFEST_LANGUAGES: typing.Final[set[str]] = {
+_ALLOWED_LANGS = typing.Literal[
     "en",
     "fr",
     "es",
@@ -73,7 +73,24 @@ _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "ko",
     "zh-cht",
     "zh-chs",
-}
+]
+_MANIFEST_LANGUAGES: typing.Final[frozenset[_ALLOWED_LANGS]] = frozenset(
+    (
+        "en",
+        "fr",
+        "es",
+        "es-mx",
+        "de",
+        "it",
+        "ja",
+        "pt-br",
+        "ru",
+        "pl",
+        "ko",
+        "zh-cht",
+        "zh-chs",
+    )
+)
 
 # Client headers.
 _APP_JSON: str = "application/json"
@@ -1111,7 +1128,7 @@ class RESTClient(api.RESTClient):
         assert isinstance(path, dict)
         return path
 
-    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+    async def read_manifest_bytes(self, language: _ALLOWED_LANGS = "en", /) -> bytes:
         _ensure_manifest_language(language)
 
         content = await self.fetch_manifest_path()
@@ -1126,7 +1143,7 @@ class RESTClient(api.RESTClient):
 
     async def download_sqlite_manifest(
         self,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         name: str = "manifest",
         path: pathlib.Path | str = ".",
         *,
@@ -1165,7 +1182,7 @@ class RESTClient(api.RESTClient):
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         _ensure_manifest_language(language)

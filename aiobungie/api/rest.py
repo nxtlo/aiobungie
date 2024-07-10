@@ -48,6 +48,22 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import clans
     from aiobungie.crates import fireteams
 
+    _ALLOWED_LANGS = typing.Literal[
+        "en",
+        "fr",
+        "es",
+        "es-mx",
+        "de",
+        "it",
+        "ja",
+        "pt-br",
+        "ru",
+        "pl",
+        "ko",
+        "zh-cht",
+        "zh-chs",
+    ]
+
 
 class RESTClient(traits.RESTful, abc.ABC):
     """An API interface for functionality that a REST API implementation provides."""
@@ -66,7 +82,7 @@ class RESTClient(traits.RESTful, abc.ABC):
         ) -> None: ...
 
     @abc.abstractmethod
-    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+    async def read_manifest_bytes(self, language: _ALLOWED_LANGS = "en", /) -> bytes:
         """Read raw manifest SQLite database bytes response.
 
         This method can be used to write the bytes to zipped file
@@ -99,7 +115,7 @@ class RESTClient(traits.RESTful, abc.ABC):
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         """Download the Bungie manifest json file.
@@ -133,7 +149,7 @@ class RESTClient(traits.RESTful, abc.ABC):
     @abc.abstractmethod
     async def download_sqlite_manifest(
         self,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
@@ -171,7 +187,7 @@ class RESTClient(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `FileNotFoundError`
+        `FileExistsError`
             If the manifest file exists and `force` is `False`.
         `ValueError`
             If the provided language was not recognized.

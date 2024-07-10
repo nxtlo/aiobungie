@@ -137,7 +137,7 @@ class FireteamDate(int, enums.Enum):
 
 
 @typing.final
-class FireteamPartyMemberState(enums.Flag):
+class FireteamPartyMemberState(int, enums.Flag):
     """An enum flag represents a fireteam party member status."""
 
     NONE = 0

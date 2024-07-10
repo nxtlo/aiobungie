@@ -43,7 +43,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class RecordState(enums.Flag):
+class RecordState(int, enums.Flag):
     """An enum for records component states."""
 
     NONE = 0

@@ -83,9 +83,8 @@ class RecordsComponent:
 
     Included Components
     -------------------
-    - `Records`
-        - `ProfileRecords`
-        - `CharacterRecords`
+    - `ProfileRecords`
+    - `CharacterRecords`
     """
 
     profile_records: collections.Mapping[int, records_.Record] | None
@@ -331,6 +330,7 @@ class CharacterComponent(RecordsComponent):
     - `PresentationNodes`
     - `CharacterCurrencyLookups`
     - `Collectibles`
+    - `CharacterLoadouts`
     """
 
     character: character_.Character | None
@@ -345,20 +345,14 @@ class CharacterComponent(RecordsComponent):
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
 
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
     is passed to the request components.
     """
 
     progressions: character_.CharacterProgression | None
     """The character progression component.
 
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
     is passed to the request components.
     """
 
@@ -407,6 +401,16 @@ class CharacterComponent(RecordsComponent):
     """The character's collectibles component.
 
     This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
+
+    loadouts: collections.Sequence[character_.Loadout] | None
+    """A sequence of loadouts that belongs to this character.
+
+    for some reason this is only populated when `CHARACTER_INVENTORY` is used
+    and not `CHARACTER_LOADOUTS` component.
+
+    This will be available when `aiobungie.ComponentType.CHARACTERS_INVENTORY` is passed to the request.
+    otherwise will be `None`.
     """
 
 

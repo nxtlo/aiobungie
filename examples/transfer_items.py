@@ -17,7 +17,7 @@ MEMBERSHIP_ID = 4403
 MEMBERSHIP_TYPE = aiobungie.MembershipType.STEAM
 
 
-async def fetch_my_titan_inventory(auth_token: str):
+async def fetch_my_titan_inventory():
     """A helper function to fetch our titan character and return both character and inventory components."""
     character = await client.fetch_character(
         MEMBERSHIP_ID,
@@ -27,9 +27,6 @@ async def fetch_my_titan_inventory(auth_token: str):
         [
             aiobungie.ComponentType.CHARACTER_INVENTORY,
         ],
-        # The character inventory component requires the request to be authenticated.
-        # otherwise the component will just return None
-        auth=auth_token,
     )
     # No reason to return the inventory if it was empty.
     if not character.inventory:
@@ -41,7 +38,7 @@ async def fetch_my_titan_inventory(auth_token: str):
 async def transfer() -> None:
     """A helper function to transfer our items from a character to another."""
 
-    inventory = await fetch_my_titan_inventory("auth-token")
+    inventory = await fetch_my_titan_inventory()
 
     for item in inventory:
         # Try to transfer the item.

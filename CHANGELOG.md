@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### components
 
 * Fully implemented the `CHARACTER LOADOUTS` component along with its framework methods, You can access it via `Components.character_loadouts`
-after fetching a profile.
+after fetching a profile. or `loadouts` after fetching a character.
 
 #### object fields
 

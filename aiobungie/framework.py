@@ -1481,9 +1481,19 @@ class Framework(api.Framework):
             character_ = self.deserialize_character(raw_singular_character["data"])
 
         inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]] = None
+        loadouts: collections.Sequence[character.Loadout] | None = None
         if raw_inventory := payload.get("inventory"):
             if "data" in raw_inventory:
                 inventory = self.deserialize_profile_items(raw_inventory["data"])
+
+            # The inventory component also returns the loadouts component
+            if raw_loadouts := payload.get("loadouts"):
+                if "data" in raw_loadouts:
+                    loadouts = tuple(
+                        self.deserialize_character_loadout(loadout)
+                        # very interesting nesting bungie...
+                        for loadout in raw_loadouts["data"]["loadouts"]
+                    )
 
         activities: activity.CharacterActivity | None = None
         if raw_activities := payload.get("activities"):
@@ -1546,6 +1556,7 @@ class Framework(api.Framework):
             currency_lookups=currency_lookups,
             collectibles=collectibles,
             nodes=nodes,
+            loadouts=loadouts,
         )
 
     def _set_entity_attrs(

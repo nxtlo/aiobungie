@@ -425,7 +425,6 @@ class ComponentType(Enum):
     )
     """All character components."""
 
-    # Ignores: We those are iterables, They're tuples.
     ALL = (
         *ALL_PROFILES,
         *ALL_CHARACTERS,
@@ -443,7 +442,7 @@ class ComponentType(Enum):
         TRANSITORY,
         CRAFTABLES,
     )
-    """ALl components included."""
+    """All components included."""
 
 
 @typing.final

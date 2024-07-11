@@ -35,10 +35,21 @@ after fetching a profile. or `loadouts` after fetching a character.
 * `emblem_color` field to `Character`
 * `minutes_played_this_session` field to `Character`
 * `percent_to_next_level` field to `Character`
+* Added the following to `Profile`
+  * `season_hashes`
+  * `versions_owned`
+  * `season_hash`
+  * `guardian_rank`
+  * `highest_guardian_rank`
+  * `renewed_guardian_rank`
+  * `event_card_hashes`
+  * `user`, removed `name`, `id` and `type` in favor of this.
 
 #### misc
 
 * [`sain`](https://github.com/nxtlo/sain) as a required dependency. this is used mainly to replace `iterators`
+* `custom_client` example
+* `GameVersions` enum.
 * An option to use a specific executor for downloading the manifest and `Image.save` method.
 
 ```py

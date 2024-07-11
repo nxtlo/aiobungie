@@ -258,21 +258,16 @@ class Client(traits.Compact):
         /,
         type: enums.MembershipType | int = enums.MembershipType.NONE,
     ) -> user.User:
-        """Fetch Bungie user's memberships from their id.
+        """Fetch a Bungie user's memberships from their Bungie ID.
 
-        Notes
-        -----
-        * This returns both BungieNet membership and a sequence of the player's DestinyMemberships
-        Which includes Stadia, Xbox, Steam and PSN memberships if the player has them,
-        see `aiobungie.crates.user.DestinyMembership` for more details.
-        * If you only want the bungie user. Consider using `Client.fetch_user` method.
+        This method returns both Bungie user and its Destiny 2 memberships bound to it.
 
         Parameters
         ----------
         id : `int`
-            The user's id.
+            A Bungie.net user's ID. It looks something like this `20315338`
         type : `aiobungie.MembershipType`
-            The user's membership type.
+            The user's membership type. This is optional.
 
         Returns
         -------
@@ -281,7 +276,7 @@ class Client(traits.Compact):
 
         Raises
         ------
-        aiobungie.NotFound
+        `aiobungie.NotFound`
             The requested user was not found.
         """
         payload = await self.rest.fetch_membership_from_id(id, type)
@@ -344,17 +339,31 @@ class Client(traits.Compact):
         components: collections.Sequence[enums.ComponentType],
         auth: str | None = None,
     ) -> components.Component:
-        """
-        Fetch a bungie profile passing components to the request.
+        """Fetch a Bungie profile with the required components.
+
+        Example
+        -------
+        ```py
+        my_profile_id = 4611686018484639825
+        my_profile = await client.fetch_profile(
+            my_profile_id,
+            MembershipType.STEAM,
+            components=(ComponentType.CHARACTERS,)
+        )
+        characters = my_profile.characters
+        if characters is not None:
+            for character in characters.values():
+                print(character.power_level)
+        ```
 
         Parameters
         ----------
         member_id: `int`
-            The member's id.
+            The profile membership's id.
         type: `aiobungie.MembershipType`
-            A valid membership type.
+            The profile's membership type.
         components : `collections.Sequence[aiobungie.ComponentType]`
-            List of profile components to collect and return.
+            A sequence of components to collect. If the sequence is empty, then all components will be `None`.
 
         Other Parameters
         ----------------
@@ -458,6 +467,22 @@ class Client(traits.Compact):
         auth: str | None = None,
     ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
+
+        Example
+        -------
+        ```py
+        membership_id, titan_id = 0, 0
+        my_character = await client.fetch_character(
+            membership_id,
+            MembershipType.STEAM,
+            titan_id,
+            components=(ComponentType.CHARACTER_INVENTORIES,)
+        )
+        inventory = my_character.inventory
+        if inventory is not None:
+            for item in inventory.values():
+                print(item)
+        ```
 
         Parameters
         ----------

@@ -1,4 +1,4 @@
-# A basic example on how to use Destiny's manifest.
+"""A basic example on how to use Destiny's manifest."""
 # aiobungie's REST client provides 5 methods to interact with the manifest.
 #
 # * fetch_manifest_path

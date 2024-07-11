@@ -59,6 +59,7 @@ __all__ = (
     "ClosedReasons",
     "ItemSubType",
     "TierType",
+    "GameVersions",
 )
 
 import enum as __enum
@@ -814,3 +815,21 @@ class PeriodType(int, Enum):
     DAILY = 1
     ALL_TIME = 2
     ACTIVITY = 3
+
+
+@typing.final
+class GameVersions(Flag):
+    """An enum that holds all available Destiny 2 game versions. aka DLCs"""
+
+    NONE = 0 << 0  # always 0
+    DESTINY_2 = 1 << 0
+    DLC1 = 1 << 1
+    DLC2 = 1 << 2
+    FORSAKEN = 1 << 3
+    YEAR_TWO_ANNUAL_PASS = 1 << 4
+    SHADOW_KEEP = 1 << 5
+    BEYOND_LIGHT = 1 << 6
+    ANNIVERSARY_30TH = 1 << 7
+    THE_WITCH_QUEEN = 1 << 8
+    LIGHT_FALL = 1 << 9
+    THE_FINAL_SHAPE = 1 << 10

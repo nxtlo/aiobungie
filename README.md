@@ -120,6 +120,8 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 * Official Bungie Documentation: [Here](https://bungie-net.github.io/multi/index.html)
 * Bungie Developer Portal: [Here](https://www.bungie.net/en/Application)
 
-## Additional information
+## FaQ
 
-If you have any question you can either open a blank issue, open a new github discussion, or just tag me in BungieAPI discord server.
+* I need help with something related to this project: Consider opening a blank issue, discussion or checkout the `useful resources` above.
+* aiobungie doesn't support `fetch_xxx` route, what now? aiobungie's REST client exposes a method called `static_request` which allows you
+to make your own requests, check out `examples/custom_client` example.

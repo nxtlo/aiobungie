@@ -42,6 +42,7 @@ from .internal import helpers
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import concurrent.futures
+    import os
     import types
 
     from typing_extensions import Self
@@ -161,7 +162,7 @@ class Image:
     async def _request(self) -> aiohttp.ClientResponse:
         client_session = aiohttp.ClientSession()
         request = client_session.request(
-            "GET", self.create_url(), raise_for_status=True
+            "GET", self.create_url(), raise_for_status=False
         )
         try:
             await client_session.__aenter__()
@@ -185,7 +186,7 @@ class Image:
     async def save(
         self,
         file_name: str,
-        path: pathlib.Path | str,
+        path: str | os.PathLike[str],
         *,
         mime_type: MimeType | str = MimeType.JPEG,
         executor: concurrent.futures.Executor | None = None,
@@ -196,8 +197,8 @@ class Image:
         ----------
         file_name : `str`
             A name for the file to save the image to.
-        path : `pathlib.Path | str`
-            A path tp save the image to.
+        path : `PathLike[str] | str`
+            A path to save the image to.
 
         Other Parameters
         ----------------
@@ -210,10 +211,10 @@ class Image:
         ------
         `FileNotFoundError`
             If the path provided does not exist.
-        `RuntimeError`
-            If the image could not be saved.
         `PermissionError`
             If the path provided is not writable or does not have write permissions.
+        `RuntimeError`
+            If the image could not be saved for some other reason.
         """
         if isinstance(path, pathlib.Path) and not path.exists():
             raise FileNotFoundError(f"File does not exist: {path!r}")
@@ -247,7 +248,7 @@ class Image:
         # you can fetch the bytes in two different ways
         # they do the exact same thing.
         async with image:
-            bytes = await image.read() or await image
+            buffer = await image.read() or await image
         ```
 
         Returns
@@ -263,7 +264,6 @@ class Image:
         Example
         -------
         ```py
-        # it must be awaited to fetch the image first.
         image = Image.default()
         async with image:
             stream = await image.stream()

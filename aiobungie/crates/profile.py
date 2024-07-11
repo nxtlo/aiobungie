@@ -129,23 +129,34 @@ class Profile:
     See `aiobungie.crates.Component` for other components.
     """
 
-    id: int
-    """Profile's id"""
-
-    name: str
-    """Profile's name."""
-
-    type: enums.MembershipType
-    """Profile's type."""
-
-    is_public: bool
-    """Profile's privacy status."""
+    user: user.DestinyMembership
+    """Basic information about this profile's user information."""
 
     last_played: datetime.datetime
     """Profile's last played Destiny 2 played date."""
 
     character_ids: collections.Sequence[int]
-    """A list of the profile's character ids."""
+    """A sequence of the profile's character IDs."""
 
     power_cap: int
-    """The profile's current season power cap."""
+    """The current season reward power cap."""
+
+    season_hashes: collections.Sequence[int]
+    """An immutable sequence of Destiny 2 season hashes this profile participated in."""
+
+    versions_owned: enums.GameVersions
+    """An enum flag representing the DLCs this profile owns."""
+
+    season_hash: int
+    """ The hash of the current season. You can use this hash to fetch the definition of this season."""
+
+    guardian_rank: int
+    """The in-game guardian rank of this profile."""
+
+    highest_guardian_rank: int
+    """The highest achieved in-game guardian rank of this profile."""
+
+    renewed_guardian_rank: int
+    """The renewed guardian rank of this profile."""
+
+    event_card_hashes: collections.Sequence[int]

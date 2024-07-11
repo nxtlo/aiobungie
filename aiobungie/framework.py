@@ -474,23 +474,20 @@ class Framework(api.Framework):
         )
 
     def deserialize_profile(self, payload: typedefs.JSONObject, /) -> profile.Profile:
-        payload = payload["data"]
-        id = int(payload["userInfo"]["membershipId"])
-        name = payload["userInfo"]["displayName"]
-        is_public = payload["userInfo"]["isPublic"]
-        type = enums.MembershipType(payload["userInfo"]["membershipType"])
-        last_played = time.clean_date(payload["dateLastPlayed"])
-        character_ids = tuple(int(cid) for cid in payload["characterIds"])
-        power_cap = payload["currentSeasonRewardPowerCap"]
-
         return profile.Profile(
-            id=int(id),
-            name=name,
-            is_public=is_public,
-            type=type,
-            last_played=last_played,
-            character_ids=character_ids,
-            power_cap=power_cap,
+            user=self.deserialize_destiny_membership(payload["userInfo"]),
+            last_played=time.clean_date(payload["dateLastPlayed"]),
+            versions_owned=enums.GameVersions(int(payload["versionsOwned"])),
+            character_ids=tuple(
+                int(character_id) for character_id in payload["characterIds"]
+            ),
+            season_hashes=tuple(payload["seasonHashes"]),
+            event_card_hashes=tuple(payload["eventCardHashesOwned"]),
+            season_hash=payload["currentSeasonHash"],
+            power_cap=payload["currentSeasonRewardPowerCap"],
+            guardian_rank=payload["currentGuardianRank"],
+            highest_guardian_rank=payload["lifetimeHighestGuardianRank"],
+            renewed_guardian_rank=payload["renewedGuardianRank"],
         )
 
     def deserialize_profile_item(
@@ -1088,7 +1085,7 @@ class Framework(api.Framework):
 
         profile_: profile.Profile | None = None
         if raw_profile := payload.get("profile"):
-            profile_ = self.deserialize_profile(raw_profile)
+            profile_ = self.deserialize_profile(raw_profile["data"])
 
         profile_progression: profile.ProfileProgression | None = None
         if raw_profile_progression := payload.get("profileProgression"):

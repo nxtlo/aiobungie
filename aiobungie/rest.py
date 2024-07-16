@@ -477,8 +477,9 @@ class RESTClient(api.RESTClient):
         *,
         auth: str | None = None,
         json: collections.Mapping[str, typing.Any] | None = None,
+        params: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
-        return await self._request(method, path, auth=auth, json=json)
+        return await self._request(method, path, auth=auth, json=json, params=params)
 
     @typing.overload
     def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
@@ -2439,5 +2440,10 @@ class RESTClient(api.RESTClient):
 
     async def fetch_bungie_rewards(self) -> typedefs.JSONObject:
         response = await self._request(_GET, "Tokens/Rewards/BungieRewards/")
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_fireteam_listing(self, listing_id: int) -> typedefs.JSONObject:
+        response = await self._request(_GET, f"FireteamFinder/Listing/{listing_id}/")
         assert isinstance(response, dict)
         return response

@@ -1077,6 +1077,32 @@ class Framework(api.Framework):
             crafting_root_node_hash=payload["craftingRootNodeHash"],
         )
 
+    def _deserialize_commendations_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.Commendation:
+        return components.Commendation(
+            total_score=payload["totalScore"],
+            node_percentages={
+                int(node_hash): node_percent
+                for node_hash, node_percent in payload[
+                    "commendationNodePercentagesByHash"
+                ].items()
+            },
+            score_detail_values=tuple(payload["scoreDetailValues"]),
+            node_scores={
+                int(node_score_hash): node_score_value
+                for node_score_hash, node_score_value in payload[
+                    "commendationNodeScoresByHash"
+                ].items()
+            },
+            commendation_scores={
+                int(score_hash): score_value
+                for score_hash, score_value in payload[
+                    "commendationScoresByHash"
+                ].items()
+            },
+        )
+
     def deserialize_components(  # noqa: C901 Too complex.
         self, payload: typedefs.JSONObject
     ) -> components.Component:
@@ -1329,6 +1355,14 @@ class Framework(api.Framework):
                     for char_id, raw_loadouts in raw_character_loadouts["data"].items()
                 }
 
+        commendations: components.Commendation | None = None
+        if (
+            raw_commendations := payload.get("profileCommendations")
+        ) and "data" in raw_commendations:
+            commendations = self._deserialize_commendations_component(
+                raw_commendations["data"]
+            )
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1358,6 +1392,7 @@ class Framework(api.Framework):
             character_currency_lookups=character_currency_lookups,
             character_craftables=character_craftables,
             character_loadouts=character_loadouts,
+            commendation=commendations,
         )
 
     def deserialize_items_component(

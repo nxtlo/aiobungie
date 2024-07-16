@@ -415,6 +415,22 @@ class CharacterComponent(RecordsComponent):
 
 
 @attrs.frozen(kw_only=True)
+class Commendation:
+    """Basic fields found in the commendation component."""
+
+    total_score: int
+
+    node_percentages: collections.Mapping[int, int]
+    """A mapping from the percentage for each commendation type out of total received"""
+
+    score_detail_values: collections.Sequence[int]
+
+    node_scores: collections.Mapping[int, int]
+
+    commendation_scores: collections.Mapping[int, int]
+
+
+@attrs.frozen(kw_only=True)
 class Component(
     ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
@@ -598,4 +614,11 @@ class Component(
     """Represents this profile's collectibles component.
 
     This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
+
+    commendation: Commendation | None
+    """Represents this profile's commendation component.
+
+    This will be available when `aiobungie.ComponentType.` is passed to the request.
+    otherwise will be `None`.
     """

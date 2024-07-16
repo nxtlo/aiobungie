@@ -44,6 +44,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import api
     from aiobungie import builders
     from aiobungie import client
+    from aiobungie.internal import enums
 
 
 # this isn't used anywhere right now. but we're keeping it for the future.
@@ -220,6 +221,20 @@ class RESTful(typing.Protocol):
         """
         raise NotImplementedError
 
+    @typing.final
+    def build_fireteam_finder(
+        self,
+        membership_id: int,
+        character_id: int,
+        membership_type: enums.MembershipType | int,
+    ) -> builders.FireteamBuilder:
+        return builders.FireteamBuilder(
+            rest=self,
+            membership_id=membership_id,
+            character_id=character_id,
+            membership_type=membership_type,
+        )
+
     def open(self) -> None:
         """Prepare and opens the REST client connection.
 
@@ -251,6 +266,7 @@ class RESTful(typing.Protocol):
         *,
         auth: str | None = None,
         json: collections.MutableMapping[str, typing.Any] | None = None,
+        params: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         """Perform an HTTP request given a valid Bungie endpoint.
 
@@ -268,6 +284,8 @@ class RESTful(typing.Protocol):
             An optional bearer token for methods that requires OAuth2 Authorization header.
         json : `MutableMapping[str, typing.Any] | None`
             An optional JSON mapping to include in the request.
+        params : `MutableMapping[str, typing.Any] | None`
+            An optional URL query parameters mapping to include in the request.
 
         Returns
         -------

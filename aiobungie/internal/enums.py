@@ -60,6 +60,7 @@ __all__ = (
     "ItemSubType",
     "TierType",
     "GameVersions",
+    "OAuthApplicationType",
 )
 
 import enum as __enum
@@ -405,10 +406,11 @@ class ComponentType(Enum):
     INVENTORIES = 102
     STRING_VARIABLES = 1200
     CRAFTABLES = 1300
+    SOCIAL_COMMENDATIONS = 1400
 
     CHARACTERS = 200
     CHARACTER_INVENTORY = 201
-    CHARECTER_PROGRESSION = 202
+    CHARACTER_PROGRESSION = 202
     CHARACTER_RENDER_DATA = 203
     CHARACTER_ACTIVITIES = 204
     CHARACTER_EQUIPMENT = 205
@@ -417,7 +419,7 @@ class ComponentType(Enum):
     ALL_CHARACTERS = (
         CHARACTERS,
         CHARACTER_INVENTORY,
-        CHARECTER_PROGRESSION,
+        CHARACTER_PROGRESSION,
         CHARACTER_RENDER_DATA,
         CHARACTER_ACTIVITIES,
         CHARACTER_EQUIPMENT,
@@ -442,6 +444,7 @@ class ComponentType(Enum):
         STRING_VARIABLES,
         TRANSITORY,
         CRAFTABLES,
+        SOCIAL_COMMENDATIONS,
     )
     """All components included."""
 
@@ -833,3 +836,12 @@ class GameVersions(Flag):
     THE_WITCH_QUEEN = 1 << 8
     LIGHT_FALL = 1 << 9
     THE_FINAL_SHAPE = 1 << 10
+
+
+@typing.final
+class OAuthApplicationType(int, Enum):
+    NONE = 0
+    CONFIDENTIAL = 1
+    """Indicates the application is server based and can keep its secrets from end users and other potential snoops."""
+    PUBLIC = 2
+    """Indicates the application runs in a public place, and it can't be trusted to keep a secret."""

@@ -26,6 +26,7 @@ from __future__ import annotations
 __all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL", "Image")
 
 import asyncio
+import datetime
 import functools
 import pathlib
 import typing
@@ -45,9 +46,15 @@ if typing.TYPE_CHECKING:
     import os
     import types
 
+    from typing_extensions import Required
     from typing_extensions import Self
 
+    from aiobungie import traits
     from aiobungie import typedefs
+
+    class _FinderListingValue(typing.TypedDict):
+        valueType: Required[int]
+        values: Required[collections.Sequence[int]]
 
 
 @typing.final
@@ -159,7 +166,7 @@ class Image:
         """
         return url.BASE + "/" + self.path
 
-    async def _request(self) -> aiohttp.ClientResponse:
+    async def static_request(self) -> aiohttp.ClientResponse:
         client_session = aiohttp.ClientSession()
         request = client_session.request(
             "GET", self.create_url(), raise_for_status=False
@@ -227,7 +234,7 @@ class Image:
         loop = helpers.get_or_make_loop()
         file = await loop.run_in_executor(executor, _open_write_path, path)
 
-        reader = await self._request()
+        reader = await self.static_request()
         try:
             async for chunk in reader.content:
                 await loop.run_in_executor(executor, file.write, chunk)
@@ -256,7 +263,7 @@ class Image:
         `bytes`:
             The bytes of this image.
         """
-        return await (await self._request()).read()
+        return await (await self.static_request()).read()
 
     async def stream(self) -> aiohttp.streams.AsyncStreamIterator[bytes]:
         """Stream this image's data.
@@ -277,7 +284,7 @@ class Image:
         `AsyncStreamIterator[bytes]`:
             A lazy async iterator that is ready in memory.
         """
-        return (await self._request()).content.iter_any()
+        return (await self.static_request()).content.iter_any()
 
     async def chunks(self, size: int) -> aiohttp.streams.AsyncStreamIterator[bytes]:
         """Stream this image's data in chunks.
@@ -303,7 +310,7 @@ class Image:
         `AsyncStreamIterator[bytes]`:
             lazy async iterator that is ready in memory.
         """
-        return (await self._request()).content.iter_chunked(size)
+        return (await self.static_request()).content.iter_chunked(size)
 
     async def iter(self) -> collections.AsyncGenerator[bytes, None]:
         """Yield each byte in this image from start to end.
@@ -535,3 +542,354 @@ class PlugSocketBuilder:
             The built map.
         """
         return self._map
+
+
+@attrs.frozen(kw_only=True)
+class FireteamBuilder:
+    """A helper class that exposes all of `FireteamFinder` methods.
+
+    This is returned by calling `RESTClient.build_fireteam_finder()`.
+
+    Example
+    -------
+    ```py
+    client = aiobungie.Client("token")
+    fireteam_finder = client.rest.build_fireteam_finder(
+        member_id,
+        char_id,
+        member_type
+    ) # All methods are available via `fireteam_finder`
+    application = await fireteam_finder.fetch_application(app_id)
+    ```
+    """
+
+    rest: traits.RESTful
+    """A reference to the `RESTful` client interface that is performing the requests."""
+    membership_id: int
+    """The membership ID that will be used to perform the requests with."""
+    character_id: int
+    """The character ID that will be used to perform the requests with."""
+    membership_type: enums.MembershipType | int
+    """The membership type that will be used to perform the requests with."""
+
+    async def activate_fireteam_lobby(
+        self,
+        lobby_id: int,
+        /,
+        *,
+        force_activation: bool = False,
+    ) -> bool:
+        """Activates a lobby and initializes it as an active Fireteam."""
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/Activate/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            params={"forceActivation": force_activation},
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def activate_lobby_for_id(
+        self,
+        lobby_id: int,
+        /,
+        *,
+        force_activation: bool = False,
+    ) -> bool:
+        """Activates a lobby and initializes it as an active Fireteam, returning the updated Listing ID."""
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/ActivateForNewListingId/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/ ",
+            params={"forceActivation": force_activation},
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def apply_to_listing(
+        self, listing_id: int, /, application_type: enums.OAuthApplicationType | int
+    ) -> typedefs.JSONObject:
+        """Applies to have a character join a fireteam."""
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Listing/{listing_id}/Apply/{int(application_type)}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def bulk_fetch_listing_status(self) -> typedefs.JSONObject:
+        """Retrieves Fireteam listing statuses in bulk."""
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Listing/BulkStatus/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_application(self, application_id: int) -> typedefs.JSONObject:
+        """Retrieves a Fireteam application."""
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/Application/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_listing_applications(
+        self,
+        listing_id: int,
+        /,
+        *,
+        flags: typing.Literal[0, 1, 2, 3, 4, 5, 6] | None = None,
+        page_token: str | None = None,
+        page_size: int | None = None,
+    ) -> typedefs.JSONObject:
+        """Retrieves all applications to a Fireteam Finder listing.
+
+        Parameters
+        ----------
+        listing_id: `int`
+            The ID of the listing whose applications to retrieve.
+
+        Other Parameters
+        ----------------
+        flags: `int`
+            Optional flag representing a filter on the state of the application.
+            * `Unknown`: 0
+            * `WaitingForApplicants`: 1
+            * `WaitingForLobbyOwner`: 2
+            * `Accepted`: 3
+            * `Rejected`: 4
+            * `Deleted`: 5
+            * `Expired`: 6
+        page_token: `str | None`
+            An optional token from a previous response to fetch the next page of results.
+        page_size: `int | None`
+            The maximum number of results to be returned with this page.
+        """
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/Listing/{listing_id}/Applications/{int(self.membership_type)}/{self.membership_type}/{self.character_id}/",
+            params={
+                "flags": flags,
+                "nextPageToken": page_token,
+                "pageSize": page_size,
+            },
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_lobby(self, lobby_id: int, /) -> typedefs.JSONObject:
+        """Retrieves the information for a Fireteam lobby."""
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/Lobby/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_player_lobbies(
+        self,
+        *,
+        page_token: str | None = None,
+        page_size: int | None = None,
+    ) -> typedefs.JSONObject:
+        """Retrieves the information for a Fireteam lobby.
+
+        Parameters
+        ----------------
+        page_token: `str | None`
+            An optional token from a previous response to fetch the next page of results.
+        page_size: `int | None`
+            The maximum number of results to be returned with this page.
+        """
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/PlayerLobbies/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            params={"nextPageToken": page_token, "pageSize": page_size},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_player_applications(
+        self,
+        *,
+        page_token: str | None = None,
+        page_size: int | None = None,
+    ) -> typedefs.JSONObject:
+        """Retrieves Fireteam applications that this player has sent or received.
+
+        Parameters
+        ----------------
+        page_token: `str | None`
+            An optional token from a previous response to fetch the next page of results.
+        page_size: `int | None`
+            The maximum number of results to be returned with this page.
+        """
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/PlayerApplications/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            params={"nextPageToken": page_token, "pageSize": page_size},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_player_offers(
+        self,
+        *,
+        page_token: str | None = None,
+        page_size: int | None = None,
+    ) -> typedefs.JSONObject:
+        """Retrieves Fireteam offers that this player has received.
+
+        Parameters
+        ----------------
+        page_token: `str | None`
+            An optional token from a previous response to fetch the next page of results.
+        page_size: `int | None`
+            The maximum number of results to be returned with this page.
+        """
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/PlayerOffers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            params={"nextPageToken": page_token, "pageSize": page_size},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_character_activity_access(self) -> typedefs.JSONObject:
+        """Retrieves the information for a Fireteam lobby."""
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/CharacterActivityAccess/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_offer(self, offer_id: int, /) -> typedefs.JSONObject:
+        """Retrieves an offer to a Fireteam lobby."""
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/Offer/{offer_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_lobby_offers(
+        self,
+        lobby_id: int,
+        /,
+        *,
+        page_token: str | None = None,
+        page_size: int | None = None,
+    ) -> typedefs.JSONObject:
+        """Retrieves all offers relevant to a Fireteam lobby.
+
+        Parameters
+        ----------------
+        page_token: `str | None`
+            An optional token from a previous response to fetch the next page of results.
+        page_size: `int | None`
+            The maximum number of results to be returned with this page.
+        """
+        response = await self.rest.static_request(
+            "GET",
+            f"FireteamFinder/Lobby/{lobby_id}/Offers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            params={"nextPageToken": page_token, "pageSize": page_size},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def host_lobby(
+        self,
+        max_players: int,
+        online_only: bool,
+        privacy_scope: typing.Literal[0, 1, 2, 3, 4],
+        scheduled_date: datetime.datetime,
+        clan_id: int,
+        listing_values: collections.Sequence[_FinderListingValue],
+        activity_graph_hash: int,
+        activity_hash: int,
+    ) -> typedefs.JSONObject:
+        """Creates a new Fireteam lobby and Fireteam Finder listing.
+
+        max_players: `int`
+            The maximum number of players that can join the lobby.
+        online_only: `bool`
+            If `True`, only online players can join the lobby.
+        privacy_scope: `int`
+            The privacy scope of this lobby See
+            [PrivacyScope](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderLobbyPrivacyScope.html#schema_FireteamFinder-DestinyFireteamFinderLobbyPrivacyScope)
+            for more details.
+        scheduled_date: `datetime.datetime`
+            If this lobby is scheduled, this date will be used.
+        clan_id: `int`
+        listing_values: `Sequence[int]`
+        activity_graph_hash: `int`
+        activity_hash: `int`
+        """
+
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/Host/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={
+                "maxPlayerCount": max_players,
+                "onlinePlayersOnly": online_only,
+                "privacyScope": privacy_scope,
+                "scheduledDateTime": f"{scheduled_date.year}-{scheduled_date.month}-{scheduled_date.day}",
+                "clanId": clan_id,
+                "listingValues": listing_values,
+                "activityGraphHash": activity_graph_hash,
+                "activityHash": activity_hash,
+            },
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def join_lobby(self, lobby_id: int, offer_id: int) -> typedefs.JSONObject:
+        """Sends a request to join an available Fireteam lobby.
+
+        Parameters
+        ----------
+        lobby_id: `int`
+            The ID of the lobby to join.
+        offer_id: `int`
+            The Offer ID.
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/Join/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={"lobbyId": lobby_id, "offerId": offer_id},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def kick_player(
+        self,
+        lobby_id: int,
+        /,
+        target_membership_id: int,
+        target_character_id: int,
+        target_membership_type: enums.MembershipType | int,
+    ) -> typedefs.JSONObject:
+        """Kicks a player from a Fireteam Finder lobby.
+
+        Parameters
+        ----------
+        lobby_id: `int`
+            The ID of the lobby to kick the targeted player from.
+        target_membership_id: `int`
+            The membership ID of the target to kick.
+        target_character_id: `int`
+            The character ID of the target to kick.
+        target_membership_type: `aiobungie.MembershipType | int`
+            The membership type of the target to kick.
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/{lobby_id}/KickPlayer/{target_membership_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={
+                "targetMembershipType": int(target_membership_type),
+                "targetCharacterId": target_character_id,
+            },
+        )
+        assert isinstance(response, dict)
+        return response

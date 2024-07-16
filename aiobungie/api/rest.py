@@ -2862,3 +2862,6 @@ class RESTClient(traits.RESTful, abc.ABC):
         `aiobungie.typedefs.JSONObject`
             A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
         """
+
+    @abc.abstractmethod
+    async def fetch_fireteam_listing(self, listing_id: int) -> typedefs.JSONObject: ...

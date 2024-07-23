@@ -228,6 +228,29 @@ class RESTful(typing.Protocol):
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> builders.FireteamBuilder:
+        """Construct a new fireteam builder.
+
+        This method exposes all of `FireteamFinder` routes ready.
+
+        Example
+        -------
+        ```py
+        client = RESTClient('token')
+        finder = client.build_fireteam_finder(member_id, character_id, membership_type=3)
+
+        async with client:
+            await finder.host_lobby(...)
+        ```
+
+        Parameters
+        ----------
+        membership_id: `int`
+            The main Destiny membership ID that will be used for this fireteam builder.
+        character_id: `int`
+            The main Destiny character ID that will be used for this fireteam builder.
+        membership_type: `aiobungie.MembershipType` | `int`
+            The main Destiny membership type that will be used for this fireteam builder.
+        """
         return builders.FireteamBuilder(
             rest=self,
             membership_id=membership_id,

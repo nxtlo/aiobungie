@@ -21,11 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `RESTClient.fetch_bungie_rewards`
 * `Image.stream`
 * `Image.chunks`
+* `FireteamFinder` methods, available through the `RESTClient.build_fireteam_finder` method.
 
 #### components
 
-* Fully implemented the `CHARACTER LOADOUTS` component along with its framework methods, You can access it via `Components.character_loadouts`
+* implemented the `CHARACTER LOADOUTS` component along with its framework methods, You can access it via `Components.character_loadouts`
 after fetching a profile. or `loadouts` after fetching a character.
+* implemented the `SOCIAL COMMENDATIONS` components, you can access it via `Components.commendations` after fetching a profile.
 
 #### object fields
 
@@ -44,8 +46,9 @@ after fetching a profile. or `loadouts` after fetching a character.
   * `renewed_guardian_rank`
   * `event_card_hashes`
   * `user`, removed `name`, `id` and `type` in favor of this.
+* Added `available_activity_interactables` to `CharacterActivity`
 
-#### misc
+#### other
 
 * [`sain`](https://github.com/nxtlo/sain) as a required dependency. this is used mainly to replace `iterators`
 * `custom_client` example
@@ -60,6 +63,8 @@ await rest.download_json_manifest(
   executor=concurrent.futures.ProcessPoolExecutor()
 )
 ```
+
+* `FireteamBuilder` in `aiobungie.builders`
 
 ### Changed
 

@@ -652,7 +652,7 @@ class Framework(api.Framework):
     def deserialize_character_activity(
         self, payload: typedefs.JSONObject
     ) -> activity.CharacterActivity:
-        current_mode: enums.GameMode | None = None
+        current_mode = enums.GameMode.NONE
         if raw_current_mode := payload.get("currentActivityModeType"):
             current_mode = enums.GameMode(raw_current_mode)
 
@@ -675,6 +675,13 @@ class Framework(api.Framework):
             available_activities=tuple(
                 self.deserialize_available_activity(activity_)
                 for activity_ in payload["availableActivities"]
+            ),
+            available_activity_interactables=tuple(
+                activity.InteractablesRef(
+                    hash=interact["activityInteractableHash"],
+                    element_index=interact["activityInteractableElementIndex"],
+                )
+                for interact in payload["availableActivityInteractables"]
             ),
         )
 

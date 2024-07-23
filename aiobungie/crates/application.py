@@ -42,13 +42,25 @@ class ApplicationMember:
     """Represents a Bungie developer-portal application team member."""
 
     role: int
-    """The role of the application team member."""
+    """The role of the application team member.
+
+    To convert this to a string, use `.role_as_str` method.
+    """
 
     api_eula_version: int
     """The EULA version of the API."""
 
     user: _user.PartialBungieUser
     """The Bungie.net user associated with the application team member."""
+
+    def role_as_str(self) -> typing.Literal["Owner", "Member", "None"]:
+        """Returns the role of the application team member as a string."""
+        if self.role == 0:
+            return "None"
+        elif self.role == 1:
+            return "Owner"
+
+        return "Member"
 
 
 @attrs.frozen(kw_only=True)

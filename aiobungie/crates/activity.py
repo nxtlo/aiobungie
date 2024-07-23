@@ -157,6 +157,15 @@ class Location:
 
 
 @attrs.frozen(kw_only=True)
+class InteractablesRef:
+    hash: int
+    """The interactables activity hash."""
+
+    element_index: int
+    """The interactables activity element index."""
+
+
+@attrs.frozen(kw_only=True)
 class CharacterActivity:
     """Represents a character activity profile component."""
 
@@ -169,7 +178,7 @@ class CharacterActivity:
     current_mode_hash: int
     """The current activity mode hash that the player is now playing."""
 
-    current_mode: enums.GameMode | None
+    current_mode: enums.GameMode
     """The current activity mode presented an an enum."""
 
     current_mode_types: collections.Sequence[enums.GameMode]
@@ -186,6 +195,9 @@ class CharacterActivity:
 
     available_activities: collections.Sequence[AvailableActivity]
     """A sequence of the available activities associated with this character."""
+
+    available_activity_interactables: collections.Sequence[InteractablesRef]
+    """The list of activity interactables that the player can interact with."""
 
 
 @attrs.frozen(kw_only=True)

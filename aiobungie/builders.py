@@ -56,6 +56,11 @@ if typing.TYPE_CHECKING:
         valueType: Required[int]
         values: Required[collections.Sequence[int]]
 
+    class _ListingFilter(typing.TypedDict):
+        listingValue: Required[_FinderListingValue]
+        rangeType: int
+        matchType: int
+
 
 @typing.final
 class MimeType(str, enums.Enum):
@@ -695,7 +700,7 @@ class FireteamBuilder:
         """Retrieves the information for a Fireteam lobby.
 
         Parameters
-        ----------------
+        ----------
         page_token: `str | None`
             An optional token from a previous response to fetch the next page of results.
         page_size: `int | None`
@@ -718,7 +723,7 @@ class FireteamBuilder:
         """Retrieves Fireteam applications that this player has sent or received.
 
         Parameters
-        ----------------
+        ----------
         page_token: `str | None`
             An optional token from a previous response to fetch the next page of results.
         page_size: `int | None`
@@ -741,7 +746,7 @@ class FireteamBuilder:
         """Retrieves Fireteam offers that this player has received.
 
         Parameters
-        ----------------
+        ----------
         page_token: `str | None`
             An optional token from a previous response to fetch the next page of results.
         page_size: `int | None`
@@ -784,7 +789,7 @@ class FireteamBuilder:
         """Retrieves all offers relevant to a Fireteam lobby.
 
         Parameters
-        ----------------
+        ----------
         page_token: `str | None`
             An optional token from a previous response to fetch the next page of results.
         page_size: `int | None`
@@ -811,6 +816,8 @@ class FireteamBuilder:
     ) -> typedefs.JSONObject:
         """Creates a new Fireteam lobby and Fireteam Finder listing.
 
+        Parameters
+        ----------
         max_players: `int`
             The maximum number of players that can join the lobby.
         online_only: `bool`
@@ -822,7 +829,7 @@ class FireteamBuilder:
         scheduled_date: `datetime.datetime`
             If this lobby is scheduled, this date will be used.
         clan_id: `int`
-        listing_values: `Sequence[int]`
+        listing_values: `Sequence[_FinderListingValue]`
         activity_graph_hash: `int`
         activity_hash: `int`
         """
@@ -889,6 +896,261 @@ class FireteamBuilder:
             json={
                 "targetMembershipType": int(target_membership_type),
                 "targetCharacterId": target_character_id,
+            },
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def leave_application(self, application_id: int, /) -> bool:
+        """Sends a request to leave a Fireteam listing application.
+
+        Parameters
+        ----------
+        application_id: `int`
+            The ID of the application to leave.
+
+        Returns
+        -------
+        `bool`
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Application/Leave/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def leave_lobby(self, lobby_id: int, /) -> bool:
+        """Sends a request to leave a Fireteam lobby.
+
+        Parameters
+        ----------
+        lobby_id: `int`
+            The ID of the application to leave.
+
+        Returns
+        -------
+        `bool`
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/Leave/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def respond_to_application(
+        self, application_id: int, accepted: bool
+    ) -> typedefs.JSONObject:
+        """Responds to an application sent to a Fireteam lobby.
+
+        Parameters
+        ----------
+        application_id: `int`
+            The ID of the application to send the request to.
+        accepted: `bool`
+
+        Returns
+        -------
+        A JSON object that contains the application response.
+        See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderRespondToApplicationResponse.html#schema_FireteamFinder-DestinyFireteamFinderRespondToApplicationResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Application/Respond/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={"accepted": accepted},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def respond_to_authentication(
+        self, application_id: int, confirmed: bool
+    ) -> typedefs.JSONObject:
+        """Responds to an authentication request for a Fireteam.
+
+        Parameters
+        ----------
+        application_id: `int`
+            The ID of the application to send the request to.
+        confirmed: `bool`
+
+        Returns
+        -------
+        A JSON object that contains the result of the request.
+        See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderRespondToApplicationResponse.html#schema_FireteamFinder-DestinyFireteamFinderRespondToApplicationResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Authentication/Respond/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={"confirmed": confirmed},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def respond_to_offer(
+        self, offer_id: int, accepted: bool
+    ) -> typedefs.JSONObject:
+        """Responds to a Fireteam lobby offer.
+
+        Parameters
+        ----------
+        offer_id : `int`
+            The offer ID to respond to.
+        accepted: `bool`
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains the offer response.
+            See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderRespondToOfferResponse.html#schema_FireteamFinder-DestinyFireteamFinderRespondToOfferResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Offer/Respond/{offer_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={"accepted": accepted},
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def search_listings_by_clan(
+        self, page_size: int, page_token: str, lobby_state: int
+    ) -> typedefs.JSONObject:
+        """Returns search results for available Fireteams provided a clan.
+
+        Parameters
+        ----------
+        page_size: `int`
+            The maximum number of results to be returned with this page.
+        page_token: `str`
+            An optional token from a previous response to fetch the next page of results.
+        lobby_state: `literal<int>`
+            Search lobbies based on their state, The states are listed below.
+
+            * `0`: Unknown
+            * `1`: Inactive
+            * `2`: Active
+            * `3`: Expired
+            * `4`: Closed
+            * `5`: Canceled
+            * `6`: Deleted
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains the search results.
+            See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderSearchListingsByClanResponse.html#schema_FireteamFinder-DestinyFireteamFinderSearchListingsByClanResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Search/Clan/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={
+                "pageSize": page_size,
+                "pageToken": page_token,
+                "lobbyState": lobby_state,
+            },
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def search_listings_by_filters(
+        self,
+        filters: collections.Sequence[_ListingFilter],
+        page_size: int,
+        page_token: str,
+        lobby_state: typing.Literal[0, 1, 2, 3, 4, 5, 6],
+    ) -> typedefs.JSONObject:
+        """Returns search results for available Fireteams provided search filters.
+
+        Parameters
+        ----------
+        filters: `Sequence[_ListingFilter]`
+            A sequence of filters, the type of this sequence is provided as a typed dict
+            for better type inference.
+        page_size: `int`
+            The maximum number of results to be returned with this page.
+        page_token: `str`
+            An optional token from a previous response to fetch the next page of results.
+        lobby_state: `literal<int>`
+            Search lobbies based on their state, The states are listed below.
+
+            * `0`: Unknown
+            * `1`: Inactive
+            * `2`: Active
+            * `3`: Expired
+            * `4`: Closed
+            * `5`: Canceled
+            * `6`: Deleted
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object of the fireteam search results.
+            See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderSearchListingsByFiltersResponse.html#schema_FireteamFinder-DestinyFireteamFinderSearchListingsByFiltersResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Search/Clan/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={
+                "filters": filters,
+                "pageSize": page_size,
+                "pageToken": page_token,
+                "lobbyState": lobby_state,
+            },
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def update_lobby_settings(
+        self,
+        lobby_id: int,
+        max_players: int,
+        online_only: bool,
+        privacy_scope: typing.Literal[0, 1, 2, 3, 4],
+        scheduled_date: datetime.datetime,
+        clan_id: int,
+        listing_values: collections.Sequence[_FinderListingValue],
+        activity_graph_hash: int,
+        activity_hash: int,
+    ) -> typedefs.JSONObject:
+        """Updates the settings for a Fireteam lobby.
+
+        Parameters
+        ----------
+        lobby_id : `int`
+            The lobby ID to update.
+        max_players: `int`
+            The maximum number of players that can join the lobby.
+        online_only: `bool`
+            If `True`, only online players can join the lobby.
+        privacy_scope: `int`
+            The privacy scope of this lobby See
+            [PrivacyScope](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderLobbyPrivacyScope.html#schema_FireteamFinder-DestinyFireteamFinderLobbyPrivacyScope)
+            for more details.
+        scheduled_date: `datetime.datetime`
+            If this lobby is scheduled, this date will be used.
+        clan_id: `int`
+        listing_values: `Sequence[_FinderListingValue]`
+        activity_graph_hash: `int`
+        activity_hash: `int`
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object of the updated fireteam lobby response.
+            See [Reference](https://bungie-net.github.io/multi/schema_FireteamFinder-DestinyFireteamFinderUpdateLobbySettingsResponse.html#schema_FireteamFinder-DestinyFireteamFinderUpdateLobbySettingsResponse)
+        """
+        response = await self.rest.static_request(
+            "POST",
+            f"FireteamFinder/Lobby/UpdateSettings/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            json={
+                "maxPlayerCount": max_players,
+                "onlinePlayersOnly": online_only,
+                "privacyScope": privacy_scope,
+                "scheduledDateTime": f"{scheduled_date.year}-{scheduled_date.month}-{scheduled_date.day}",
+                "clanId": clan_id,
+                "listingValues": listing_values,
+                "activityGraphHash": activity_graph_hash,
+                "activityHash": activity_hash,
             },
         )
         assert isinstance(response, dict)

@@ -34,9 +34,6 @@
                     <a class="function" href="#deprecated">deprecated</a>
             </li>
             <li>
-                    <a class="function" href="#awaits">awaits</a>
-            </li>
-            <li>
                     <a class="function" href="#get_or_make_loop">get_or_make_loop</a>
             </li>
             <li>
@@ -102,246 +99,118 @@
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="s2">&quot;deprecated&quot;</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="s2">&quot;awaits&quot;</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="s2">&quot;get_or_make_loop&quot;</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="s2">&quot;unimplemented&quot;</span><span class="p">,</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>    <span class="s2">&quot;loads&quot;</span><span class="p">,</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="s2">&quot;dumps&quot;</span><span class="p">,</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="s2">&quot;unstable&quot;</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="kn">import</span> <span class="nn">asyncio</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="kn">import</span> <span class="nn">functools</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="kn">import</span> <span class="nn">inspect</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="kn">import</span> <span class="nn">typing</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="kn">import</span> <span class="nn">warnings</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="s2">&quot;get_or_make_loop&quot;</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="s2">&quot;unimplemented&quot;</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="s2">&quot;loads&quot;</span><span class="p">,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>    <span class="s2">&quot;dumps&quot;</span><span class="p">,</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="s2">&quot;unstable&quot;</span><span class="p">,</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="kn">import</span> <span class="nn">asyncio</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="kn">import</span> <span class="nn">functools</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="kn">import</span> <span class="nn">typing</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">typedefs</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">typedefs</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>    <span class="n">T_co</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_co&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="n">T_co</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_co&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="kn">from</span> <span class="nn">sain</span> <span class="kn">import</span> <span class="n">deprecated</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="kn">from</span> <span class="nn">sain</span> <span class="kn">import</span> <span class="n">unimplemented</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="k">class</span> <span class="nc">UnimplementedWarning</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">):</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A warning that is raised when a function or class is not implemented.&quot;&quot;&quot;</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="n">removed_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="n">use_instead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="n">hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    Parameters</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">    ----------</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">    since : `str`</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        The version that the function was deprecated.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">    use_instead : `str | None`</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        If provided, This should be the alternative object name that should be used instead.</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">    .. warn::</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">    Raises</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">    ------</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    `RuntimeError`</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        If the object has been called while marked `unstable`.</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">obj</span><span class="si">!s}</span><span class="s2"> is currently unstable.&quot;</span><span class="p">)</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="k">return</span> <span class="n">decorator</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>            <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt; </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> is deprecated since </span><span class="si">{</span><span class="n">since</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>            <span class="k">if</span> <span class="n">removed_in</span><span class="p">:</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&gt; Will be removed in </span><span class="si">{</span><span class="n">removed_in</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>            <span class="k">if</span> <span class="n">use_instead</span><span class="p">:</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>                <span class="n">cls_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;&gt; Use &quot;</span><span class="si">{</span><span class="n">use_instead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="n">cls_name</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; instead.</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>            <span class="k">if</span> <span class="n">hint</span><span class="p">:</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>                <span class="n">cls_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&gt; Hint: </span><span class="si">{</span><span class="n">hint</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="n">cls_name</span><span class="p">)</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>                <span class="n">msg</span><span class="p">,</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="p">)</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="c1"># Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    Returns</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    -------</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="c1"># get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="c1"># if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop_policy</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="c1"># Closed loops cannot be re-used.</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>            <span class="k">return</span> <span class="n">loop</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="k">pass</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="k">return</span> <span class="n">loop</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="k">return</span> <span class="n">decorator</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="c1"># The reason we&#39;re ignoring the types here because one of those modules will be</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="c1"># available at runtime which we need to ignore, But json is guaranteed to be available</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="c1"># if none of the others are.</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="k">def</span> <span class="nf">unimplemented</span><span class="p">(</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">available_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    Parameters</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">    ----------</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">    message : `str | None`</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        An optional message to be displayed when the function is called. Otherwise default message will be used.</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    available_in : `str | None`</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        If provided, This will be shown as what release this object be implemented.</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>                <span class="n">message</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;Warning! </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not implemented yet.&quot;</span>  <span class="c1"># noqa: W503</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="p">)</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="k">if</span> <span class="n">available_in</span><span class="p">:</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Will be implemented in </span><span class="si">{</span><span class="n">available_in</span><span class="si">}</span><span class="s2">.&quot;</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="n">msg</span><span class="p">,</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>                <span class="n">category</span><span class="o">=</span><span class="n">UnimplementedWarning</span><span class="p">,</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>            <span class="p">)</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>            <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>    <span class="k">return</span> <span class="n">decorator</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">    .. warn::</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    Raises</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">    ------</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="sd">    `RuntimeError`</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="sd">        If the object has been called while marked `unstable`.</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">obj</span><span class="si">!s}</span><span class="s2"> is currently unstable.&quot;</span><span class="p">)</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="k">return</span> <span class="n">decorator</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a><span class="c1"># Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">awaits</span><span class="p">(</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="o">*</span><span class="n">aws</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Awaitable</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="sd">    Parameters</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="sd">    ----------</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="sd">    *aws : `collections.Awaitable[JT]`</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="sd">        Multiple awaitables to await.</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a><span class="sd">    timeout : `float | None`</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a><span class="sd">        An optional timeout.</span>
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="sd">    Returns</span>
-</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="sd">    -------</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">    `collections.Sequence[T_co]`</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">        A sequence of the results of the awaited coros.</span>
-</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>
-</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws</span><span class="p">:</span>
-</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>        <span class="c1"># Just pass if nothing was passed.</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>        <span class="k">pass</span>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>    <span class="n">tasks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">[</span><span class="n">T_co</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">aws</span><span class="p">:</span>
-</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">))</span>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>
-</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>    <span class="n">gatherer</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">gatherer</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>    <span class="k">finally</span><span class="p">:</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>                <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>        <span class="n">gatherer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>
-</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="c1"># Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]</span>
-</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
-</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="sd">    Returns</span>
-</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a><span class="sd">    -------</span>
-</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
-</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>    <span class="c1"># get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even</span>
-</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>    <span class="c1"># if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop_policy</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>        <span class="c1"># Closed loops cannot be re-used.</span>
-</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>            <span class="k">return</span> <span class="n">loop</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>
-</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>        <span class="k">pass</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>
-</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>    <span class="k">return</span> <span class="n">loop</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>
-</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="c1"># The reason we&#39;re ignoring the types here because one of those modules will be</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a><span class="c1"># available at runtime which we need to ignore, But json is guaranteed to be available</span>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="c1"># if none of the others are.</span>
-</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>
-</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>
-</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span>
-</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>    <span class="n">obj</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>    <span class="k">def</span> <span class="nf">default_dumps</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
-</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>
-</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
-</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>
-</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="n">default_dumps</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span>  <span class="c1"># type: ignore[UnknownMemberType]  # noqa: F811</span>
-</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
-</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>
-</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>            <span class="n">default_dumps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
-</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>            <span class="k">pass</span>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>
-</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>        <span class="k">return</span> <span class="n">default_dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
-</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>
-</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>
-</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a><span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
-</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>    <span class="n">default_loads</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">loads</span>
-</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>  <span class="c1"># pyright: ignore[reportMissingImports]</span>
-</span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>
-</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a>        <span class="n">default_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]</span>
-</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>
-</span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># pyright: ignore[reportMissingModuleSource]</span>
-</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>
-</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>            <span class="n">default_loads</span> <span class="o">=</span> <span class="n">ujson</span><span class="o">.</span><span class="n">loads</span>
-</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>            <span class="k">pass</span>
-</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>
-</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a>    <span class="k">return</span> <span class="n">default_loads</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">obj</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">def</span> <span class="nf">default_dumps</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="n">default_dumps</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span>  <span class="c1"># type: ignore[UnknownMemberType]  # noqa: F811</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="n">default_dumps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="k">pass</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="k">return</span> <span class="n">default_dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="n">default_loads</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="n">default_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># pyright: ignore[reportMissingModuleSource]</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="n">default_loads</span> <span class="o">=</span> <span class="n">ujson</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>            <span class="k">pass</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>    <span class="k">return</span> <span class="n">default_loads</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -351,141 +220,125 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">deprecated</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">since</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">removed_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">use_instead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+        <span class="name">deprecated</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">since</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">removed_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">use_instead</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">hint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="s1">&#39;collections.Callable[[collections.Callable[P, U]], collections.Callable[P, U]]&#39;</span>:</span></span>
 
                 <label class="view-source-button" for="deprecated-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#deprecated"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="deprecated-57"><a href="#deprecated-57"><span class="linenos">57</span></a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
-</span><span id="deprecated-58"><a href="#deprecated-58"><span class="linenos">58</span></a>    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="deprecated-59"><a href="#deprecated-59"><span class="linenos">59</span></a>    <span class="n">removed_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="deprecated-60"><a href="#deprecated-60"><span class="linenos">60</span></a>    <span class="n">use_instead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="deprecated-61"><a href="#deprecated-61"><span class="linenos">61</span></a>    <span class="n">hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="deprecated-62"><a href="#deprecated-62"><span class="linenos">62</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="deprecated-63"><a href="#deprecated-63"><span class="linenos">63</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
-</span><span id="deprecated-64"><a href="#deprecated-64"><span class="linenos">64</span></a>
-</span><span id="deprecated-65"><a href="#deprecated-65"><span class="linenos">65</span></a><span class="sd">    Parameters</span>
-</span><span id="deprecated-66"><a href="#deprecated-66"><span class="linenos">66</span></a><span class="sd">    ----------</span>
-</span><span id="deprecated-67"><a href="#deprecated-67"><span class="linenos">67</span></a><span class="sd">    since : `str`</span>
-</span><span id="deprecated-68"><a href="#deprecated-68"><span class="linenos">68</span></a><span class="sd">        The version that the function was deprecated.</span>
-</span><span id="deprecated-69"><a href="#deprecated-69"><span class="linenos">69</span></a><span class="sd">    use_instead : `str | None`</span>
-</span><span id="deprecated-70"><a href="#deprecated-70"><span class="linenos">70</span></a><span class="sd">        If provided, This should be the alternative object name that should be used instead.</span>
-</span><span id="deprecated-71"><a href="#deprecated-71"><span class="linenos">71</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="deprecated-72"><a href="#deprecated-72"><span class="linenos">72</span></a>
-</span><span id="deprecated-73"><a href="#deprecated-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-</span><span id="deprecated-74"><a href="#deprecated-74"><span class="linenos">74</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-</span><span id="deprecated-75"><a href="#deprecated-75"><span class="linenos">75</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="deprecated-76"><a href="#deprecated-76"><span class="linenos">76</span></a>            <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
-</span><span id="deprecated-77"><a href="#deprecated-77"><span class="linenos">77</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt; </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2"> is deprecated since </span><span class="si">{</span><span class="n">since</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="deprecated-78"><a href="#deprecated-78"><span class="linenos">78</span></a>
-</span><span id="deprecated-79"><a href="#deprecated-79"><span class="linenos">79</span></a>            <span class="k">if</span> <span class="n">removed_in</span><span class="p">:</span>
-</span><span id="deprecated-80"><a href="#deprecated-80"><span class="linenos">80</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&gt; Will be removed in </span><span class="si">{</span><span class="n">removed_in</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="deprecated-81"><a href="#deprecated-81"><span class="linenos">81</span></a>
-</span><span id="deprecated-82"><a href="#deprecated-82"><span class="linenos">82</span></a>            <span class="k">if</span> <span class="n">use_instead</span><span class="p">:</span>
-</span><span id="deprecated-83"><a href="#deprecated-83"><span class="linenos">83</span></a>                <span class="n">cls_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="deprecated-84"><a href="#deprecated-84"><span class="linenos">84</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;&gt; Use &quot;</span><span class="si">{</span><span class="n">use_instead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="n">cls_name</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; instead.</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="deprecated-85"><a href="#deprecated-85"><span class="linenos">85</span></a>
-</span><span id="deprecated-86"><a href="#deprecated-86"><span class="linenos">86</span></a>            <span class="k">if</span> <span class="n">hint</span><span class="p">:</span>
-</span><span id="deprecated-87"><a href="#deprecated-87"><span class="linenos">87</span></a>                <span class="n">cls_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="deprecated-88"><a href="#deprecated-88"><span class="linenos">88</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&gt; Hint: </span><span class="si">{</span><span class="n">hint</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="n">cls_name</span><span class="p">)</span>
-</span><span id="deprecated-89"><a href="#deprecated-89"><span class="linenos">89</span></a>
-</span><span id="deprecated-90"><a href="#deprecated-90"><span class="linenos">90</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="deprecated-91"><a href="#deprecated-91"><span class="linenos">91</span></a>                <span class="n">msg</span><span class="p">,</span>
-</span><span id="deprecated-92"><a href="#deprecated-92"><span class="linenos">92</span></a>                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="deprecated-93"><a href="#deprecated-93"><span class="linenos">93</span></a>                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
-</span><span id="deprecated-94"><a href="#deprecated-94"><span class="linenos">94</span></a>            <span class="p">)</span>
-</span><span id="deprecated-95"><a href="#deprecated-95"><span class="linenos">95</span></a>            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="deprecated-96"><a href="#deprecated-96"><span class="linenos">96</span></a>
-</span><span id="deprecated-97"><a href="#deprecated-97"><span class="linenos">97</span></a>        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
-</span><span id="deprecated-98"><a href="#deprecated-98"><span class="linenos">98</span></a>
-</span><span id="deprecated-99"><a href="#deprecated-99"><span class="linenos">99</span></a>    <span class="k">return</span> <span class="n">decorator</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="deprecated-152"><a href="#deprecated-152"><span class="linenos">152</span></a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
+</span><span id="deprecated-153"><a href="#deprecated-153"><span class="linenos">153</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="deprecated-154"><a href="#deprecated-154"><span class="linenos">154</span></a>    <span class="n">since</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="deprecated-155"><a href="#deprecated-155"><span class="linenos">155</span></a>    <span class="n">removed_in</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="deprecated-156"><a href="#deprecated-156"><span class="linenos">156</span></a>    <span class="n">use_instead</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="deprecated-157"><a href="#deprecated-157"><span class="linenos">157</span></a>    <span class="n">hint</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="deprecated-158"><a href="#deprecated-158"><span class="linenos">158</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span>
+</span><span id="deprecated-159"><a href="#deprecated-159"><span class="linenos">159</span></a>    <span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">]],</span>
+</span><span id="deprecated-160"><a href="#deprecated-160"><span class="linenos">160</span></a>    <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">],</span>
+</span><span id="deprecated-161"><a href="#deprecated-161"><span class="linenos">161</span></a><span class="p">]:</span>
+</span><span id="deprecated-162"><a href="#deprecated-162"><span class="linenos">162</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
+</span><span id="deprecated-163"><a href="#deprecated-163"><span class="linenos">163</span></a>
+</span><span id="deprecated-164"><a href="#deprecated-164"><span class="linenos">164</span></a><span class="sd">    An attempt to call the object that&#39;s marked will cause a runtime warn.</span>
+</span><span id="deprecated-165"><a href="#deprecated-165"><span class="linenos">165</span></a>
+</span><span id="deprecated-166"><a href="#deprecated-166"><span class="linenos">166</span></a><span class="sd">    Example</span>
+</span><span id="deprecated-167"><a href="#deprecated-167"><span class="linenos">167</span></a><span class="sd">    -------</span>
+</span><span id="deprecated-168"><a href="#deprecated-168"><span class="linenos">168</span></a><span class="sd">    ```py</span>
+</span><span id="deprecated-169"><a href="#deprecated-169"><span class="linenos">169</span></a><span class="sd">    from sain import deprecated</span>
+</span><span id="deprecated-170"><a href="#deprecated-170"><span class="linenos">170</span></a>
+</span><span id="deprecated-171"><a href="#deprecated-171"><span class="linenos">171</span></a><span class="sd">    @deprecated(</span>
+</span><span id="deprecated-172"><a href="#deprecated-172"><span class="linenos">172</span></a><span class="sd">        since = &quot;1.0.0&quot;,</span>
+</span><span id="deprecated-173"><a href="#deprecated-173"><span class="linenos">173</span></a><span class="sd">        removed_in =&quot;3.0.0&quot;,</span>
+</span><span id="deprecated-174"><a href="#deprecated-174"><span class="linenos">174</span></a><span class="sd">        use_instead = &quot;UserImpl()&quot;,</span>
+</span><span id="deprecated-175"><a href="#deprecated-175"><span class="linenos">175</span></a><span class="sd">        hint = &quot;Hint for ux.&quot;</span>
+</span><span id="deprecated-176"><a href="#deprecated-176"><span class="linenos">176</span></a><span class="sd">    )</span>
+</span><span id="deprecated-177"><a href="#deprecated-177"><span class="linenos">177</span></a><span class="sd">    class User:</span>
+</span><span id="deprecated-178"><a href="#deprecated-178"><span class="linenos">178</span></a><span class="sd">        ...</span>
+</span><span id="deprecated-179"><a href="#deprecated-179"><span class="linenos">179</span></a>
+</span><span id="deprecated-180"><a href="#deprecated-180"><span class="linenos">180</span></a><span class="sd">    user = User() # This will cause a warning at runtime.</span>
+</span><span id="deprecated-181"><a href="#deprecated-181"><span class="linenos">181</span></a><span class="sd">    ```</span>
+</span><span id="deprecated-182"><a href="#deprecated-182"><span class="linenos">182</span></a>
+</span><span id="deprecated-183"><a href="#deprecated-183"><span class="linenos">183</span></a><span class="sd">    Parameters</span>
+</span><span id="deprecated-184"><a href="#deprecated-184"><span class="linenos">184</span></a><span class="sd">    ----------</span>
+</span><span id="deprecated-185"><a href="#deprecated-185"><span class="linenos">185</span></a><span class="sd">    since : `str`</span>
+</span><span id="deprecated-186"><a href="#deprecated-186"><span class="linenos">186</span></a><span class="sd">        The version that the function was deprecated.</span>
+</span><span id="deprecated-187"><a href="#deprecated-187"><span class="linenos">187</span></a><span class="sd">    removed_in : `str | None`</span>
+</span><span id="deprecated-188"><a href="#deprecated-188"><span class="linenos">188</span></a><span class="sd">        If provided, It will log when will the object will be removed in.</span>
+</span><span id="deprecated-189"><a href="#deprecated-189"><span class="linenos">189</span></a><span class="sd">    use_instead : `str | None`</span>
+</span><span id="deprecated-190"><a href="#deprecated-190"><span class="linenos">190</span></a><span class="sd">        If provided, This should be the alternative object name that should be used instead.</span>
+</span><span id="deprecated-191"><a href="#deprecated-191"><span class="linenos">191</span></a><span class="sd">    hint: `str`</span>
+</span><span id="deprecated-192"><a href="#deprecated-192"><span class="linenos">192</span></a><span class="sd">        An optional hint for the user.</span>
+</span><span id="deprecated-193"><a href="#deprecated-193"><span class="linenos">193</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="deprecated-194"><a href="#deprecated-194"><span class="linenos">194</span></a>
+</span><span id="deprecated-195"><a href="#deprecated-195"><span class="linenos">195</span></a>    <span class="k">def</span> <span class="nf">_create_message</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="deprecated-196"><a href="#deprecated-196"><span class="linenos">196</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_obj_type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2"> `</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` is deprecated.&quot;</span>
+</span><span id="deprecated-197"><a href="#deprecated-197"><span class="linenos">197</span></a>
+</span><span id="deprecated-198"><a href="#deprecated-198"><span class="linenos">198</span></a>        <span class="k">if</span> <span class="n">since</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="deprecated-199"><a href="#deprecated-199"><span class="linenos">199</span></a>            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; since </span><span class="si">{</span><span class="n">since</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span id="deprecated-200"><a href="#deprecated-200"><span class="linenos">200</span></a>
+</span><span id="deprecated-201"><a href="#deprecated-201"><span class="linenos">201</span></a>        <span class="k">if</span> <span class="n">removed_in</span><span class="p">:</span>
+</span><span id="deprecated-202"><a href="#deprecated-202"><span class="linenos">202</span></a>            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Scheduled for removal in `</span><span class="si">{</span><span class="n">removed_in</span><span class="si">}</span><span class="s2">`.&quot;</span>
+</span><span id="deprecated-203"><a href="#deprecated-203"><span class="linenos">203</span></a>
+</span><span id="deprecated-204"><a href="#deprecated-204"><span class="linenos">204</span></a>        <span class="k">if</span> <span class="n">use_instead</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="deprecated-205"><a href="#deprecated-205"><span class="linenos">205</span></a>            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Use `</span><span class="si">{</span><span class="n">use_instead</span><span class="si">}</span><span class="s2">` instead.&quot;</span>
+</span><span id="deprecated-206"><a href="#deprecated-206"><span class="linenos">206</span></a>
+</span><span id="deprecated-207"><a href="#deprecated-207"><span class="linenos">207</span></a>        <span class="k">if</span> <span class="n">hint</span><span class="p">:</span>
+</span><span id="deprecated-208"><a href="#deprecated-208"><span class="linenos">208</span></a>            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Hint: </span><span class="si">{</span><span class="n">hint</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="deprecated-209"><a href="#deprecated-209"><span class="linenos">209</span></a>        <span class="k">return</span> <span class="n">msg</span>
+</span><span id="deprecated-210"><a href="#deprecated-210"><span class="linenos">210</span></a>
+</span><span id="deprecated-211"><a href="#deprecated-211"><span class="linenos">211</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+</span><span id="deprecated-212"><a href="#deprecated-212"><span class="linenos">212</span></a>        <span class="n">message</span> <span class="o">=</span> <span class="n">_create_message</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</span><span id="deprecated-213"><a href="#deprecated-213"><span class="linenos">213</span></a>
+</span><span id="deprecated-214"><a href="#deprecated-214"><span class="linenos">214</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</span><span id="deprecated-215"><a href="#deprecated-215"><span class="linenos">215</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
+</span><span id="deprecated-216"><a href="#deprecated-216"><span class="linenos">216</span></a>            <span class="n">_warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="deprecated-217"><a href="#deprecated-217"><span class="linenos">217</span></a>            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="deprecated-218"><a href="#deprecated-218"><span class="linenos">218</span></a>
+</span><span id="deprecated-219"><a href="#deprecated-219"><span class="linenos">219</span></a>        <span class="c1"># idk why pyright doesn&#39;t know the type of wrapper.</span>
+</span><span id="deprecated-220"><a href="#deprecated-220"><span class="linenos">220</span></a>        <span class="n">m</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># Warning ⚠️</span><span class="se">\n</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span id="deprecated-221"><a href="#deprecated-221"><span class="linenos">221</span></a>        <span class="k">if</span> <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+</span><span id="deprecated-222"><a href="#deprecated-222"><span class="linenos">222</span></a>            <span class="c1"># append this message to an existing document.</span>
+</span><span id="deprecated-223"><a href="#deprecated-223"><span class="linenos">223</span></a>            <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="deprecated-224"><a href="#deprecated-224"><span class="linenos">224</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="deprecated-225"><a href="#deprecated-225"><span class="linenos">225</span></a>            <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">m</span>
+</span><span id="deprecated-226"><a href="#deprecated-226"><span class="linenos">226</span></a>        <span class="k">return</span> <span class="n">wrapper</span>
+</span><span id="deprecated-227"><a href="#deprecated-227"><span class="linenos">227</span></a>
+</span><span id="deprecated-228"><a href="#deprecated-228"><span class="linenos">228</span></a>    <span class="k">return</span> <span class="n">decorator</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>A decorator that marks a function as deprecated.</p>
+
+<p>An attempt to call the object that's marked will cause a runtime warn.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span> <span class="nn">sain</span> <span class="kn">import</span> <span class="n">deprecated</span>
+
+<span class="nd">@deprecated</span><span class="p">(</span>
+    <span class="n">since</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+    <span class="n">removed_in</span> <span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+    <span class="n">use_instead</span> <span class="o">=</span> <span class="s2">&quot;UserImpl()&quot;</span><span class="p">,</span>
+    <span class="n">hint</span> <span class="o">=</span> <span class="s2">&quot;Hint for ux.&quot;</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
+    <span class="o">...</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">()</span> <span class="c1"># This will cause a warning at runtime.</span>
+</code></pre>
+</div>
 
 <h6 id="parameters">Parameters</h6>
 
 <ul>
 <li><strong>since</strong> (<code>str</code>):
 The version that the function was deprecated.</li>
+<li><strong>removed_in</strong> (<code>str | None</code>):
+If provided, It will log when will the object will be removed in.</li>
 <li><strong>use_instead</strong> (<code>str | None</code>):
 If provided, This should be the alternative object name that should be used instead.</li>
-</ul>
-</div>
-
-
-                </section>
-                <section id="awaits">
-                            <input id="awaits-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">async def</span>
-        <span class="name">awaits</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">aws</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Awaitable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>,</span><span class="param">	<span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="awaits-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#awaits"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="awaits-159"><a href="#awaits-159"><span class="linenos">159</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">awaits</span><span class="p">(</span>
-</span><span id="awaits-160"><a href="#awaits-160"><span class="linenos">160</span></a>    <span class="o">*</span><span class="n">aws</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Awaitable</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span>
-</span><span id="awaits-161"><a href="#awaits-161"><span class="linenos">161</span></a>    <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="awaits-162"><a href="#awaits-162"><span class="linenos">162</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="awaits-163"><a href="#awaits-163"><span class="linenos">163</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Await all given awaitables concurrently.</span>
-</span><span id="awaits-164"><a href="#awaits-164"><span class="linenos">164</span></a>
-</span><span id="awaits-165"><a href="#awaits-165"><span class="linenos">165</span></a><span class="sd">    Parameters</span>
-</span><span id="awaits-166"><a href="#awaits-166"><span class="linenos">166</span></a><span class="sd">    ----------</span>
-</span><span id="awaits-167"><a href="#awaits-167"><span class="linenos">167</span></a><span class="sd">    *aws : `collections.Awaitable[JT]`</span>
-</span><span id="awaits-168"><a href="#awaits-168"><span class="linenos">168</span></a><span class="sd">        Multiple awaitables to await.</span>
-</span><span id="awaits-169"><a href="#awaits-169"><span class="linenos">169</span></a><span class="sd">    timeout : `float | None`</span>
-</span><span id="awaits-170"><a href="#awaits-170"><span class="linenos">170</span></a><span class="sd">        An optional timeout.</span>
-</span><span id="awaits-171"><a href="#awaits-171"><span class="linenos">171</span></a>
-</span><span id="awaits-172"><a href="#awaits-172"><span class="linenos">172</span></a><span class="sd">    Returns</span>
-</span><span id="awaits-173"><a href="#awaits-173"><span class="linenos">173</span></a><span class="sd">    -------</span>
-</span><span id="awaits-174"><a href="#awaits-174"><span class="linenos">174</span></a><span class="sd">    `collections.Sequence[T_co]`</span>
-</span><span id="awaits-175"><a href="#awaits-175"><span class="linenos">175</span></a><span class="sd">        A sequence of the results of the awaited coros.</span>
-</span><span id="awaits-176"><a href="#awaits-176"><span class="linenos">176</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="awaits-177"><a href="#awaits-177"><span class="linenos">177</span></a>
-</span><span id="awaits-178"><a href="#awaits-178"><span class="linenos">178</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws</span><span class="p">:</span>
-</span><span id="awaits-179"><a href="#awaits-179"><span class="linenos">179</span></a>        <span class="c1"># Just pass if nothing was passed.</span>
-</span><span id="awaits-180"><a href="#awaits-180"><span class="linenos">180</span></a>        <span class="k">pass</span>
-</span><span id="awaits-181"><a href="#awaits-181"><span class="linenos">181</span></a>
-</span><span id="awaits-182"><a href="#awaits-182"><span class="linenos">182</span></a>    <span class="n">tasks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">[</span><span class="n">T_co</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="awaits-183"><a href="#awaits-183"><span class="linenos">183</span></a>
-</span><span id="awaits-184"><a href="#awaits-184"><span class="linenos">184</span></a>    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">aws</span><span class="p">:</span>
-</span><span id="awaits-185"><a href="#awaits-185"><span class="linenos">185</span></a>        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">))</span>
-</span><span id="awaits-186"><a href="#awaits-186"><span class="linenos">186</span></a>
-</span><span id="awaits-187"><a href="#awaits-187"><span class="linenos">187</span></a>    <span class="n">gatherer</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-</span><span id="awaits-188"><a href="#awaits-188"><span class="linenos">188</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="awaits-189"><a href="#awaits-189"><span class="linenos">189</span></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">gatherer</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-</span><span id="awaits-190"><a href="#awaits-190"><span class="linenos">190</span></a>
-</span><span id="awaits-191"><a href="#awaits-191"><span class="linenos">191</span></a>    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-</span><span id="awaits-192"><a href="#awaits-192"><span class="linenos">192</span></a>        <span class="k">raise</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">(</span><span class="s2">&quot;Gathered Futures were cancelled.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-</span><span id="awaits-193"><a href="#awaits-193"><span class="linenos">193</span></a>
-</span><span id="awaits-194"><a href="#awaits-194"><span class="linenos">194</span></a>    <span class="k">finally</span><span class="p">:</span>
-</span><span id="awaits-195"><a href="#awaits-195"><span class="linenos">195</span></a>        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
-</span><span id="awaits-196"><a href="#awaits-196"><span class="linenos">196</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
-</span><span id="awaits-197"><a href="#awaits-197"><span class="linenos">197</span></a>                <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-</span><span id="awaits-198"><a href="#awaits-198"><span class="linenos">198</span></a>        <span class="n">gatherer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Await all given awaitables concurrently.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>*aws</strong> (<code>collections.Awaitable[JT]</code>):
-Multiple awaitables to await.</li>
-<li><strong>timeout</strong> (<code>float | None</code>):
-An optional timeout.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>collections.Sequence[T_co]</code></strong>: A sequence of the results of the awaited coros.</li>
+<li><strong>hint</strong> (<code>str</code>):
+An optional hint for the user.</li>
 </ul>
 </div>
 
@@ -502,27 +355,27 @@ An optional timeout.</li>
 
     </div>
     <a class="headerlink" href="#get_or_make_loop"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_or_make_loop-202"><a href="#get_or_make_loop-202"><span class="linenos">202</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
-</span><span id="get_or_make_loop-203"><a href="#get_or_make_loop-203"><span class="linenos">203</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
-</span><span id="get_or_make_loop-204"><a href="#get_or_make_loop-204"><span class="linenos">204</span></a><span class="sd">    Returns</span>
-</span><span id="get_or_make_loop-205"><a href="#get_or_make_loop-205"><span class="linenos">205</span></a><span class="sd">    -------</span>
-</span><span id="get_or_make_loop-206"><a href="#get_or_make_loop-206"><span class="linenos">206</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
-</span><span id="get_or_make_loop-207"><a href="#get_or_make_loop-207"><span class="linenos">207</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="get_or_make_loop-208"><a href="#get_or_make_loop-208"><span class="linenos">208</span></a>    <span class="c1"># get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even</span>
-</span><span id="get_or_make_loop-209"><a href="#get_or_make_loop-209"><span class="linenos">209</span></a>    <span class="c1"># if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.</span>
-</span><span id="get_or_make_loop-210"><a href="#get_or_make_loop-210"><span class="linenos">210</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="get_or_make_loop-211"><a href="#get_or_make_loop-211"><span class="linenos">211</span></a>        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop_policy</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-</span><span id="get_or_make_loop-212"><a href="#get_or_make_loop-212"><span class="linenos">212</span></a>
-</span><span id="get_or_make_loop-213"><a href="#get_or_make_loop-213"><span class="linenos">213</span></a>        <span class="c1"># Closed loops cannot be re-used.</span>
-</span><span id="get_or_make_loop-214"><a href="#get_or_make_loop-214"><span class="linenos">214</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
-</span><span id="get_or_make_loop-215"><a href="#get_or_make_loop-215"><span class="linenos">215</span></a>            <span class="k">return</span> <span class="n">loop</span>
-</span><span id="get_or_make_loop-216"><a href="#get_or_make_loop-216"><span class="linenos">216</span></a>
-</span><span id="get_or_make_loop-217"><a href="#get_or_make_loop-217"><span class="linenos">217</span></a>    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-</span><span id="get_or_make_loop-218"><a href="#get_or_make_loop-218"><span class="linenos">218</span></a>        <span class="k">pass</span>
-</span><span id="get_or_make_loop-219"><a href="#get_or_make_loop-219"><span class="linenos">219</span></a>
-</span><span id="get_or_make_loop-220"><a href="#get_or_make_loop-220"><span class="linenos">220</span></a>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
-</span><span id="get_or_make_loop-221"><a href="#get_or_make_loop-221"><span class="linenos">221</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-</span><span id="get_or_make_loop-222"><a href="#get_or_make_loop-222"><span class="linenos">222</span></a>    <span class="k">return</span> <span class="n">loop</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_or_make_loop-74"><a href="#get_or_make_loop-74"><span class="linenos">74</span></a><span class="k">def</span> <span class="nf">get_or_make_loop</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
+</span><span id="get_or_make_loop-75"><a href="#get_or_make_loop-75"><span class="linenos">75</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current usable event loop or create a new one.</span>
+</span><span id="get_or_make_loop-76"><a href="#get_or_make_loop-76"><span class="linenos">76</span></a><span class="sd">    Returns</span>
+</span><span id="get_or_make_loop-77"><a href="#get_or_make_loop-77"><span class="linenos">77</span></a><span class="sd">    -------</span>
+</span><span id="get_or_make_loop-78"><a href="#get_or_make_loop-78"><span class="linenos">78</span></a><span class="sd">    asyncio.AbstractEventLoop</span>
+</span><span id="get_or_make_loop-79"><a href="#get_or_make_loop-79"><span class="linenos">79</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_or_make_loop-80"><a href="#get_or_make_loop-80"><span class="linenos">80</span></a>    <span class="c1"># get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even</span>
+</span><span id="get_or_make_loop-81"><a href="#get_or_make_loop-81"><span class="linenos">81</span></a>    <span class="c1"># if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.</span>
+</span><span id="get_or_make_loop-82"><a href="#get_or_make_loop-82"><span class="linenos">82</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="get_or_make_loop-83"><a href="#get_or_make_loop-83"><span class="linenos">83</span></a>        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop_policy</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+</span><span id="get_or_make_loop-84"><a href="#get_or_make_loop-84"><span class="linenos">84</span></a>
+</span><span id="get_or_make_loop-85"><a href="#get_or_make_loop-85"><span class="linenos">85</span></a>        <span class="c1"># Closed loops cannot be re-used.</span>
+</span><span id="get_or_make_loop-86"><a href="#get_or_make_loop-86"><span class="linenos">86</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_closed</span><span class="p">():</span>
+</span><span id="get_or_make_loop-87"><a href="#get_or_make_loop-87"><span class="linenos">87</span></a>            <span class="k">return</span> <span class="n">loop</span>
+</span><span id="get_or_make_loop-88"><a href="#get_or_make_loop-88"><span class="linenos">88</span></a>
+</span><span id="get_or_make_loop-89"><a href="#get_or_make_loop-89"><span class="linenos">89</span></a>    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+</span><span id="get_or_make_loop-90"><a href="#get_or_make_loop-90"><span class="linenos">90</span></a>        <span class="k">pass</span>
+</span><span id="get_or_make_loop-91"><a href="#get_or_make_loop-91"><span class="linenos">91</span></a>
+</span><span id="get_or_make_loop-92"><a href="#get_or_make_loop-92"><span class="linenos">92</span></a>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+</span><span id="get_or_make_loop-93"><a href="#get_or_make_loop-93"><span class="linenos">93</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+</span><span id="get_or_make_loop-94"><a href="#get_or_make_loop-94"><span class="linenos">94</span></a>    <span class="k">return</span> <span class="n">loop</span>
 </span></pre></div>
 
 
@@ -542,51 +395,87 @@ An optional timeout.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">unimplemented</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">available_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+        <span class="name">unimplemented</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">available_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LiteralString</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="s1">&#39;collections.Callable[[collections.Callable[P, U]], collections.Callable[P, U]]&#39;</span>:</span></span>
 
                 <label class="view-source-button" for="unimplemented-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#unimplemented"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="unimplemented-102"><a href="#unimplemented-102"><span class="linenos">102</span></a><span class="k">def</span> <span class="nf">unimplemented</span><span class="p">(</span>
-</span><span id="unimplemented-103"><a href="#unimplemented-103"><span class="linenos">103</span></a>    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">available_in</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="unimplemented-104"><a href="#unimplemented-104"><span class="linenos">104</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
-</span><span id="unimplemented-105"><a href="#unimplemented-105"><span class="linenos">105</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
-</span><span id="unimplemented-106"><a href="#unimplemented-106"><span class="linenos">106</span></a>
-</span><span id="unimplemented-107"><a href="#unimplemented-107"><span class="linenos">107</span></a><span class="sd">    Parameters</span>
-</span><span id="unimplemented-108"><a href="#unimplemented-108"><span class="linenos">108</span></a><span class="sd">    ----------</span>
-</span><span id="unimplemented-109"><a href="#unimplemented-109"><span class="linenos">109</span></a><span class="sd">    message : `str | None`</span>
-</span><span id="unimplemented-110"><a href="#unimplemented-110"><span class="linenos">110</span></a><span class="sd">        An optional message to be displayed when the function is called. Otherwise default message will be used.</span>
-</span><span id="unimplemented-111"><a href="#unimplemented-111"><span class="linenos">111</span></a><span class="sd">    available_in : `str | None`</span>
-</span><span id="unimplemented-112"><a href="#unimplemented-112"><span class="linenos">112</span></a><span class="sd">        If provided, This will be shown as what release this object be implemented.</span>
-</span><span id="unimplemented-113"><a href="#unimplemented-113"><span class="linenos">113</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="unimplemented-114"><a href="#unimplemented-114"><span class="linenos">114</span></a>
-</span><span id="unimplemented-115"><a href="#unimplemented-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-</span><span id="unimplemented-116"><a href="#unimplemented-116"><span class="linenos">116</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</span><span id="unimplemented-117"><a href="#unimplemented-117"><span class="linenos">117</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="unimplemented-118"><a href="#unimplemented-118"><span class="linenos">118</span></a>            <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
-</span><span id="unimplemented-119"><a href="#unimplemented-119"><span class="linenos">119</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="unimplemented-120"><a href="#unimplemented-120"><span class="linenos">120</span></a>                <span class="n">message</span>
-</span><span id="unimplemented-121"><a href="#unimplemented-121"><span class="linenos">121</span></a>                <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;Warning! </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not implemented yet.&quot;</span>  <span class="c1"># noqa: W503</span>
-</span><span id="unimplemented-122"><a href="#unimplemented-122"><span class="linenos">122</span></a>            <span class="p">)</span>
-</span><span id="unimplemented-123"><a href="#unimplemented-123"><span class="linenos">123</span></a>
-</span><span id="unimplemented-124"><a href="#unimplemented-124"><span class="linenos">124</span></a>            <span class="k">if</span> <span class="n">available_in</span><span class="p">:</span>
-</span><span id="unimplemented-125"><a href="#unimplemented-125"><span class="linenos">125</span></a>                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Will be implemented in </span><span class="si">{</span><span class="n">available_in</span><span class="si">}</span><span class="s2">.&quot;</span>
-</span><span id="unimplemented-126"><a href="#unimplemented-126"><span class="linenos">126</span></a>
-</span><span id="unimplemented-127"><a href="#unimplemented-127"><span class="linenos">127</span></a>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span id="unimplemented-128"><a href="#unimplemented-128"><span class="linenos">128</span></a>                <span class="n">msg</span><span class="p">,</span>
-</span><span id="unimplemented-129"><a href="#unimplemented-129"><span class="linenos">129</span></a>                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="unimplemented-130"><a href="#unimplemented-130"><span class="linenos">130</span></a>                <span class="n">category</span><span class="o">=</span><span class="n">UnimplementedWarning</span><span class="p">,</span>
-</span><span id="unimplemented-131"><a href="#unimplemented-131"><span class="linenos">131</span></a>            <span class="p">)</span>
-</span><span id="unimplemented-132"><a href="#unimplemented-132"><span class="linenos">132</span></a>            <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="unimplemented-133"><a href="#unimplemented-133"><span class="linenos">133</span></a>
-</span><span id="unimplemented-134"><a href="#unimplemented-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
-</span><span id="unimplemented-135"><a href="#unimplemented-135"><span class="linenos">135</span></a>
-</span><span id="unimplemented-136"><a href="#unimplemented-136"><span class="linenos">136</span></a>    <span class="k">return</span> <span class="n">decorator</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="unimplemented-252"><a href="#unimplemented-252"><span class="linenos">252</span></a><span class="k">def</span> <span class="nf">unimplemented</span><span class="p">(</span>
+</span><span id="unimplemented-253"><a href="#unimplemented-253"><span class="linenos">253</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="unimplemented-254"><a href="#unimplemented-254"><span class="linenos">254</span></a>    <span class="n">message</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="unimplemented-255"><a href="#unimplemented-255"><span class="linenos">255</span></a>    <span class="n">available_in</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">LiteralString</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="unimplemented-256"><a href="#unimplemented-256"><span class="linenos">256</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span>
+</span><span id="unimplemented-257"><a href="#unimplemented-257"><span class="linenos">257</span></a>    <span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">]],</span>
+</span><span id="unimplemented-258"><a href="#unimplemented-258"><span class="linenos">258</span></a>    <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">],</span>
+</span><span id="unimplemented-259"><a href="#unimplemented-259"><span class="linenos">259</span></a><span class="p">]:</span>
+</span><span id="unimplemented-260"><a href="#unimplemented-260"><span class="linenos">260</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks an object as unimplemented.</span>
+</span><span id="unimplemented-261"><a href="#unimplemented-261"><span class="linenos">261</span></a>
+</span><span id="unimplemented-262"><a href="#unimplemented-262"><span class="linenos">262</span></a><span class="sd">    An attempt to call the object that&#39;s marked will cause a runtime warn.</span>
+</span><span id="unimplemented-263"><a href="#unimplemented-263"><span class="linenos">263</span></a>
+</span><span id="unimplemented-264"><a href="#unimplemented-264"><span class="linenos">264</span></a><span class="sd">    Example</span>
+</span><span id="unimplemented-265"><a href="#unimplemented-265"><span class="linenos">265</span></a><span class="sd">    -------</span>
+</span><span id="unimplemented-266"><a href="#unimplemented-266"><span class="linenos">266</span></a><span class="sd">    ```py</span>
+</span><span id="unimplemented-267"><a href="#unimplemented-267"><span class="linenos">267</span></a><span class="sd">    from sain import unimplemented</span>
+</span><span id="unimplemented-268"><a href="#unimplemented-268"><span class="linenos">268</span></a>
+</span><span id="unimplemented-269"><a href="#unimplemented-269"><span class="linenos">269</span></a><span class="sd">    @unimplemented(&quot;User object is not implemented yet.&quot;)</span>
+</span><span id="unimplemented-270"><a href="#unimplemented-270"><span class="linenos">270</span></a><span class="sd">    class User:</span>
+</span><span id="unimplemented-271"><a href="#unimplemented-271"><span class="linenos">271</span></a><span class="sd">        ...</span>
+</span><span id="unimplemented-272"><a href="#unimplemented-272"><span class="linenos">272</span></a><span class="sd">    ```</span>
+</span><span id="unimplemented-273"><a href="#unimplemented-273"><span class="linenos">273</span></a>
+</span><span id="unimplemented-274"><a href="#unimplemented-274"><span class="linenos">274</span></a><span class="sd">    Parameters</span>
+</span><span id="unimplemented-275"><a href="#unimplemented-275"><span class="linenos">275</span></a><span class="sd">    ----------</span>
+</span><span id="unimplemented-276"><a href="#unimplemented-276"><span class="linenos">276</span></a><span class="sd">    message : `str | None`</span>
+</span><span id="unimplemented-277"><a href="#unimplemented-277"><span class="linenos">277</span></a><span class="sd">        An optional message to be displayed when the function is called. Otherwise default message will be used.</span>
+</span><span id="unimplemented-278"><a href="#unimplemented-278"><span class="linenos">278</span></a><span class="sd">    available_in : `str | None`</span>
+</span><span id="unimplemented-279"><a href="#unimplemented-279"><span class="linenos">279</span></a><span class="sd">        If provided, This will be shown as what release this object be implemented.</span>
+</span><span id="unimplemented-280"><a href="#unimplemented-280"><span class="linenos">280</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="unimplemented-281"><a href="#unimplemented-281"><span class="linenos">281</span></a>
+</span><span id="unimplemented-282"><a href="#unimplemented-282"><span class="linenos">282</span></a>    <span class="k">def</span> <span class="nf">_create_message</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="unimplemented-283"><a href="#unimplemented-283"><span class="linenos">283</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="unimplemented-284"><a href="#unimplemented-284"><span class="linenos">284</span></a>            <span class="n">message</span>
+</span><span id="unimplemented-285"><a href="#unimplemented-285"><span class="linenos">285</span></a>            <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_obj_type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2"> `</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` is not yet implemented.&quot;</span>
+</span><span id="unimplemented-286"><a href="#unimplemented-286"><span class="linenos">286</span></a>        <span class="p">)</span>  <span class="c1"># noqa: W503</span>
+</span><span id="unimplemented-287"><a href="#unimplemented-287"><span class="linenos">287</span></a>
+</span><span id="unimplemented-288"><a href="#unimplemented-288"><span class="linenos">288</span></a>        <span class="k">if</span> <span class="n">available_in</span><span class="p">:</span>
+</span><span id="unimplemented-289"><a href="#unimplemented-289"><span class="linenos">289</span></a>            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Available in `</span><span class="si">{</span><span class="n">available_in</span><span class="si">}</span><span class="s2">`.&quot;</span>
+</span><span id="unimplemented-290"><a href="#unimplemented-290"><span class="linenos">290</span></a>        <span class="k">return</span> <span class="n">msg</span>
+</span><span id="unimplemented-291"><a href="#unimplemented-291"><span class="linenos">291</span></a>
+</span><span id="unimplemented-292"><a href="#unimplemented-292"><span class="linenos">292</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+</span><span id="unimplemented-293"><a href="#unimplemented-293"><span class="linenos">293</span></a>        <span class="n">message</span> <span class="o">=</span> <span class="n">_create_message</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="unimplemented-294"><a href="#unimplemented-294"><span class="linenos">294</span></a>
+</span><span id="unimplemented-295"><a href="#unimplemented-295"><span class="linenos">295</span></a>        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="unimplemented-296"><a href="#unimplemented-296"><span class="linenos">296</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
+</span><span id="unimplemented-297"><a href="#unimplemented-297"><span class="linenos">297</span></a>            <span class="n">_warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="unimplemented-298"><a href="#unimplemented-298"><span class="linenos">298</span></a>            <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="unimplemented-299"><a href="#unimplemented-299"><span class="linenos">299</span></a>
+</span><span id="unimplemented-300"><a href="#unimplemented-300"><span class="linenos">300</span></a>        <span class="c1"># idk why pyright doesn&#39;t know the type of wrapper.</span>
+</span><span id="unimplemented-301"><a href="#unimplemented-301"><span class="linenos">301</span></a>        <span class="n">m</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># Warning ⚠️</span><span class="se">\n</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span id="unimplemented-302"><a href="#unimplemented-302"><span class="linenos">302</span></a>        <span class="k">if</span> <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+</span><span id="unimplemented-303"><a href="#unimplemented-303"><span class="linenos">303</span></a>            <span class="c1"># append this message to an existing document.</span>
+</span><span id="unimplemented-304"><a href="#unimplemented-304"><span class="linenos">304</span></a>            <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="unimplemented-305"><a href="#unimplemented-305"><span class="linenos">305</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="unimplemented-306"><a href="#unimplemented-306"><span class="linenos">306</span></a>            <span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">m</span>
+</span><span id="unimplemented-307"><a href="#unimplemented-307"><span class="linenos">307</span></a>        <span class="k">return</span> <span class="n">wrapper</span>
+</span><span id="unimplemented-308"><a href="#unimplemented-308"><span class="linenos">308</span></a>
+</span><span id="unimplemented-309"><a href="#unimplemented-309"><span class="linenos">309</span></a>    <span class="k">return</span> <span class="n">decorator</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>A decorator that marks a function or classes as unimplemented.</p>
+            <div class="docstring"><p>A decorator that marks an object as unimplemented.</p>
+
+<p>An attempt to call the object that's marked will cause a runtime warn.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span> <span class="nn">sain</span> <span class="kn">import</span> <span class="n">unimplemented</span>
+
+<span class="nd">@unimplemented</span><span class="p">(</span><span class="s2">&quot;User object is not implemented yet.&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre>
+</div>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -611,22 +500,22 @@ If provided, This will be shown as what release this object be implemented.</li>
 
     </div>
     <a class="headerlink" href="#loads"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="loads-254"><a href="#loads-254"><span class="linenos">254</span></a><span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
-</span><span id="loads-255"><a href="#loads-255"><span class="linenos">255</span></a>    <span class="n">default_loads</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">loads</span>
-</span><span id="loads-256"><a href="#loads-256"><span class="linenos">256</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="loads-257"><a href="#loads-257"><span class="linenos">257</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>  <span class="c1"># pyright: ignore[reportMissingImports]</span>
-</span><span id="loads-258"><a href="#loads-258"><span class="linenos">258</span></a>
-</span><span id="loads-259"><a href="#loads-259"><span class="linenos">259</span></a>        <span class="n">default_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]</span>
-</span><span id="loads-260"><a href="#loads-260"><span class="linenos">260</span></a>
-</span><span id="loads-261"><a href="#loads-261"><span class="linenos">261</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="loads-262"><a href="#loads-262"><span class="linenos">262</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="loads-263"><a href="#loads-263"><span class="linenos">263</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># pyright: ignore[reportMissingModuleSource]</span>
-</span><span id="loads-264"><a href="#loads-264"><span class="linenos">264</span></a>
-</span><span id="loads-265"><a href="#loads-265"><span class="linenos">265</span></a>            <span class="n">default_loads</span> <span class="o">=</span> <span class="n">ujson</span><span class="o">.</span><span class="n">loads</span>
-</span><span id="loads-266"><a href="#loads-266"><span class="linenos">266</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="loads-267"><a href="#loads-267"><span class="linenos">267</span></a>            <span class="k">pass</span>
-</span><span id="loads-268"><a href="#loads-268"><span class="linenos">268</span></a>
-</span><span id="loads-269"><a href="#loads-269"><span class="linenos">269</span></a>    <span class="k">return</span> <span class="n">default_loads</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="loads-126"><a href="#loads-126"><span class="linenos">126</span></a><span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
+</span><span id="loads-127"><a href="#loads-127"><span class="linenos">127</span></a>    <span class="n">default_loads</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="loads-128"><a href="#loads-128"><span class="linenos">128</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="loads-129"><a href="#loads-129"><span class="linenos">129</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>
+</span><span id="loads-130"><a href="#loads-130"><span class="linenos">130</span></a>
+</span><span id="loads-131"><a href="#loads-131"><span class="linenos">131</span></a>        <span class="n">default_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="loads-132"><a href="#loads-132"><span class="linenos">132</span></a>
+</span><span id="loads-133"><a href="#loads-133"><span class="linenos">133</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="loads-134"><a href="#loads-134"><span class="linenos">134</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="loads-135"><a href="#loads-135"><span class="linenos">135</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># pyright: ignore[reportMissingModuleSource]</span>
+</span><span id="loads-136"><a href="#loads-136"><span class="linenos">136</span></a>
+</span><span id="loads-137"><a href="#loads-137"><span class="linenos">137</span></a>            <span class="n">default_loads</span> <span class="o">=</span> <span class="n">ujson</span><span class="o">.</span><span class="n">loads</span>
+</span><span id="loads-138"><a href="#loads-138"><span class="linenos">138</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="loads-139"><a href="#loads-139"><span class="linenos">139</span></a>            <span class="k">pass</span>
+</span><span id="loads-140"><a href="#loads-140"><span class="linenos">140</span></a>
+</span><span id="loads-141"><a href="#loads-141"><span class="linenos">141</span></a>    <span class="k">return</span> <span class="n">default_loads</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -644,28 +533,28 @@ If provided, This will be shown as what release this object be implemented.</li>
 
     </div>
     <a class="headerlink" href="#dumps"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="dumps-230"><a href="#dumps-230"><span class="linenos">230</span></a><span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span>
-</span><span id="dumps-231"><a href="#dumps-231"><span class="linenos">231</span></a>    <span class="n">obj</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-</span><span id="dumps-232"><a href="#dumps-232"><span class="linenos">232</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="dumps-233"><a href="#dumps-233"><span class="linenos">233</span></a>    <span class="k">def</span> <span class="nf">default_dumps</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="dumps-234"><a href="#dumps-234"><span class="linenos">234</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
-</span><span id="dumps-235"><a href="#dumps-235"><span class="linenos">235</span></a>
-</span><span id="dumps-236"><a href="#dumps-236"><span class="linenos">236</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="dumps-237"><a href="#dumps-237"><span class="linenos">237</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
-</span><span id="dumps-238"><a href="#dumps-238"><span class="linenos">238</span></a>
-</span><span id="dumps-239"><a href="#dumps-239"><span class="linenos">239</span></a>        <span class="n">default_dumps</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span>  <span class="c1"># type: ignore[UnknownMemberType]  # noqa: F811</span>
-</span><span id="dumps-240"><a href="#dumps-240"><span class="linenos">240</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="dumps-241"><a href="#dumps-241"><span class="linenos">241</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="dumps-242"><a href="#dumps-242"><span class="linenos">242</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
-</span><span id="dumps-243"><a href="#dumps-243"><span class="linenos">243</span></a>
-</span><span id="dumps-244"><a href="#dumps-244"><span class="linenos">244</span></a>            <span class="n">default_dumps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
-</span><span id="dumps-245"><a href="#dumps-245"><span class="linenos">245</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="dumps-246"><a href="#dumps-246"><span class="linenos">246</span></a>            <span class="k">pass</span>
-</span><span id="dumps-247"><a href="#dumps-247"><span class="linenos">247</span></a>
-</span><span id="dumps-248"><a href="#dumps-248"><span class="linenos">248</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="dumps-249"><a href="#dumps-249"><span class="linenos">249</span></a>        <span class="k">return</span> <span class="n">default_dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span id="dumps-250"><a href="#dumps-250"><span class="linenos">250</span></a>    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="dumps-251"><a href="#dumps-251"><span class="linenos">251</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="dumps-102"><a href="#dumps-102"><span class="linenos">102</span></a><span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span>
+</span><span id="dumps-103"><a href="#dumps-103"><span class="linenos">103</span></a>    <span class="n">obj</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
+</span><span id="dumps-104"><a href="#dumps-104"><span class="linenos">104</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+</span><span id="dumps-105"><a href="#dumps-105"><span class="linenos">105</span></a>    <span class="k">def</span> <span class="nf">default_dumps</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span> <span class="o">|</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+</span><span id="dumps-106"><a href="#dumps-106"><span class="linenos">106</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+</span><span id="dumps-107"><a href="#dumps-107"><span class="linenos">107</span></a>
+</span><span id="dumps-108"><a href="#dumps-108"><span class="linenos">108</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="dumps-109"><a href="#dumps-109"><span class="linenos">109</span></a>        <span class="kn">import</span> <span class="nn">orjson</span>
+</span><span id="dumps-110"><a href="#dumps-110"><span class="linenos">110</span></a>
+</span><span id="dumps-111"><a href="#dumps-111"><span class="linenos">111</span></a>        <span class="n">default_dumps</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span>  <span class="c1"># type: ignore[UnknownMemberType]  # noqa: F811</span>
+</span><span id="dumps-112"><a href="#dumps-112"><span class="linenos">112</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="dumps-113"><a href="#dumps-113"><span class="linenos">113</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="dumps-114"><a href="#dumps-114"><span class="linenos">114</span></a>            <span class="kn">import</span> <span class="nn">ujson</span>  <span class="c1"># type: ignore[reportMissingImports]</span>
+</span><span id="dumps-115"><a href="#dumps-115"><span class="linenos">115</span></a>
+</span><span id="dumps-116"><a href="#dumps-116"><span class="linenos">116</span></a>            <span class="n">default_dumps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ujson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+</span><span id="dumps-117"><a href="#dumps-117"><span class="linenos">117</span></a>        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="dumps-118"><a href="#dumps-118"><span class="linenos">118</span></a>            <span class="k">pass</span>
+</span><span id="dumps-119"><a href="#dumps-119"><span class="linenos">119</span></a>
+</span><span id="dumps-120"><a href="#dumps-120"><span class="linenos">120</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="dumps-121"><a href="#dumps-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="n">default_dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="dumps-122"><a href="#dumps-122"><span class="linenos">122</span></a>    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="dumps-123"><a href="#dumps-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -683,23 +572,23 @@ If provided, This will be shown as what release this object be implemented.</li>
 
     </div>
     <a class="headerlink" href="#unstable"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="unstable-139"><a href="#unstable-139"><span class="linenos">139</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
-</span><span id="unstable-140"><a href="#unstable-140"><span class="linenos">140</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
-</span><span id="unstable-141"><a href="#unstable-141"><span class="linenos">141</span></a>
-</span><span id="unstable-142"><a href="#unstable-142"><span class="linenos">142</span></a><span class="sd">    .. warn::</span>
-</span><span id="unstable-143"><a href="#unstable-143"><span class="linenos">143</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>
-</span><span id="unstable-144"><a href="#unstable-144"><span class="linenos">144</span></a>
-</span><span id="unstable-145"><a href="#unstable-145"><span class="linenos">145</span></a><span class="sd">    Raises</span>
-</span><span id="unstable-146"><a href="#unstable-146"><span class="linenos">146</span></a><span class="sd">    ------</span>
-</span><span id="unstable-147"><a href="#unstable-147"><span class="linenos">147</span></a><span class="sd">    `RuntimeError`</span>
-</span><span id="unstable-148"><a href="#unstable-148"><span class="linenos">148</span></a><span class="sd">        If the object has been called while marked `unstable`.</span>
-</span><span id="unstable-149"><a href="#unstable-149"><span class="linenos">149</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="unstable-150"><a href="#unstable-150"><span class="linenos">150</span></a>
-</span><span id="unstable-151"><a href="#unstable-151"><span class="linenos">151</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</span><span id="unstable-152"><a href="#unstable-152"><span class="linenos">152</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="unstable-153"><a href="#unstable-153"><span class="linenos">153</span></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">obj</span><span class="si">!s}</span><span class="s2"> is currently unstable.&quot;</span><span class="p">)</span>
-</span><span id="unstable-154"><a href="#unstable-154"><span class="linenos">154</span></a>
-</span><span id="unstable-155"><a href="#unstable-155"><span class="linenos">155</span></a>    <span class="k">return</span> <span class="n">decorator</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="unstable-54"><a href="#unstable-54"><span class="linenos">54</span></a><span class="k">def</span> <span class="nf">unstable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">]:</span>
+</span><span id="unstable-55"><a href="#unstable-55"><span class="linenos">55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that marks a function or classes as unimplemented.</span>
+</span><span id="unstable-56"><a href="#unstable-56"><span class="linenos">56</span></a>
+</span><span id="unstable-57"><a href="#unstable-57"><span class="linenos">57</span></a><span class="sd">    .. warn::</span>
+</span><span id="unstable-58"><a href="#unstable-58"><span class="linenos">58</span></a><span class="sd">        Calling an object decorated with this will raise a runtime error.</span>
+</span><span id="unstable-59"><a href="#unstable-59"><span class="linenos">59</span></a>
+</span><span id="unstable-60"><a href="#unstable-60"><span class="linenos">60</span></a><span class="sd">    Raises</span>
+</span><span id="unstable-61"><a href="#unstable-61"><span class="linenos">61</span></a><span class="sd">    ------</span>
+</span><span id="unstable-62"><a href="#unstable-62"><span class="linenos">62</span></a><span class="sd">    `RuntimeError`</span>
+</span><span id="unstable-63"><a href="#unstable-63"><span class="linenos">63</span></a><span class="sd">        If the object has been called while marked `unstable`.</span>
+</span><span id="unstable-64"><a href="#unstable-64"><span class="linenos">64</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="unstable-65"><a href="#unstable-65"><span class="linenos">65</span></a>
+</span><span id="unstable-66"><a href="#unstable-66"><span class="linenos">66</span></a>    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</span><span id="unstable-67"><a href="#unstable-67"><span class="linenos">67</span></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="unstable-68"><a href="#unstable-68"><span class="linenos">68</span></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">obj</span><span class="si">!s}</span><span class="s2"> is currently unstable.&quot;</span><span class="p">)</span>
+</span><span id="unstable-69"><a href="#unstable-69"><span class="linenos">69</span></a>
+</span><span id="unstable-70"><a href="#unstable-70"><span class="linenos">70</span></a>    <span class="k">return</span> <span class="n">decorator</span>
 </span></pre></div>
 
 

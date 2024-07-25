@@ -358,7 +358,7 @@ class TestMeta:
 
 
 async def main() -> None:
-    from aiobungie.internal import helpers
+    from sain import futures
 
     tasks = []
     for cls in inspect.getmembers(sys.modules[__name__], inspect.isclass):
@@ -371,7 +371,7 @@ async def main() -> None:
                     tasks.append(coro)
 
     async with client.rest:
-        await helpers.awaits(*tasks)
+        await futures.spawn(*tasks)
 
 
 if __name__ == "__main__":

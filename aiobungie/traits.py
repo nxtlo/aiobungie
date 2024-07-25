@@ -37,12 +37,13 @@ import pathlib
 import sys
 import typing
 
+from aiobungie import builders
+
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import os
 
     from aiobungie import api
-    from aiobungie import builders
     from aiobungie import client
     from aiobungie.internal import enums
 
@@ -293,6 +294,13 @@ class RESTful(typing.Protocol):
     ) -> typedefs.JSONIsh:
         """Perform an HTTP request given a valid Bungie endpoint.
 
+        This method allows you to freely perform HTTP requests to Bungie's API.
+        It provides authentication support, JSON bodies, URL parameters and out of
+        the box exception handling.
+
+        This method is useful for testing routes by yourself. or even calling
+        routes that aiobungie doesn't support yet.
+
         Parameters
         ----------
         method : `str`
@@ -320,7 +328,7 @@ class RESTful(typing.Protocol):
 
 @typing.runtime_checkable
 class Compact(Send, Deserialize, typing.Protocol):
-    """A Structural super-type that can perform all actions that other traits provide.
+    """A structural super-type that can perform all actions that other traits provide.
 
     This trait includes all aiobungie traits. is also automatically implemented for `aiobungie.Client`
     """

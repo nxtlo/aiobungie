@@ -68,6 +68,8 @@ await rest.download_json_manifest(
 
 ### Changed
 
+#### namings
+
 * `interfaces` dir is renamed to `api`.
 * `factory` renamed to `framework` and exported to top level, no longer an `internal` package
 * `factory.Factory` is now `framework.Framework`.
@@ -78,19 +80,21 @@ await rest.download_json_manifest(
 * trait `ClientApp` renamed to `Compact`.
 * `Client.factory` is now `Client.framework`.
 * `factory.EmptyFactory` is now `framework.Empty` and is now deprecated, use `Framework()` instead.
-* `Framework` doesn't require a `net` parameter anymore.
-* `.net` field removed from all objects.
 * `UserLike` abstract class renamed to `Unique`.
-* `Framework.deserialize_fireteam_destiny_users` renamed to `deserialize_fireteam_destiny_membership`
-* `FireteamMember.destiny_user` renamed to `FireteamMember.membership`
 * `deserialize_app` renamed to `deserialize_application`.
 * `deserialize_app_owner` renamed to `deserialize_application_member`
 * `ApplicationOwner` is now `ApplicationMember` and the user fields are accessible through `.user`
 * `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
+* `Framework.deserialize_fireteam_destiny_users` renamed to `deserialize_fireteam_destiny_membership`
+* `FireteamMember.destiny_user` renamed to `FireteamMember.membership`
+* `Image.default_or_else` is now just `Image.default`
+
+#### other changes
+
+* `Framework` doesn't require a `net` parameter anymore.
 * `Client.run` is deprecated and will be removed in the next major release.
 * `RESTClient.with_debug` has been moved to `traits.RESTful` with a default final impl.
 * `internal.assets` which contained `Image` has been moved to `aiobungie.builders`
-* `Image.default_or_else` is now just `Image.default`
 * `Image` now accepts `None` as a default path.
 * [`sain`](https://github.com/nxtlo/sain) package is now used as the default iterator builder.
 it is a dependency free that's developed by me so it won't really have any side-effects.
@@ -105,6 +109,9 @@ url = pool.build_oauth2_url()
 # same as
 async with pool.acquire() as client:
   url = client.build_oauth2_url()
+
+# also the same
+url = pool.acquire().build_oauth2_url()
 ```
 
 ## Removed
@@ -179,7 +186,7 @@ ok but why? there're multiple reasons why those got removed.
 
 good practices; at the beginning, those methods were meant to provide a higher-level abstraction over the object itself,
 so you can call them directly from the object, while it is a nice QoL thing, it can, *if misused*, end up with worse overall code.
-this change should forward users with developing good code and practices and them more aware of `client` and `client.rest`.
+this change should forward users with developing good code and practices and make them more aware of both client APIs.
 
 conflict and unsafety; since those methods can also be accessed via an empty deserializer results, this introduces bugs for the user of this lib,
 
@@ -197,6 +204,7 @@ await user_object.fetch_self()
 
 aiobungie crates are meant to be a stand-alone representation of the fetched API results. which payloads deserializes into. so those methods won't really fit in.
 
+* `.net` field removed from all objects.
 * `UserLike.icon`
 * `UserLike.last_seen_name`
 * `UserLike.is_public`

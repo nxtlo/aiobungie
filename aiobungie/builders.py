@@ -419,6 +419,7 @@ class OAuth2Response:
 
 
 # To be able to cache the result of the compiled URL, We disable the slots here.
+@typing.final
 @attrs.frozen(kw_only=True, slots=False)
 class OAuthURL:
     """The result of calling `aiobungie.RESTClient.build_oauth2_url`.
@@ -549,11 +550,16 @@ class PlugSocketBuilder:
         return self._map
 
 
-@attrs.frozen(kw_only=True)
+@typing.final
+@attrs.frozen(weakref_slot=False)
 class FireteamBuilder:
     """A helper class that exposes all of `FireteamFinder` methods.
 
-    This is returned by calling `RESTClient.build_fireteam_finder()`.
+    This is the result of calling `RESTClient.build_fireteam_finder()`.
+
+    Note
+    ----
+    All methods in this class require an `access token` for authentication.
 
     Example
     -------
@@ -564,7 +570,7 @@ class FireteamBuilder:
         char_id,
         member_type
     ) # All methods are available via `fireteam_finder`
-    application = await fireteam_finder.fetch_application(app_id)
+    application = await fireteam_finder.fetch_application('token', app_id)
     ```
     """
 
@@ -579,69 +585,85 @@ class FireteamBuilder:
 
     async def activate_fireteam_lobby(
         self,
-        lobby_id: int,
+        access_token: str,
         /,
+        lobby_id: int,
         *,
         force_activation: bool = False,
     ) -> bool:
         """Activates a lobby and initializes it as an active Fireteam."""
         response = await self.rest.static_request(
             "POST",
-            f"FireteamFinder/Lobby/Activate/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            f"FireteamFinder/Lobby/Activate/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
             params={"forceActivation": force_activation},
+            auth=access_token,
         )
         assert isinstance(response, bool)
         return response
 
     async def activate_lobby_for_id(
         self,
-        lobby_id: int,
+        access_token: str,
         /,
+        lobby_id: int,
         *,
         force_activation: bool = False,
     ) -> bool:
         """Activates a lobby and initializes it as an active Fireteam, returning the updated Listing ID."""
         response = await self.rest.static_request(
             "POST",
-            f"FireteamFinder/Lobby/ActivateForNewListingId/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/ ",
+            f"FireteamFinder/Lobby/ActivateForNewListingId/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
             params={"forceActivation": force_activation},
+            auth=access_token,
         )
         assert isinstance(response, bool)
         return response
 
     async def apply_to_listing(
-        self, listing_id: int, /, application_type: enums.OAuthApplicationType | int
+        self,
+        access_token: str,
+        /,
+        listing_id: int,
+        application_type: enums.OAuthApplicationType | int,
     ) -> typedefs.JSONObject:
         """Applies to have a character join a fireteam."""
         response = await self.rest.static_request(
             "POST",
             f"FireteamFinder/Listing/{listing_id}/Apply/{int(application_type)}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def bulk_fetch_listing_status(self) -> typedefs.JSONObject:
+    async def bulk_fetch_listing_status(
+        self, access_token: str, /
+    ) -> typedefs.JSONObject:
         """Retrieves Fireteam listing statuses in bulk."""
         response = await self.rest.static_request(
             "POST",
             f"FireteamFinder/Listing/BulkStatus/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def fetch_application(self, application_id: int) -> typedefs.JSONObject:
+    async def fetch_application(
+        self, access_token: str, /, application_id: int
+    ) -> typedefs.JSONObject:
         """Retrieves a Fireteam application."""
         response = await self.rest.static_request(
             "GET",
             f"FireteamFinder/Application/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def fetch_listing_applications(
         self,
-        listing_id: int,
+        access_token: str,
         /,
+        listing_id: int,
         *,
         flags: typing.Literal[0, 1, 2, 3, 4, 5, 6] | None = None,
         page_token: str | None = None,
@@ -672,27 +694,33 @@ class FireteamBuilder:
         """
         response = await self.rest.static_request(
             "GET",
-            f"FireteamFinder/Listing/{listing_id}/Applications/{int(self.membership_type)}/{self.membership_type}/{self.character_id}/",
+            f"FireteamFinder/Listing/{listing_id}/Applications/{int(self.membership_type)}/{self.membership_type}/{self.character_id}",
             params={
-                "flags": flags,
-                "nextPageToken": page_token,
-                "pageSize": page_size,
+                "flags": flags or 0,
+                "nextPageToken": page_token or "",
+                "pageSize": page_size or 0,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def fetch_lobby(self, lobby_id: int, /) -> typedefs.JSONObject:
+    async def fetch_lobby(
+        self, access_token: str, /, lobby_id: int
+    ) -> typedefs.JSONObject:
         """Retrieves the information for a Fireteam lobby."""
         response = await self.rest.static_request(
             "GET",
             f"FireteamFinder/Lobby/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def fetch_player_lobbies(
         self,
+        access_token: str,
+        /,
         *,
         page_token: str | None = None,
         page_size: int | None = None,
@@ -708,14 +736,17 @@ class FireteamBuilder:
         """
         response = await self.rest.static_request(
             "GET",
-            f"FireteamFinder/PlayerLobbies/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
-            params={"nextPageToken": page_token, "pageSize": page_size},
+            f"FireteamFinder/PlayerLobbies/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
+            params={"nextPageToken": page_token or "", "pageSize": page_size or 0},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def fetch_player_applications(
         self,
+        access_token: str,
+        /,
         *,
         page_token: str | None = None,
         page_size: int | None = None,
@@ -731,14 +762,17 @@ class FireteamBuilder:
         """
         response = await self.rest.static_request(
             "GET",
-            f"FireteamFinder/PlayerApplications/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
-            params={"nextPageToken": page_token, "pageSize": page_size},
+            f"FireteamFinder/PlayerApplications/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
+            params={"nextPageToken": page_token or "", "pageSize": page_size or 0},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def fetch_player_offers(
         self,
+        access_token: str,
+        /,
         *,
         page_token: str | None = None,
         page_size: int | None = None,
@@ -754,34 +788,47 @@ class FireteamBuilder:
         """
         response = await self.rest.static_request(
             "GET",
-            f"FireteamFinder/PlayerOffers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
-            params={"nextPageToken": page_token, "pageSize": page_size},
+            f"FireteamFinder/PlayerOffers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
+            params={"nextPageToken": page_token or "", "pageSize": page_size or 0},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def fetch_character_activity_access(self) -> typedefs.JSONObject:
+    async def fetch_character_activity_access(
+        self,
+        access_token: str,
+        /,
+    ) -> typedefs.JSONObject:
         """Retrieves the information for a Fireteam lobby."""
         response = await self.rest.static_request(
             "GET",
             f"FireteamFinder/CharacterActivityAccess/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def fetch_offer(self, offer_id: int, /) -> typedefs.JSONObject:
+    async def fetch_offer(
+        self,
+        access_token: str,
+        /,
+        offer_id: int,
+    ) -> typedefs.JSONObject:
         """Retrieves an offer to a Fireteam lobby."""
         response = await self.rest.static_request(
             "GET",
             f"FireteamFinder/Offer/{offer_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def fetch_lobby_offers(
         self,
-        lobby_id: int,
+        access_token: str,
         /,
+        lobby_id: int,
         *,
         page_token: str | None = None,
         page_size: int | None = None,
@@ -797,19 +844,22 @@ class FireteamBuilder:
         """
         response = await self.rest.static_request(
             "GET",
-            f"FireteamFinder/Lobby/{lobby_id}/Offers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
-            params={"nextPageToken": page_token, "pageSize": page_size},
+            f"FireteamFinder/Lobby/{lobby_id}/Offers/{int(self.membership_type)}/{self.membership_id}/{self.character_id}",
+            params={"nextPageToken": page_token or "", "pageSize": page_size or 0},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def host_lobby(
         self,
+        access_token: str,
+        /,
+        clan_id: int,
         max_players: int,
         online_only: bool,
         privacy_scope: typing.Literal[0, 1, 2, 3, 4],
         scheduled_date: datetime.datetime,
-        clan_id: int,
         listing_values: collections.Sequence[_FinderListingValue],
         activity_graph_hash: int,
         activity_hash: int,
@@ -847,11 +897,14 @@ class FireteamBuilder:
                 "activityGraphHash": activity_graph_hash,
                 "activityHash": activity_hash,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def join_lobby(self, lobby_id: int, offer_id: int) -> typedefs.JSONObject:
+    async def join_lobby(
+        self, access_token: str, /, lobby_id: int, offer_id: int
+    ) -> typedefs.JSONObject:
         """Sends a request to join an available Fireteam lobby.
 
         Parameters
@@ -865,14 +918,16 @@ class FireteamBuilder:
             "POST",
             f"FireteamFinder/Lobby/Join/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
             json={"lobbyId": lobby_id, "offerId": offer_id},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def kick_player(
         self,
-        lobby_id: int,
+        access_token: str,
         /,
+        lobby_id: int,
         target_membership_id: int,
         target_character_id: int,
         target_membership_type: enums.MembershipType | int,
@@ -897,11 +952,14 @@ class FireteamBuilder:
                 "targetMembershipType": int(target_membership_type),
                 "targetCharacterId": target_character_id,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
-    async def leave_application(self, application_id: int, /) -> bool:
+    async def leave_application(
+        self, access_token: str, /, application_id: int
+    ) -> bool:
         """Sends a request to leave a Fireteam listing application.
 
         Parameters
@@ -916,11 +974,12 @@ class FireteamBuilder:
         response = await self.rest.static_request(
             "POST",
             f"FireteamFinder/Application/Leave/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, bool)
         return response
 
-    async def leave_lobby(self, lobby_id: int, /) -> bool:
+    async def leave_lobby(self, access_token: str, /, lobby_id: int) -> bool:
         """Sends a request to leave a Fireteam lobby.
 
         Parameters
@@ -935,12 +994,13 @@ class FireteamBuilder:
         response = await self.rest.static_request(
             "POST",
             f"FireteamFinder/Lobby/Leave/{lobby_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
+            auth=access_token,
         )
         assert isinstance(response, bool)
         return response
 
     async def respond_to_application(
-        self, application_id: int, accepted: bool
+        self, access_token: str, /, application_id: int, accepted: bool
     ) -> typedefs.JSONObject:
         """Responds to an application sent to a Fireteam lobby.
 
@@ -959,12 +1019,13 @@ class FireteamBuilder:
             "POST",
             f"FireteamFinder/Application/Respond/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
             json={"accepted": accepted},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def respond_to_authentication(
-        self, application_id: int, confirmed: bool
+        self, access_token: str, /, application_id: int, confirmed: bool
     ) -> typedefs.JSONObject:
         """Responds to an authentication request for a Fireteam.
 
@@ -983,12 +1044,13 @@ class FireteamBuilder:
             "POST",
             f"FireteamFinder/Authentication/Respond/{application_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
             json={"confirmed": confirmed},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def respond_to_offer(
-        self, offer_id: int, accepted: bool
+        self, access_token: str, /, offer_id: int, accepted: bool
     ) -> typedefs.JSONObject:
         """Responds to a Fireteam lobby offer.
 
@@ -1008,12 +1070,13 @@ class FireteamBuilder:
             "POST",
             f"FireteamFinder/Offer/Respond/{offer_id}/{int(self.membership_type)}/{self.membership_id}/{self.character_id}/",
             json={"accepted": accepted},
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def search_listings_by_clan(
-        self, page_size: int, page_token: str, lobby_state: int
+        self, access_token: str, /, page_size: int, page_token: str, lobby_state: int
     ) -> typedefs.JSONObject:
         """Returns search results for available Fireteams provided a clan.
 
@@ -1048,12 +1111,15 @@ class FireteamBuilder:
                 "pageToken": page_token,
                 "lobbyState": lobby_state,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def search_listings_by_filters(
         self,
+        access_token: str,
+        /,
         filters: collections.Sequence[_ListingFilter],
         page_size: int,
         page_token: str,
@@ -1096,12 +1162,15 @@ class FireteamBuilder:
                 "pageToken": page_token,
                 "lobbyState": lobby_state,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response
 
     async def update_lobby_settings(
         self,
+        access_token: str,
+        /,
         lobby_id: int,
         max_players: int,
         online_only: bool,
@@ -1152,6 +1221,7 @@ class FireteamBuilder:
                 "activityGraphHash": activity_graph_hash,
                 "activityHash": activity_hash,
             },
+            auth=access_token,
         )
         assert isinstance(response, dict)
         return response

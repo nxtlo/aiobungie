@@ -7,6 +7,7 @@ This example must be used for an authorized membership. See user_oauth2 example.
 """
 
 import aiobungie
+import asyncio
 
 client = aiobungie.Client("TOKEN")
 
@@ -60,7 +61,7 @@ async def transfer() -> None:
                 # * CHAR_HAS_WEAPON -> VAULT -> CHAR_NEEDS_WEAPON.
 
                 await client.rest.transfer_item(
-                    "BEARER_TOKEN",
+                    "auth-token",
                     item.instance_id,
                     item.hash,
                     # From titan to vault.
@@ -69,7 +70,7 @@ async def transfer() -> None:
                     vault=True,
                 )
                 await client.rest.transfer_item(
-                    "BEARER_TOKEN",
+                    "auth-token",
                     item.instance_id,
                     item.hash,
                     # From vault to hunter.
@@ -90,4 +91,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    client.run(main())
+    asyncio.run(main())

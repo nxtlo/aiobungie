@@ -59,6 +59,8 @@ __all__ = (
     "ClosedReasons",
     "ItemSubType",
     "TierType",
+    "GameVersions",
+    "OAuthApplicationType",
 )
 
 import enum as __enum
@@ -404,10 +406,11 @@ class ComponentType(Enum):
     INVENTORIES = 102
     STRING_VARIABLES = 1200
     CRAFTABLES = 1300
+    SOCIAL_COMMENDATIONS = 1400
 
     CHARACTERS = 200
     CHARACTER_INVENTORY = 201
-    CHARECTER_PROGRESSION = 202
+    CHARACTER_PROGRESSION = 202
     CHARACTER_RENDER_DATA = 203
     CHARACTER_ACTIVITIES = 204
     CHARACTER_EQUIPMENT = 205
@@ -416,7 +419,7 @@ class ComponentType(Enum):
     ALL_CHARACTERS = (
         CHARACTERS,
         CHARACTER_INVENTORY,
-        CHARECTER_PROGRESSION,
+        CHARACTER_PROGRESSION,
         CHARACTER_RENDER_DATA,
         CHARACTER_ACTIVITIES,
         CHARACTER_EQUIPMENT,
@@ -425,12 +428,11 @@ class ComponentType(Enum):
     )
     """All character components."""
 
-    # Ignores: We those are iterables, They're tuples.
     ALL = (
-        *ALL_PROFILES,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_CHARACTERS,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_VENDORS,  # pyright: ignore[reportGeneralTypeIssues]
-        *ALL_ITEMS,  # pyright: ignore[reportGeneralTypeIssues]
+        *ALL_PROFILES,
+        *ALL_CHARACTERS,
+        *ALL_VENDORS,
+        *ALL_ITEMS,
         RECORDS,
         CURRENCY_LOOKUPS,
         PRESENTATION_NODES,
@@ -442,8 +444,9 @@ class ComponentType(Enum):
         STRING_VARIABLES,
         TRANSITORY,
         CRAFTABLES,
+        SOCIAL_COMMENDATIONS,
     )
-    """ALl components included."""
+    """All components included."""
 
 
 @typing.final
@@ -815,3 +818,30 @@ class PeriodType(int, Enum):
     DAILY = 1
     ALL_TIME = 2
     ACTIVITY = 3
+
+
+@typing.final
+class GameVersions(Flag):
+    """An enum that holds all available Destiny 2 game versions. aka DLCs"""
+
+    NONE = 0 << 0  # always 0
+    DESTINY_2 = 1 << 0
+    DLC1 = 1 << 1
+    DLC2 = 1 << 2
+    FORSAKEN = 1 << 3
+    YEAR_TWO_ANNUAL_PASS = 1 << 4
+    SHADOW_KEEP = 1 << 5
+    BEYOND_LIGHT = 1 << 6
+    ANNIVERSARY_30TH = 1 << 7
+    THE_WITCH_QUEEN = 1 << 8
+    LIGHT_FALL = 1 << 9
+    THE_FINAL_SHAPE = 1 << 10
+
+
+@typing.final
+class OAuthApplicationType(int, Enum):
+    NONE = 0
+    CONFIDENTIAL = 1
+    """Indicates the application is server based and can keep its secrets from end users and other potential snoops."""
+    PUBLIC = 2
+    """Indicates the application runs in a public place, and it can't be trusted to keep a secret."""

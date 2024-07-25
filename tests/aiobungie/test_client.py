@@ -58,7 +58,7 @@ class TestUser:
         # This method only uses STEAM IDs.
         @staticmethod
         async def test_hard_types():
-            uht = await client.fetch_hard_types(config.PRIMARY_STEAM_ID)
+            uht = await client.fetch_hard_types(config.PRIMARY_STEAM_ID)  # type: ignore
             assert isinstance(uht, aiobungie.crates.HardLinkedMembership)
 
     @staticmethod
@@ -75,7 +75,7 @@ class TestUser:
     @staticmethod
     async def test_search_users():
         x = await client.search_users("Fate")
-        assert isinstance(x.next(), aiobungie.crates.SearchableDestinyUser)
+        assert isinstance(x.next().unwrap(), aiobungie.crates.SearchableDestinyUser)
 
 
 # *->> Activities tests <<-*
@@ -87,9 +87,6 @@ class TestActivities:
             config.PRIMARY_CHARACTER_ID,
             aiobungie.GameMode.RAID,
         )
-        post = await a.next().fetch_post()
-        assert isinstance(post, aiobungie.crates.PostActivity)
-
         for act in a:
             assert isinstance(act, aiobungie.crates.Activity)
 
@@ -100,20 +97,13 @@ class TestActivities:
         assert len(a.players) >= 1
 
     @staticmethod
-    async def test_activity_is_flawless():
-        a = await client.fetch_post_activity(9710513682)
-        assert a.is_flawless
-        assert a.is_solo
-        assert a.is_solo_flawless
-
-    @staticmethod
     async def test_aggregated_activity():
         a = await client.fetch_aggregated_activity_stats(
             config.PRIMARY_CHARACTER_ID,
             config.PRIMARY_MEMBERSHIP_ID,
             config.PRIMARY_MEMBERSHIP_TYPE,
         )
-        assert isinstance(a.next(), aiobungie.crates.AggregatedActivity)
+        assert isinstance(a.next().unwrap(), aiobungie.crates.AggregatedActivity)
 
 
 # *->> Clan tests <<-*
@@ -159,8 +149,6 @@ class TestClans:
             config.PRIMARY_MEMBERSHIP_ID, config.PRIMARY_MEMBERSHIP_TYPE
         )
         assert obj
-        up_to_date_clan_obj = await obj[0].fetch_self_clan()
-        assert isinstance(up_to_date_clan_obj, aiobungie.crates.Clan)
 
     @staticmethod
     async def test_potential_groups_for_member():
@@ -180,6 +168,11 @@ class TestClans:
     async def test_clan_weekly_rewards():
         r = await client.fetch_clan_weekly_rewards(config.PRIMARY_CLAN_ID)
         assert isinstance(r, aiobungie.crates.Milestone)
+
+    @staticmethod
+    async def test_search_groups():
+        r = await client.search_group("Fate", 0)
+        assert len(r) > 1
 
 
 # *->> Application tests <<-*
@@ -256,8 +249,6 @@ class TestProfile:
         assert pf.character_render_data
         for _, data in pf.character_render_data.items():
             assert isinstance(data, aiobungie.crates.RenderedData)
-            items_ = await data.fetch_my_items(limit=2)
-            assert len(items_) == 2
 
         assert pf.character_progressions
         for config.PRIMARY_CHARACTER_ID, prog in pf.character_progressions.items():
@@ -271,6 +262,7 @@ class TestProfile:
         assert pf.metrics
         assert isinstance(pf.item_components, aiobungie.crates.ItemsComponent)
         assert pf.character_craftables
+        assert pf.character_loadouts
 
     @staticmethod
     async def test_linked_profiles():
@@ -292,7 +284,7 @@ class TestEntities:
     @staticmethod
     async def test_search_entities():
         acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
-        assert "Scourge of the Past" in acts.next().name
+        assert "Scourge of the Past" in acts.next().unwrap().name
 
 
 # *->> Functions that doesn't fall under any of the above <<-*
@@ -334,12 +326,6 @@ class TestMeta:
         for weapon in w:
             assert isinstance(weapon, aiobungie.crates.ExtendedWeaponValues)
 
-    @staticmethod
-    async def test_client_metadata():
-        client.metadata[0] = None
-        clan = await client.fetch_clan("Math Class")
-        assert clan.net.request.metadata[0] is None
-
     # FIXME: There's currently a problem with this API route from Bungie's side
     # where it returns an HTML not found page.
     # @staticmethod
@@ -372,7 +358,7 @@ class TestMeta:
 
 
 async def main() -> None:
-    from aiobungie.internal import helpers
+    from sain import futures
 
     tasks = []
     for cls in inspect.getmembers(sys.modules[__name__], inspect.isclass):
@@ -385,7 +371,7 @@ async def main() -> None:
                     tasks.append(coro)
 
     async with client.rest:
-        await helpers.awaits(*tasks)
+        await futures.spawn(*tasks)
 
 
 if __name__ == "__main__":

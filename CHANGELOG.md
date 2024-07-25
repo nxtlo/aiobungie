@@ -8,7 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.11...HEAD)
 
 ### Added
+
+#### methods
+
+* `fetch_sanitized_membership`, available on both client APIs
+* `search_groups`, available on both client APIs
+* `RESTClient.report_player`
+* `RESTClient.force_drops_repair`
+* `RESTClient.claim_partner_offer`
+* `RESTClient.fetch_bungie_rewards_for_user`
+* `RESTClient.fetch_bungie_rewards_for_platform`
+* `RESTClient.fetch_bungie_rewards`
+* `Image.stream`
+* `Image.chunks`
+* `FireteamFinder` methods, available through the `RESTClient.build_fireteam_finder` method.
+
+#### components
+
+* implemented the `CHARACTER LOADOUTS` component along with its framework methods, You can access it via `Components.character_loadouts`
+after fetching a profile. or `loadouts` after fetching a character.
+* implemented the `SOCIAL COMMENDATIONS` components, you can access it via `Components.commendations` after fetching a profile.
+
+#### object fields
+
+* `type`, `profile_ban_expire` and `egs_name` fields to `BungieUser`
+* `code` field to `PartialBungieUser`
+* `origin` field to `Application`
+* `emblem_color` field to `Character`
+* `minutes_played_this_session` field to `Character`
+* `percent_to_next_level` field to `Character`
+* Added the following to `Profile`
+  * `season_hashes`
+  * `versions_owned`
+  * `season_hash`
+  * `guardian_rank`
+  * `highest_guardian_rank`
+  * `renewed_guardian_rank`
+  * `event_card_hashes`
+  * `user`, removed `name`, `id` and `type` in favor of this.
+* Added `available_activity_interactables` to `CharacterActivity`
+
+#### other
+
+* [`sain`](https://github.com/nxtlo/sain) as a required dependency. this is used mainly to replace `iterators`
+* `custom_client` example
+* `GameVersions` enum.
 * An option to use a specific executor for downloading the manifest and `Image.save` method.
+
 ```py
 import concurrent.futures
 # Use process pool executor to write the manifest data.
@@ -18,9 +64,159 @@ await rest.download_json_manifest(
 )
 ```
 
-## Changed
+* `FireteamBuilder` in `aiobungie.builders`
+
+### Changed
+
+#### namings
+
+* `interfaces` dir is renamed to `api`.
+* `factory` renamed to `framework` and exported to top level, no longer an `internal` package
+* `factory.Factory` is now `framework.Framework`.
+* `interfaces.RESTInterface` renamed to `api.RESTClient` which matches `rest.RESTClient`.
+* `interfaces.FactoryInterface` renamed to `api.Framework` which matches `framework.Framework`.
+* trait `Netrunner` renamed to `Send` and is no longer used, currently kept for future plans.
+* trait `Serializable` renamed to `Deserialize` and its method `factory` renamed to `framework`.
+* trait `ClientApp` renamed to `Compact`.
+* `Client.factory` is now `Client.framework`.
+* `factory.EmptyFactory` is now `framework.Empty` and is now deprecated, use `Framework()` instead.
+* `UserLike` abstract class renamed to `Unique`.
+* `deserialize_app` renamed to `deserialize_application`.
+* `deserialize_app_owner` renamed to `deserialize_application_member`
+* `ApplicationOwner` is now `ApplicationMember` and the user fields are accessible through `.user`
+* `Application.owner` field is now `Application.team` which returns the entire application roaster instead of just the owner.
+* `Framework.deserialize_fireteam_destiny_users` renamed to `deserialize_fireteam_destiny_membership`
+* `FireteamMember.destiny_user` renamed to `FireteamMember.membership`
+* `Image.default_or_else` is now just `Image.default`
+
+#### other changes
+
+* `Framework` doesn't require a `net` parameter anymore.
+* `Client.run` is deprecated and will be removed in the next major release.
+* `RESTClient.with_debug` has been moved to `traits.RESTful` with a default final impl.
+* `internal.assets` which contained `Image` has been moved to `aiobungie.builders`
+* `Image` now accepts `None` as a default path.
+* [`sain`](https://github.com/nxtlo/sain) package is now used as the default iterator builder.
+it is a dependency free that's developed by me so it won't really have any side-effects.
+* If you're a `RESTPool` user, it is possible to call `build_oauth2_url` without acquiring a client instance
+this is a good change for performance improvements since acquiring a client instance also means opening a TCP connection,
+which is useless when you're still not making any requests.
+
+```py
+pool = aiobungie.RESTPool("token", client_id=0000, client_secret="secret")
+url = pool.build_oauth2_url()
+
+# same as
+async with pool.acquire() as client:
+  url = client.build_oauth2_url()
+
+# also the same
+url = pool.acquire().build_oauth2_url()
+```
 
 ## Removed
+
+The following methods were scheduled to be removed in this version.
+
+* `PartialBungieUser.fetch_self()`
+* `ProfileItemImpl.is_transferable`
+* `ProfileItemImpl.collect_characters`
+* `ProfileItemImpl.fetch_self`
+* `DestinyMembership.fetch_self_profile`
+* `QuesStatus.fetch_quest`
+* `QuestStatus.fetch_step`
+* `Objective.fetch_self`
+* `ItemsComponent.any`
+* `ItemsComponent.all`
+* `Challenges.fetch_objective`
+* `Rewards.fetch_self`
+* `Activity.is_solo`
+* `Activity.is_flawless`
+* `Activity.is_solo_flawless`
+* `Activity.fetch_post`
+* `Character.transfer_item`
+* `Character.equip_item`
+* `Character.equip_items`
+* `Character.pull_item`
+* `Character.fetch_activities`
+* `RenderedData.fetch_my_items`
+* `MinimalEquipments.fetch_my_item`
+* `AvailableActivity.fetch_self`
+* `ClanMember.ban`
+* `ClanMember.unban`
+* `ClanMember.kick`
+* `ClanMember.fetch_clan`
+* `GroupMember.fetch_self_clan`
+* `Clan.deny_pending_members`
+* `Clan.approve_pending_members`
+* `Clan.add_optional_conversations`
+* `Clan.fetch_banned_members`
+* `Clan.fetch_pending_members`
+* `Clan.fetch_invited_members`
+* `Clan.fetch_conversations`
+* `Clan.fetch_available_fireteams`
+* `Clan.fetch_fireteams`
+* `Clan.fetch_members`
+* `Clan.edit`
+* `Clan.edit_options`
+* `ClanConversation.edit`
+* `CraftablesComponent.fetch_craftables`
+* `SearchableEntity.fetch_self_item`
+
+these methods above are still accessible via the both clients, either the `RESTClient` or `Client`,
+their abstraction on the object just got removed not that actual implementation of the method.
+
+> ok but how do i reproduce those?
+
+```py
+client = aiobungie.Client("...")
+
+async def character_transfer_item() -> None:
+    # Instead of: await character.transfer_item(...)
+    # call it from the client directly.
+    await client.rest.transfer_item(token, char_id, item_id)
+
+async def character_fetch_activities() -> None:
+    # Instead of: await character.fetch_activities(...)
+    # call it from the client directly.
+    await client.fetch_activities(cid, mid, mode, ...)
+```
+
+ok but why? there're multiple reasons why those got removed.
+
+good practices; at the beginning, those methods were meant to provide a higher-level abstraction over the object itself,
+so you can call them directly from the object, while it is a nice QoL thing, it can, *if misused*, end up with worse overall code.
+this change should forward users with developing good code and practices and make them more aware of both client APIs.
+
+conflict and unsafety; since those methods can also be accessed via an empty deserializer results, this introduces bugs for the user of this lib,
+
+Example:
+
+```py
+framework = aiobungie.framework.Empty()
+
+response = requests.get(...)
+user_object = framework.deserialize_user(response.json())
+
+# this is undefined behavior, since an empty deserializer doesn't have a client associated with it.
+await user_object.fetch_self()
+```
+
+aiobungie crates are meant to be a stand-alone representation of the fetched API results. which payloads deserializes into. so those methods won't really fit in.
+
+* `.net` field removed from all objects.
+* `UserLike.icon`
+* `UserLike.last_seen_name`
+* `UserLike.is_public`
+* `ComponentFields` enum
+* `Image.url`, use `Image.create_url` instead.
+* `iterators` package in favor of [`sain`](https://github.com/nxtlo/sain)
+
+### Fixed
+
+* deserializing `Friend` object was raising `KeyError` due to `name` field.
+* `vault` option in method `pull_item` now works as intended, thanks to [#418](https://github.com/nxtlo/aiobungie/issues/418) for opening the issue.
+* `ComponentType.CHARACTER_PROGRESSIONS` enum field name typo fixed.
 
 ## [0.2.11](https://github.com/nxtlo/aiobungie/compare/0.2.10...0.2.11) - 2024-02-05
 

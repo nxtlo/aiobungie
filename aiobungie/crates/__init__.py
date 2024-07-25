@@ -22,7 +22,7 @@
 
 """aiobungie crates are a collections of dataclasses which represents a fetched result from the API, specifically using `aiobungie.Client`.
 
-This client uses the standard `aiobungie.Factory` entity factory which deserializes raw JSON payloads into a `crate`, aka a `dataclass` respectively.
+This client uses the standard `aiobungie.Framework` entity framework which deserializes raw JSON payloads into a `crate`, aka a `dataclass` respectively.
 """
 
 from __future__ import annotations
@@ -47,9 +47,10 @@ __all__ = (
     "AggregatedActivityValues",
     # application.py
     "Application",
-    "ApplicationOwner",
     # character.py
     "Character",
+    "Loadout",
+    "LoadoutItem",
     "Dye",
     "MinimalEquipments",
     "RenderedData",
@@ -57,6 +58,9 @@ __all__ = (
     "CharacterProgression",
     # clans.py
     "Clan",
+    "Group",
+    "ClanInfo",
+    "GroupDate",
     "ClanMember",
     "ClanFeatures",
     "ClanConversation",
@@ -126,6 +130,7 @@ __all__ = (
     "CharacterScopedArtifact",
     # user.py
     "User",
+    "Unique",
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",

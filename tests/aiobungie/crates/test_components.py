@@ -140,12 +140,6 @@ class TestItemsComponent:
             perks=None,
         )
 
-    def test_any_meth(self, model: crates.ItemsComponent):
-        assert model.any()
-
-    def test_all_meth(self, model: crates.ItemsComponent):
-        assert not model.all()
-
     def test_instances(self, model: crates.ItemsComponent):
         with (
             pytest.raises(attrs.FrozenInstanceError),

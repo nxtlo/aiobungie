@@ -27,7 +27,7 @@ from __future__ import annotations
 import datetime
 import pathlib
 
-__all__ = ("RESTInterface",)
+__all__ = ("RESTClient",)
 
 import abc
 import collections.abc as collections
@@ -41,31 +41,48 @@ if typing.TYPE_CHECKING:
     import concurrent.futures
     import types
 
+    from typing_extensions import Self
+
     from aiobungie import builders
     from aiobungie import typedefs
+    from aiobungie.crates import clans
     from aiobungie.crates import fireteams
 
+    _ALLOWED_LANGS = typing.Literal[
+        "en",
+        "fr",
+        "es",
+        "es-mx",
+        "de",
+        "it",
+        "ja",
+        "pt-br",
+        "ru",
+        "pl",
+        "ko",
+        "zh-cht",
+        "zh-chs",
+    ]
 
-class RESTInterface(traits.RESTful, abc.ABC):
-    """An API interface for the rest only client implementation."""
+
+class RESTClient(traits.RESTful, abc.ABC):
+    """An API interface for functionality that a REST API implementation provides."""
 
     __slots__ = ()
 
     if typing.TYPE_CHECKING:
 
-        async def __aenter__(self) -> RESTInterface:
-            ...
+        async def __aenter__(self) -> Self: ...
 
         async def __aexit__(
             self,
             exception_type: type[BaseException] | None,
             exception: BaseException | None,
             exception_traceback: types.TracebackType | None,
-        ) -> None:
-            ...
+        ) -> None: ...
 
     @abc.abstractmethod
-    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+    async def read_manifest_bytes(self, language: _ALLOWED_LANGS = "en", /) -> bytes:
         """Read raw manifest SQLite database bytes response.
 
         This method can be used to write the bytes to zipped file
@@ -98,7 +115,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         """Download the Bungie manifest json file.
@@ -132,7 +149,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     @abc.abstractmethod
     async def download_sqlite_manifest(
         self,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
@@ -170,7 +187,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `FileNotFoundError`
+        `FileExistsError`
             If the manifest file exists and `force` is `False`.
         `ValueError`
             If the provided language was not recognized.
@@ -235,6 +252,23 @@ class RESTInterface(traits.RESTful, abc.ABC):
         -------
         `aiobungie.typedefs.JSONArray`
             A JSON array of user themes.
+        """
+
+    @abc.abstractmethod
+    async def fetch_sanitized_membership(
+        self, membership_id: int, /
+    ) -> typedefs.JSONObject:
+        """Fetch a list of all display names linked to `membership_id`, Which is profanity filtered.
+
+        Parameters
+        ----------
+        membership_id: `int`
+            The membership ID to fetch
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains all the available display names.
         """
 
     @abc.abstractmethod
@@ -459,6 +493,39 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    async def report_player(
+        self,
+        access_token: str,
+        /,
+        activity_id: int,
+        character_id: int,
+        reason_hashes: collections.Sequence[int],
+        reason_category_hashes: collections.Sequence[int],
+    ) -> None:
+        """Report a player that you met in an activity that was engaging in ToS-violating activities.
+
+        .. note::
+            This method requires `BnetWrite` OAuth2 scope.
+
+        Both you and the offending player must have played in the `activity_id` passed in.
+        Please use this judiciously and only when you have strong suspicions of violation, pretty please.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        activity_id: `int`
+            The activity where you ran into the person you're reporting.
+        character_id: `int`
+            The character ID of the person you're reporting.
+        reason_hashes: `Sequence[int]`
+            [See](https://bungie-net.github.io/multi/schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest.html#schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest)
+        reason_category_hashes: `Sequence[int]`
+            [See](https://bungie-net.github.io/multi/schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest.html#schema_Destiny-Reporting-Requests-DestinyReportOffensePgcrRequest)
+        """
+
+    @abc.abstractmethod
     async def fetch_clan_from_id(
         self, id: int, /, access_token: str | None = None
     ) -> typedefs.JSONObject:
@@ -561,6 +628,65 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ------
         `aiobungie.NotFound`
             The clan was not found.
+        """
+
+    @abc.abstractmethod
+    async def search_group(
+        self,
+        name: str,
+        group_type: enums.GroupType | int,
+        *,
+        creation_date: clans.GroupDate | int = 0,
+        sort_by: int | None = None,
+        group_member_count_filter: typing.Literal[0, 1, 2, 3] | None = None,
+        locale_filter: str | None = None,
+        tag_text: str | None = None,
+        items_per_page: int | None = None,
+        current_page: int | None = None,
+        request_token: str | None = None,
+    ) -> typedefs.JSONObject:
+        """Search for groups.
+
+        .. note::
+            If the group type is set to `CLAN`, then parameters `group_member_count_filter`,
+            `locale_filter` and `tag_text` must be `None`, otherwise `ValueError` will be raised.
+
+        Parameters
+        ----------
+        name : `str`
+            The group name.
+        group_type : `aiobungie.GroupType | int`
+            The group type that's being searched for.
+
+        Other Parameters
+        ----------------
+        creation_date : `aiobungie.GroupDate | int`
+            The creation date of the group. Defaults to `0` which is all time.
+        sort_by : `int | None`
+            ...
+        group_member_count_filter : `int | None`
+            ...
+        locale_filter : `str | None`
+            ...
+        tag_text : `str | None`
+            ...
+        items_per_page : `int | None`
+            ...
+        current_page : `int | None`
+            ...
+        request_token : `str | None`
+            ...
+
+        Returns
+        --------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object of the search results.
+
+        Raises
+        ------
+        `ValueError`
+            If the group type is `aiobungie.GroupType.CLAN` and `group_member_count_filter`,
+            `locale_filter` and `tag_text` are not `None`.
         """
 
     @abc.abstractmethod
@@ -1426,7 +1552,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------------
         stack_size : `int`
             The item stack size.
-        vault: `bool`
+        vault : `bool`
             If `True`, an extra HTTP call will be performed to transfer this item to the vault, Defaults to `False`.
         """
 
@@ -2313,24 +2439,20 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_historical_definition(self) -> typedefs.JSONObject:
-        ...
+    async def fetch_historical_definition(self) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject:
-        ...
+    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_content_by_id(
         self, id: int, locale: str, /, *, head: bool = False
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_content_by_tag_and_type(
         self, locale: str, tag: str, type: str, *, head: bool = False
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_content_with_text(
@@ -2343,8 +2465,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: int | None = None,
         source: str | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_content_by_tag_and_type(
@@ -2354,14 +2475,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
         type: str,
         *,
         page: int | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_help_articles(
         self, text: str, size: str, /
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_topics_page(
@@ -2374,8 +2493,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         page: int | None = None,
         locales: collections.Iterable[str] | None = None,
         tag_filter: str | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_core_topics_page(
@@ -2386,8 +2504,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: int | None = None,
         locales: collections.Iterable[str] | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_threaded_page(
@@ -2400,8 +2517,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: str | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_threaded_page_from_child(
@@ -2413,38 +2529,31 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: str | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_post_and_parent(
         self, child_id: int, /, *, show_banned: str | None = None
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_and_parent_awaiting(
         self, child_id: int, /, *, show_banned: str | None = None
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_topic_for_content(self, content_id: int, /) -> int:
-        ...
+    async def fetch_topic_for_content(self, content_id: int, /) -> int: ...
 
     @abc.abstractmethod
     async def fetch_forum_tag_suggestions(
         self, partial_tag: str, /
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject:
-        ...
+    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray:
-        ...
+    async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray: ...
 
     @abc.abstractmethod
     async def fetch_recommended_groups(
@@ -2454,12 +2563,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         date_range: int = 0,
         group_type: enums.GroupType | int = enums.GroupType.CLAN,
-    ) -> typedefs.JSONArray:
-        ...
+    ) -> typedefs.JSONArray: ...
 
     @abc.abstractmethod
-    async def fetch_available_avatars(self) -> collections.Mapping[str, int]:
-        ...
+    async def fetch_available_avatars(self) -> collections.Mapping[str, int]: ...
 
     @abc.abstractmethod
     async def fetch_user_clan_invite_setting(
@@ -2467,8 +2574,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         membership_type: enums.MembershipType | int,
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
     @abc.abstractmethod
     async def fetch_banned_group_members(
@@ -2478,20 +2584,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         *,
         page: int = 1,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_pending_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_invited_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def invite_member_to_group(
@@ -2503,8 +2606,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: enums.MembershipType | int,
         *,
         message: str | None = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def cancel_group_member_invite(
@@ -2514,8 +2616,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         membership_id: int,
         membership_type: enums.MembershipType | int,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def equip_loadout(
@@ -2647,3 +2748,120 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type : `aiobungie.MembershipType | int`
             The membership type of the account.
         """
+
+    @abc.abstractmethod
+    async def force_drops_repair(self, access_token: str, /) -> bool:
+        """Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
+
+        .. note::
+            This operation requires `PartnerOfferGrant` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+
+        Returns
+        -------
+        `bool`
+            The nature of this response is a `boolean`.
+        """
+
+    @abc.abstractmethod
+    async def claim_partner_offer(
+        self,
+        access_token: str,
+        /,
+        *,
+        offer_id: str,
+        bungie_membership_id: int,
+        transaction_id: str,
+    ) -> bool:
+        """Claim a partner offer as the authenticated user.
+
+        .. note::
+            This operation requires `PartnerOfferGrant` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        offer_id: `str`
+            The partner offer ID
+        bungie_membership_id: `int`
+            The associated Bungie.net membership ID
+        transaction_id: `str`
+            The transaction ID
+
+        Returns
+        -------
+        `bool`
+            The nature of this response is a `boolean`.
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards_for_user(
+        self, access_token: str, /, membership_id: int
+    ) -> typedefs.JSONObject:
+        """Returns the bungie rewards for the targeted user.
+
+        .. note::
+            This operation requires `ReadAndApplyTokens` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        membership_id: `int`
+            The associated membership ID to fetch the rewards for.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards_for_platform(
+        self,
+        access_token: str,
+        /,
+        membership_id: int,
+        membership_type: enums.MembershipType | int,
+    ) -> typedefs.JSONObject:
+        """Returns the bungie rewards for the targeted user and membership.
+
+        .. note::
+            This operation requires `ReadAndApplyTokens` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token: `str`
+            The bearer access token associated with the bungie account that
+            will be used to make the request with.
+        membership_id: `int`
+            The associated membership ID to fetch the rewards for.
+        membership_type: `aiobungie.MembershipType | int`
+            The associated membership type for the user.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
+        """
+
+    @abc.abstractmethod
+    async def fetch_bungie_rewards(self) -> typedefs.JSONObject:
+        """Returns a list of the current bungie rewards.
+
+        Returns
+        -------
+        `aiobungie.typedefs.JSONObject`
+            A JSON object contains a display of the rewards. [See](https://bungie-net.github.io/multi/schema_Tokens-BungieRewardDisplay.html#schema_Tokens-BungieRewardDisplay)
+        """
+
+    @abc.abstractmethod
+    async def fetch_fireteam_listing(self, listing_id: int) -> typedefs.JSONObject: ...

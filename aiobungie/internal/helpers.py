@@ -26,7 +26,6 @@ from __future__ import annotations
 
 __all__ = (
     "deprecated",
-    "awaits",
     "get_or_make_loop",
     "unimplemented",
     "loads",
@@ -37,10 +36,8 @@ __all__ = (
 import asyncio
 import collections.abc as collections
 import functools
-import inspect
 import json as _json
 import typing
-import warnings
 
 if typing.TYPE_CHECKING:
     from aiobungie import typedefs
@@ -49,90 +46,8 @@ if typing.TYPE_CHECKING:
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
 
-class UnimplementedWarning(RuntimeWarning):
-    """A warning that is raised when a function or class is not implemented."""
-
-
-def deprecated(
-    since: str,
-    removed_in: str | None = None,
-    use_instead: str | None = None,
-    hint: str | None = None,
-) -> collections.Callable[[T], T]:
-    """A decorator that marks a function as deprecated.
-
-    Parameters
-    ----------
-    since : `str`
-        The version that the function was deprecated.
-    use_instead : `str | None`
-        If provided, This should be the alternative object name that should be used instead.
-    """
-
-    def decorator(func: T) -> T:
-        @functools.wraps(func)
-        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-            obj_type = "class" if inspect.isclass(func) else "function"
-            msg = f"\n> {obj_type} {func.__qualname__} is deprecated since {since}.\n"
-
-            if removed_in:
-                msg += f"> Will be removed in {removed_in}.\n"
-
-            if use_instead:
-                cls_name = func.__qualname__.split(".")[0]
-                msg += f'> Use "{use_instead.format(self=cls_name)}" instead.\n'
-
-            if hint:
-                cls_name = func.__qualname__.split(".")[0]
-                msg += f"> Hint: {hint}".format(self=cls_name)
-
-            warnings.warn(
-                msg,
-                stacklevel=2,
-                category=DeprecationWarning,
-            )
-            return func(*args, **kwargs)
-
-        return typing.cast("T", wrapper)
-
-    return decorator
-
-
-def unimplemented(
-    message: str | None = None, available_in: str | None = None
-) -> collections.Callable[[T], T]:
-    """A decorator that marks a function or classes as unimplemented.
-
-    Parameters
-    ----------
-    message : `str | None`
-        An optional message to be displayed when the function is called. Otherwise default message will be used.
-    available_in : `str | None`
-        If provided, This will be shown as what release this object be implemented.
-    """
-
-    def decorator(obj: T) -> T:
-        @functools.wraps(obj)
-        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-            obj_type = "class" if inspect.isclass(obj) else "function"
-            msg = (
-                message
-                or f"Warning! {obj_type} {obj.__module__}.{obj.__name__} is not implemented yet."  # noqa: W503
-            )
-
-            if available_in:
-                msg += f" Will be implemented in {available_in}."
-
-            warnings.warn(
-                msg,
-                stacklevel=2,
-                category=UnimplementedWarning,
-            )
-            return obj(*args, **kwargs)
-
-        return typing.cast("T", wrapper)
-
-    return decorator
+from sain import deprecated
+from sain import unimplemented
 
 
 def unstable(obj: T) -> collections.Callable[[T], typing.NoReturn]:
@@ -152,49 +67,6 @@ def unstable(obj: T) -> collections.Callable[[T], typing.NoReturn]:
         raise RuntimeError(f"Object {obj!s} is currently unstable.")
 
     return decorator
-
-
-# Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
-async def awaits(
-    *aws: collections.Awaitable[T_co],
-    timeout: float | None = None,
-) -> collections.Sequence[T_co]:
-    """Await all given awaitables concurrently.
-
-    Parameters
-    ----------
-    *aws : `collections.Awaitable[JT]`
-        Multiple awaitables to await.
-    timeout : `float | None`
-        An optional timeout.
-
-    Returns
-    -------
-    `collections.Sequence[T_co]`
-        A sequence of the results of the awaited coros.
-    """
-
-    if not aws:
-        # Just pass if nothing was passed.
-        pass
-
-    tasks: list[asyncio.Task[T_co]] = []
-
-    for future in aws:
-        tasks.append(asyncio.ensure_future(future))
-
-    gatherer = asyncio.gather(*tasks)
-    try:
-        return await asyncio.wait_for(gatherer, timeout=timeout)
-
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError("Gathered Futures were cancelled.") from None
-
-    finally:
-        for task in tasks:
-            if not task.done() and not task.cancelled():
-                task.cancel()
-        gatherer.cancel()
 
 
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
@@ -233,7 +105,7 @@ def dumps(
         return _json.dumps(x).encode("UTF-8")
 
     try:
-        import orjson  # type: ignore[reportMissingImports]
+        import orjson
 
         default_dumps = orjson.dumps  # type: ignore[UnknownMemberType]  # noqa: F811
     except ModuleNotFoundError:
@@ -245,7 +117,7 @@ def dumps(
             pass
 
     try:
-        return default_dumps(obj)  # pyright: ignore[reportUnknownVariableType]
+        return default_dumps(obj)
     except TypeError:
         return _json.dumps(obj).encode("UTF-8")
 
@@ -253,9 +125,9 @@ def dumps(
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
     default_loads = _json.loads
     try:
-        import orjson  # pyright: ignore[reportMissingImports]
+        import orjson
 
-        default_loads = orjson.loads  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+        default_loads = orjson.loads
 
     except ModuleNotFoundError:
         try:
@@ -265,4 +137,4 @@ def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
         except ModuleNotFoundError:
             pass
 
-    return default_loads(obj)  # pyright: ignore[reportUnknownVariableType]
+    return default_loads(obj)

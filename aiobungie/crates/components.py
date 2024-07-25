@@ -51,10 +51,8 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie.crates import activity
     from aiobungie.crates import character as character_
-    from aiobungie.crates import entity
     from aiobungie.crates import fireteams
     from aiobungie.crates import items
     from aiobungie.crates import profile
@@ -68,14 +66,6 @@ class ComponentPrivacy(int, enums.Enum):
     NONE = 0
     PUBLIC = 1
     PRIVATE = 2
-
-
-@typing.final
-class ComponentFields(enums.Enum):
-    """An enum that provides fields found in a base component response."""
-
-    PRIVACY = ComponentPrivacy.NONE
-    DISABLED = False
 
 
 # Main component cannot inherit from multiple classes that have `__slots__`
@@ -93,9 +83,8 @@ class RecordsComponent:
 
     Included Components
     -------------------
-    - `Records`
-        - `ProfileRecords`
-        - `CharacterRecords`
+    - `ProfileRecords`
+    - `CharacterRecords`
     """
 
     profile_records: collections.Mapping[int, records_.Record] | None
@@ -120,9 +109,6 @@ class RecordsComponent:
 class CraftablesComponent:
     """Represents craftables-only Bungie component."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
-
     craftables: collections.Mapping[int, items.CraftableItem | None]
     """A mapping from craftable item IDs to a craftable item component.
 
@@ -132,40 +118,6 @@ class CraftablesComponent:
 
     crafting_root_node_hash: int
     """The hash for the root presentation node definition of craftable item categories."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
-        hint="You can fetch each item in {self}.craftables concurrently using their keys.",
-    )
-    async def fetch_craftables(
-        self, limit: int | None = None
-    ) -> collections.Sequence[entity.InventoryEntity] | None:
-        """Fetch the inventory definitions for the craftables.
-
-        Parameters
-        ----------
-        limit : `int | None`
-            The maximum number of items to fetch. If not provided, all items will be fetched.
-
-        Returns
-        -------
-        `collections.Sequence[entity.InventoryEntity] | None`
-            If the craftables are available, a sequence of inventory entities. Otherwise `None`.
-        """
-
-        # No reason to turn the map keys if it was empty.
-        if not self.craftables:
-            return None
-
-        item_ids = tuple(self.craftables.keys())
-        return await helpers.awaits(
-            *[
-                self.net.request.fetch_inventory_item(item_id)
-                for item_id in item_ids[:limit]
-            ],
-        )
 
 
 @attrs.frozen(kw_only=True)
@@ -304,42 +256,6 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    def any(self) -> bool:
-        """Returns `True` if one if the components are available, `False` otherwise."""
-        return any(
-            (
-                self.instances,
-                self.render_data,
-                self.stats,
-                self.sockets,
-                self.reusable_plugs,
-                self.plug_objectives,
-                self.plug_states,
-            )
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-    )
-    def all(self) -> bool:
-        """Returns `True` if all components are available, `False` otherwise."""
-        return all(
-            (
-                self.instances,
-                self.render_data,
-                self.stats,
-                self.sockets,
-                self.reusable_plugs,
-                self.plug_objectives,
-                self.plug_states,
-            )
-        )
-
 
 @helpers.unimplemented()
 @attrs.frozen(kw_only=True)
@@ -414,6 +330,7 @@ class CharacterComponent(RecordsComponent):
     - `PresentationNodes`
     - `CharacterCurrencyLookups`
     - `Collectibles`
+    - `CharacterLoadouts`
     """
 
     character: character_.Character | None
@@ -428,20 +345,14 @@ class CharacterComponent(RecordsComponent):
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
 
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
     is passed to the request components.
     """
 
     progressions: character_.CharacterProgression | None
     """The character progression component.
 
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
     is passed to the request components.
     """
 
@@ -492,6 +403,32 @@ class CharacterComponent(RecordsComponent):
     This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
     """
 
+    loadouts: collections.Sequence[character_.Loadout] | None
+    """A sequence of loadouts that belongs to this character.
+
+    for some reason this is only populated when `CHARACTER_INVENTORY` is used
+    and not `CHARACTER_LOADOUTS` component.
+
+    This will be available when `aiobungie.ComponentType.CHARACTERS_INVENTORY` is passed to the request.
+    otherwise will be `None`.
+    """
+
+
+@attrs.frozen(kw_only=True)
+class Commendation:
+    """Basic fields found in the commendation component."""
+
+    total_score: int
+
+    node_percentages: collections.Mapping[int, int]
+    """A mapping from the percentage for each commendation type out of total received"""
+
+    score_detail_values: collections.Sequence[int]
+
+    node_scores: collections.Mapping[int, int]
+
+    commendation_scores: collections.Mapping[int, int]
+
 
 @attrs.frozen(kw_only=True)
 class Component(
@@ -519,10 +456,7 @@ class Component(
         # Assuming the component requires an auth token
         auth="ACCESS_TOKEN"
     )
-    if items := profile.profile_inventories:
-        for item in items:
-            if item.hash == 1946491241:
-                print(await item.fetch_self())
+    print(profile.profiles, profile.characters, profile.profile_inventories)
     ```
     """
 
@@ -667,8 +601,24 @@ class Component(
     is passed to the request components.
     """
 
+    character_loadouts: (
+        collections.Mapping[int, collections.Sequence[character_.Loadout]] | None
+    )
+    """A mapping from each character ID to a sequence of its loadouts.
+
+    This component will always be `None` unless `aiobungie.ComponentType.CHARACTER_LOADOUTS`
+    is passed to the request components.
+    """
+
     profile_collectibles: items.Collectible | None
     """Represents this profile's collectibles component.
 
     This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
+
+    commendation: Commendation | None
+    """Represents this profile's commendation component.
+
+    This will be available when `aiobungie.ComponentType.` is passed to the request.
+    otherwise will be `None`.
     """

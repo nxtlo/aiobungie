@@ -24,79 +24,43 @@
 
 from __future__ import annotations
 
-__all__ = ("Application", "ApplicationOwner")
+__all__ = ("Application", "ApplicationMember")
 
 import typing
 
 import attrs
 
-from aiobungie import url
-from aiobungie.crates import user
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
+from aiobungie.crates import user as _user
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     from datetime import datetime
-
-    from aiobungie import traits
-    from aiobungie.internal import assets
 
 
 @attrs.frozen(kw_only=True)
-class ApplicationOwner(user.UserLike):
-    """Represents a Bungie Application owner."""
+class ApplicationMember:
+    """Represents a Bungie developer-portal application team member."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
+    role: int
+    """The role of the application team member.
 
-    name: str | None
-    """The application owner name. This can be `UNDEFINED` if not found."""
-
-    type: enums.MembershipType
-    """The membership of the application owner."""
-
-    id: int
-    """The application owner's id."""
-
-    icon: assets.Image
-    """The application owner's icon."""
-
-    is_public: bool
-    """The application owner's profile privacy."""
-
-    code: int | None
-    """The user like's unique display name code.
-    This can be None if the user hasn't logged in after season of the lost update.
+    To convert this to a string, use `.role_as_str` method.
     """
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_bungie_user",
-    )
-    async def fetch_self(self) -> user.BungieUser:
-        """Fetch the bungie user for this application owner.
+    api_eula_version: int
+    """The EULA version of the API."""
 
-        Returns
-        -------
-        `aiobungie.crates.BungieUser`
-            A Bungie net user.
+    user: _user.PartialBungieUser
+    """The Bungie.net user associated with the application team member."""
 
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The user was not found.
-        """
-        return await self.net.request.fetch_bungie_user(self.id)
+    def role_as_str(self) -> typing.Literal["Owner", "Member", "None"]:
+        """Returns the role of the application team member as a string."""
+        if self.role == 0:
+            return "None"
+        elif self.role == 1:
+            return "Owner"
 
-    @property
-    def last_seen_name(self) -> str:
-        """The last seen name of the application owner."""
-        return self.unique_name
-
-    @property
-    def link(self) -> str:
-        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
+        return "Member"
 
 
 @attrs.frozen(kw_only=True)
@@ -104,34 +68,35 @@ class Application:
     """Represents a Bungie developer application."""
 
     id: int
-    """App id"""
+    """The application's id"""
 
     name: str
+    """The application's name"""
     """App name"""
 
     redirect_url: str | None
-    """App redirect url"""
+    """The application's redirect url"""
 
     created_at: datetime
-    """App creation date in UTC timezone"""
+    """the application's creation date."""
+
+    status_changed: datetime
+    """If the application recently changed status, this will its datetime."""
 
     published_at: datetime
-    """App's publish date in UTC timezone"""
+    """The application's publish date"""
 
     link: str
-    """App's link"""
+    """The application's link."""
 
     status: int
-    """App's status"""
+    """The application's status"""
 
     scope: str | None
-    """App's scope"""
+    """Scopes that're supported by this application."""
 
-    owner: ApplicationOwner
-    """App's owner"""
+    team: collections.Sequence[ApplicationMember]
+    """A sequence of the application members."""
 
-    def __str__(self) -> str:
-        return self.name
-
-    def __int__(self) -> int:
-        return self.id
+    origin: str
+    """Origin field of this application."""

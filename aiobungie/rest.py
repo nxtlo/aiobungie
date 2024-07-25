@@ -31,6 +31,7 @@ import contextlib
 import datetime
 import http
 import logging
+import logging.config
 import os
 import pathlib
 import sys
@@ -40,12 +41,13 @@ import zipfile
 
 import aiohttp
 
+from aiobungie import api
 from aiobungie import builders
 from aiobungie import error
-from aiobungie import interfaces
 from aiobungie import metadata
 from aiobungie import typedefs
 from aiobungie import url
+from aiobungie.crates import clans
 from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
@@ -57,7 +59,7 @@ if typing.TYPE_CHECKING:
     import concurrent.futures
     import types
 
-_MANIFEST_LANGUAGES: typing.Final[set[str]] = {
+_ALLOWED_LANGS = typing.Literal[
     "en",
     "fr",
     "es",
@@ -71,7 +73,24 @@ _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "ko",
     "zh-cht",
     "zh-chs",
-}
+]
+_MANIFEST_LANGUAGES: typing.Final[frozenset[_ALLOWED_LANGS]] = frozenset(
+    (
+        "en",
+        "fr",
+        "es",
+        "es-mx",
+        "de",
+        "it",
+        "ja",
+        "pt-br",
+        "ru",
+        "pl",
+        "ko",
+        "zh-cht",
+        "zh-chs",
+    )
+)
 
 # Client headers.
 _APP_JSON: str = "application/json"
@@ -124,7 +143,7 @@ def _collect_components(
     collector: collections.MutableSequence[str] = []
 
     for component in components:
-        if isinstance(component.value, tuple):  # pyright: ignore[reportUnknownMemberType]
+        if isinstance(component.value, tuple):
             collector.extend(str(c) for c in component.value)  # pyright: ignore
         else:
             collector.append(str(component.value))
@@ -285,6 +304,39 @@ class RESTPool:
         """Pool's Metadata. This is different from client instance metadata."""
         return self._metadata
 
+    @typing.overload
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
+
+    @typing.overload
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
+
+    @typing.final
+    def build_oauth2_url(
+        self, client_id: int | None = None
+    ) -> builders.OAuthURL | None:
+        """Construct a new `OAuthURL` url object.
+
+        You can get the complete string representation of the url by calling `.compile()` on it.
+
+        Parameters
+        ----------
+        client_id : `int | None`
+            An optional client id to provide, If left `None` it will roll back to the id passed
+            to the `RESTClient`, If both is `None` this method will return `None`.
+
+        Returns
+        -------
+        `aiobungie.builders.OAuthURL | None`
+            * If `client_id` was provided as a parameter, It guarantees to return a complete `OAuthURL` object
+            * If `client_id` is set to `aiobungie.RESTClient` will be.
+            * If both are `None` this method will return `None.
+        """
+        client_id = client_id or self._client_id
+        if client_id is None:
+            return None
+
+        return builders.OAuthURL(client_id=client_id)
+
     @typing.final
     def acquire(self) -> RESTClient:
         """Acquires a new `RESTClient` instance from this pool.
@@ -306,7 +358,7 @@ class RESTPool:
         )
 
 
-class RESTClient(interfaces.RESTInterface):
+class RESTClient(api.RESTClient):
     """A single process REST client implementation.
 
     This client is designed to only make HTTP requests and return raw JSON objects.
@@ -425,16 +477,15 @@ class RESTClient(interfaces.RESTInterface):
         *,
         auth: str | None = None,
         json: collections.Mapping[str, typing.Any] | None = None,
+        params: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
-        return await self._request(method, path, auth=auth, json=json)
+        return await self._request(method, path, auth=auth, json=json, params=params)
 
     @typing.overload
-    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL:
-        ...
+    def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
 
     @typing.overload
-    def build_oauth2_url(self) -> builders.OAuthURL | None:
-        ...
+    def build_oauth2_url(self) -> builders.OAuthURL | None: ...
 
     @typing.final
     def build_oauth2_url(
@@ -445,48 +496,6 @@ class RESTClient(interfaces.RESTInterface):
             return None
 
         return builders.OAuthURL(client_id=client_id)
-
-    @typing.final
-    def with_debug(
-        self,
-        level: typing.Literal["TRACE"] | bool | int = True,
-        file: str | pathlib.Path | None = None,
-    ) -> None:
-        """Enable debugging for this client with a level. Defaults to `True`.
-
-        Parameters
-        ----------
-        level: `NotRequired[int | bool | typing.Literal["TRACE"] | None]`
-            The level of the logger. This field is not required.
-        file: `pathlib.Path | str | None`
-            An optional file to write the logs into.
-
-        Logging Levels
-        --------------
-        * `False`: This will disable logging.
-        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-        * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
-        """
-        logging.logThreads = False
-        logging.logMultiprocessing = False
-        logging.logProcesses = False
-        logging.captureWarnings(True)
-
-        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
-
-        file_handler = (logging.FileHandler(file),) if file else None
-        if level == "TRACE" or level == TRACE:
-            logging.basicConfig(
-                level=TRACE, format=format, stream=sys.stdout, handlers=file_handler
-            )
-
-        elif level is True:
-            logging.basicConfig(
-                level=logging.DEBUG,
-                format=format,
-                stream=sys.stdout,
-                handlers=file_handler,
-            )
 
     async def _request(
         self,
@@ -502,7 +511,10 @@ class RESTClient(interfaces.RESTInterface):
         params: collections.Mapping[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
-        assert self._session is not None
+        assert self._session is not None, (
+            "This client hasn't been opened yet. Use `async with client` or `async with client.rest` "
+            "before performing any request."
+        )
 
         retries: int = 0
         headers: collections.MutableMapping[str, typing.Any] = {}
@@ -520,8 +532,10 @@ class RESTClient(interfaces.RESTInterface):
             endpoint = endpoint + url.REST_EP
 
         if oauth2:
-            assert self._client_id
-            assert self._client_secret
+            assert self._client_id, "Client ID is required to make authorized requests."
+            assert (
+                self._client_secret
+            ), "Client secret is required to make authorized requests."
             headers["client_secret"] = self._client_secret
 
             headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -550,10 +564,10 @@ class RESTClient(interfaces.RESTInterface):
                 response_time = (time.monotonic() - taken_time) * 1_000
 
                 _LOGGER.debug(
-                    "%s %s %s Time %.4fms",
+                    "METHOD: %s ROUTE: %s STATUS: %i ELAPSED: %.4fms",
                     method,
                     f"{endpoint}/{route}",
-                    f"{response.status} {response.reason}",
+                    response.status,
                     response_time,
                 )
 
@@ -601,14 +615,6 @@ class RESTClient(interfaces.RESTInterface):
                     )
 
                 json_data = self._loads(await response.read())
-
-                _LOGGER.debug(
-                    "%s %s %s Time %.4fms",
-                    method,
-                    f"{endpoint}/{route}",
-                    f"{response.status} {response.reason}",
-                    response_time,
-                )
 
                 if _LOGGER.isEnabledFor(TRACE):
                     _LOGGER.log(
@@ -773,6 +779,15 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, list)
         return resp
 
+    async def fetch_sanitized_membership(
+        self, membership_id: int, /
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET, f"User/GetSanitizedPlatformDisplayNames/{membership_id}/"
+        )
+        assert isinstance(response, dict)
+        return response
+
     async def search_users(self, name: str, /) -> typedefs.JSONObject:
         resp = await self._request(
             _POST,
@@ -800,6 +815,49 @@ class RESTClient(interfaces.RESTInterface):
         resp = await self._request(
             _GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
         )
+        assert isinstance(resp, dict)
+        return resp
+
+    async def search_group(
+        self,
+        name: str,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
+        *,
+        creation_date: clans.GroupDate | int = 0,
+        sort_by: int | None = None,
+        group_member_count_filter: typing.Literal[0, 1, 2, 3] | None = None,
+        locale_filter: str | None = None,
+        tag_text: str | None = None,
+        items_per_page: int | None = None,
+        current_page: int | None = None,
+        request_token: str | None = None,
+    ) -> typedefs.JSONObject:
+        payload: collections.MutableMapping[str, typing.Any] = {"name": name}
+
+        # as the official documentation says, you're not allowed to use those fields
+        # on a clan search. it is safe to send the request with them being `null` but not filled with a value.
+        if (
+            group_type == enums.GroupType.CLAN
+            and group_member_count_filter is not None
+            and locale_filter
+            and tag_text
+        ):
+            raise ValueError(
+                "If you're searching for clans, (group_member_count_filter, locale_filter, tag_text) must be None."
+            )
+
+        payload["groupType"] = int(group_type)
+        payload["creationDate"] = int(creation_date)
+        payload["sortBy"] = sort_by
+        payload["groupMemberCount"] = group_member_count_filter
+        payload["locale"] = locale_filter
+        payload["tagText"] = tag_text
+        payload["itemsPerPage"] = items_per_page
+        payload["currentPage"] = current_page
+        payload["requestToken"] = request_token
+        payload["requestContinuationToken"] = request_token
+
+        resp = await self._request(_POST, "GroupV2/Search/", json=payload)
         assert isinstance(resp, dict)
         return resp
 
@@ -1071,7 +1129,7 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(path, dict)
         return path
 
-    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+    async def read_manifest_bytes(self, language: _ALLOWED_LANGS = "en", /) -> bytes:
         _ensure_manifest_language(language)
 
         content = await self.fetch_manifest_path()
@@ -1086,7 +1144,7 @@ class RESTClient(interfaces.RESTInterface):
 
     async def download_sqlite_manifest(
         self,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         name: str = "manifest",
         path: pathlib.Path | str = ".",
         *,
@@ -1095,7 +1153,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> pathlib.Path:
         complete_path = _get_path(name, path, sql=True)
 
-        if complete_path.exists() and force:
+        if complete_path.exists():
             if force:
                 _LOGGER.info(
                     f"Found manifest in {complete_path!s}. Forcing to Re-Download."
@@ -1125,7 +1183,7 @@ class RESTClient(interfaces.RESTInterface):
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
         *,
-        language: str = "en",
+        language: _ALLOWED_LANGS = "en",
         executor: concurrent.futures.Executor | None = None,
     ) -> pathlib.Path:
         _ensure_manifest_language(language)
@@ -1363,6 +1421,26 @@ class RESTClient(interfaces.RESTInterface):
             auth=access_token,
         )
 
+    async def report_player(
+        self,
+        access_token: str,
+        /,
+        activity_id: int,
+        character_id: int,
+        reason_hashes: collections.Sequence[int],
+        reason_category_hashes: collections.Sequence[int],
+    ) -> None:
+        await self._request(
+            _POST,
+            f"Destiny2/Stats/PostGameCarnageReport/{activity_id}/Report/",
+            json={
+                "reasonCategoryHashes": reason_category_hashes,
+                "reasonHashes": reason_hashes,
+                "offendingCharacterId": character_id,
+            },
+            auth=access_token,
+        )
+
     async def fetch_friends(self, access_token: str, /) -> typedefs.JSONObject:
         resp = await self._request(
             _GET,
@@ -1548,7 +1626,13 @@ class RESTClient(interfaces.RESTInterface):
         )
         if vault:
             await self.transfer_item(
-                access_token, item_id, item_hash, character_id, member_type, vault=True
+                access_token,
+                item_id=item_id,
+                item_hash=item_hash,
+                character_id=character_id,
+                member_type=member_type,
+                stack_size=stack_size,
+                vault=True,
             )
 
     async def fetch_fireteams(
@@ -2298,3 +2382,68 @@ class RESTClient(interfaces.RESTInterface):
             auth=access_token,
         )
         assert isinstance(response, int)
+
+    async def force_drops_repair(self, access_token: str, /) -> bool:
+        response = await self._request(
+            _POST, "Tokens/Partner/ForceDropsRepair/", auth=access_token
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def claim_partner_offer(
+        self,
+        access_token: str,
+        /,
+        *,
+        offer_id: str,
+        bungie_membership_id: int,
+        transaction_id: str,
+    ) -> bool:
+        response = await self._request(
+            _POST,
+            "Tokens/Partner/ClaimOffer/",
+            json={
+                "PartnerOfferId": offer_id,
+                "BungieNetMembershipId": bungie_membership_id,
+                "TransactionId": transaction_id,
+            },
+            auth=access_token,
+        )
+        assert isinstance(response, bool)
+        return response
+
+    async def fetch_bungie_rewards_for_user(
+        self, access_token: str, /, membership_id: int
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET,
+            f"Tokens/Rewards/GetRewardsForUser/{membership_id}/",
+            auth=access_token,
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_bungie_rewards_for_platform(
+        self,
+        access_token: str,
+        /,
+        membership_id: int,
+        membership_type: enums.MembershipType | int,
+    ) -> typedefs.JSONObject:
+        response = await self._request(
+            _GET,
+            f"Tokens/Rewards/GetRewardsForPlatformUser/{membership_id}/{int(membership_type)}",
+            auth=access_token,
+        )
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_bungie_rewards(self) -> typedefs.JSONObject:
+        response = await self._request(_GET, "Tokens/Rewards/BungieRewards/")
+        assert isinstance(response, dict)
+        return response
+
+    async def fetch_fireteam_listing(self, listing_id: int) -> typedefs.JSONObject:
+        response = await self._request(_GET, f"FireteamFinder/Listing/{listing_id}/")
+        assert isinstance(response, dict)
+        return response

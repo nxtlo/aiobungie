@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie users."""
+"""Basic implementation of Bungie user components."""
 
 from __future__ import annotations
 
 __all__ = (
     "User",
+    "Unique",
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",
@@ -33,6 +34,7 @@ __all__ = (
     "DestinyMembership",
     "UserCredentials",
     "SearchableDestinyUser",
+    "SanitizedMembership",
 )
 
 import abc
@@ -40,59 +42,62 @@ import typing
 
 import attrs
 
+from aiobungie import builders
 from aiobungie import url
-from aiobungie.crates import components as components_
-from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     from datetime import datetime
 
-    from aiobungie import traits
 
+class Unique(abc.ABC):
+    """An interface for common fields that Destiny2/Bungie membership/user objects has.
 
-class UserLike(abc.ABC):
-    """An interface for common fields that Bungie user objects has."""
+    You can use this interface as a type hint for objects that contains minimal information.
+
+    Example
+    -------
+    ```py
+    def print_options(user: crates.Unique) -> None:
+        print(
+        "Welcome", user.unique_name,
+        "You membership type is", user.type,
+        "You profile link is", user.link
+    )
+
+    my_user = await client.fetch_bungie_user(00000)
+    print_options(my_user) # accepts a bungie user.
+
+    my_friends = await client.fetch_friends('token')
+    for friend in my_friends:
+        print_options(friend) # Friend is also unique
+    ```
+    """
 
     __slots__ = ()
 
     @property
     @abc.abstractmethod
     def id(self) -> int:
-        """The user like's id."""
+        """The user's id."""
 
     @property
     @abc.abstractmethod
     def name(self) -> str | None:
-        """The user like's name."""
-
-    @property
-    @abc.abstractmethod
-    def last_seen_name(self) -> str:
-        """The user like's last seen name."""
-
-    @property
-    @abc.abstractmethod
-    def is_public(self) -> bool:
-        """True if the user profile is public or no."""
+        """The user's name."""
 
     @property
     @abc.abstractmethod
     def type(self) -> enums.MembershipType:
-        """The user type of the user."""
-
-    @property
-    @abc.abstractmethod
-    def icon(self) -> assets.Image:
-        """The user like's icon."""
+        """The membership type of this user."""
 
     @property
     @abc.abstractmethod
     def code(self) -> int | None:
         """The user like's unique display name code.
-        This can be None if the user hasn't logged in after season of the lost update.
+
+        This can be `None` if the user hasn't logged in after season of the lost update.
         """
 
     @property
@@ -113,22 +118,25 @@ class UserLike(abc.ABC):
 
 
 @attrs.frozen(kw_only=True)
-class PartialBungieUser:
-    """Represents partial bungie user.
+class PartialBungieUser(Unique):
+    """The result of a partial `BungieUser` information. also known as battle-net membership.
 
-    This is usually used for bungie users that are missing attributes not present in `BungieUser`,
-    i.e., Clan members, Owners, Moderators and any other object the has a `bungie` attribute.
+    The difference between the two is that some memberships return information
+    about their `Bungie` user, but is incomplete, so this get used instead.
+
+    This is what's used for objects that contain `.bungie_user` field,
+    for an example `ClanMember.bungie_user`
 
     .. note::
         You can fetch the actual bungie user of this partial user
         by using `PartialBungieUser.fetch_self()` method.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
-
     name: str | None
-    """The user's name. Field may be undefined if not found."""
+    """The user's name. Field may be `None` if not found."""
+
+    code: int | None
+    """The user's global name code. Field may be `None` if not found."""
 
     id: int
     """The user's id."""
@@ -145,42 +153,19 @@ class PartialBungieUser:
     is_public: bool
     """The user's privacy."""
 
-    icon: assets.Image
+    icon: builders.Image
     """The user's icon."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_bungie_user",
-    )
-    async def fetch_self(self) -> BungieUser:
-        """Fetch the Bungie user of this partial user.
-
-        Returns
-        -------
-        `aiobungie.crates.BungieUser`
-            A Bungie net user.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The user was not found.
-        """
-        return await self.net.request.fetch_bungie_user(self.id)
-
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.id
 
 
 @attrs.frozen(kw_only=True)
-class BungieUser:
+class BungieUser(Unique):
     """Represents a user at Bungie.net."""
 
     id: int
     """The user's id"""
+
+    type: enums.MembershipType = attrs.field(default=enums.MembershipType.BUNGIE)
+    """The type of this user, always returns `aiobungie.MembershipType.BUNGIE`"""
 
     created_at: datetime
     """The user's creation datetime."""
@@ -227,13 +212,19 @@ class BungieUser:
     stadia_name: str | None
     """The user's stadia name if it exists."""
 
+    egs_name: str | None
+    """The user's EpicGames name if it exists."""
+
+    profile_ban_expire: datetime | None
+    """If this user's profile was banned, this is the expire date for it."""
+
     status: str | None
     """The user's bungie status text"""
 
     locale: str | None
     """The user's locale."""
 
-    picture: assets.Image
+    picture: builders.Image
     """The user's profile picture."""
 
     code: int | None
@@ -246,19 +237,14 @@ class BungieUser:
         """The user's profile URL at Bungie.net"""
         return f"{url.BASE}/7/en/User/Profile/254/{self.id}"
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __int__(self) -> int:
-        return self.id
+    @property
+    def link(self) -> str:
+        return self.profile_url
 
 
 @attrs.frozen(kw_only=True)
-class DestinyMembership(UserLike):
+class DestinyMembership(Unique):
     """Represents a Bungie user's Destiny 2 membership."""
-
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
 
     id: int
     """The member's id."""
@@ -275,7 +261,7 @@ class DestinyMembership(UserLike):
     types: collections.Sequence[enums.MembershipType]
     """A sequence of the member's membership types."""
 
-    icon: assets.Image
+    icon: builders.Image
     """The member's icon if it was present."""
 
     code: int | None
@@ -284,42 +270,8 @@ class DestinyMembership(UserLike):
     is_public: bool
     """The member's profile privacy status."""
 
-    crossave_override: enums.MembershipType | int
+    crossave_override: enums.MembershipType
     """The member's crossave override membership type."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_profile",
-    )
-    async def fetch_self_profile(
-        self,
-        components: collections.Sequence[enums.ComponentType],
-        auth: str | None = None,
-    ) -> components_.Component:
-        """Fetch this user's profile.
-
-        Parameters
-        ----------
-        components : `collections.Sequence[aiobungie.ComponentType]`
-            A list of profile components to collect and return.
-            This either can be arguments of integers or `aiobungie.ComponentType`.
-
-        Other Parameters
-        ----------------
-        auth : `str | None`
-            A Bearer access_token to make the request with.
-            This is optional and limited to components that only requires an Authorization token.
-
-        Returns
-        --------
-        `aiobungie.crates.Component`
-            A Destiny 2 player profile with its components.
-            Only passed components will be available if they exists. Otherwise they will be `None`
-        """
-        return await self.net.request.fetch_profile(
-            self.id, self.type, components, auth
-        )
 
 
 @attrs.frozen(kw_only=True)
@@ -401,6 +353,26 @@ class UserThemes:
 
     def __int__(self) -> int:
         return self.id
+
+
+@attrs.frozen(kw_only=True)
+class SanitizedMembership:
+    """Collections of display names linked to a membership."""
+
+    epic_games: str | None
+    """The membership's EpicGames username if it's linked."""
+
+    psn: str | None
+    """The membership's Playstation Network username if it's linked."""
+
+    steam: str | None
+    """The membership's Steam username if it's linked."""
+
+    twitch: str | None
+    """The membership's Twitch username if it's linked."""
+
+    xbox: str | None
+    """The membership's Xbox username if it's linked."""
 
 
 @attrs.frozen(kw_only=True)

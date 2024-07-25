@@ -20,11 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Aiobungie Interfaces provides abstracted objects for implementations."""
+"""API interfaces that're used for standard aiobungie client implementations.
+
+They expose the methods along with its documentations. Which also can be used as type-hints.
+"""
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("RESTInterface", "FactoryInterface")
+__all__: tuple[str, ...] = ("RESTClient", "Framework")
 
-from .factory import FactoryInterface
-from .rest import RESTInterface
+from .framework import Framework
+from .rest import RESTClient

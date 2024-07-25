@@ -48,14 +48,11 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import traits
-    from aiobungie.crates import entity
     from aiobungie.crates import user
 
 
@@ -77,8 +74,6 @@ class Difficulty(int, enums.Enum):
 class Rewards:
     """Represents rewards achieved from activities."""
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-
     hash: int
     """Reward's hash."""
 
@@ -91,42 +86,16 @@ class Rewards:
     has_conditional_visibility: bool
     """???"""
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
-    )
-    async def fetch_self(self) -> entity.InventoryEntity:
-        """Fetch the definition of this reward.
-
-        Returns
-        -------
-        `aiobungie.crates.InventoryEntity`
-            An inventory item entity of the associated hash.
-        """
-        return await self.net.request.fetch_inventory_item(self.hash)
-
 
 @attrs.frozen(kw_only=True)
 class Challenges:
     """Represents challenges found in activities."""
-
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
 
     objective_hash: int
     """The challenge's objective hash."""
 
     dummy_rewards: collections.Sequence[Rewards]
     """A sequence of the challenge rewards as they're represented in the UI."""
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_objective_entity",
-    )
-    async def fetch_objective(self) -> entity.ObjectiveEntity:
-        """Fetch the objective of this challenge."""
-        return await self.net.request.fetch_objective_entity(self.objective_hash)
 
 
 @attrs.frozen(kw_only=True)
@@ -188,6 +157,15 @@ class Location:
 
 
 @attrs.frozen(kw_only=True)
+class InteractablesRef:
+    hash: int
+    """The interactables activity hash."""
+
+    element_index: int
+    """The interactables activity element index."""
+
+
+@attrs.frozen(kw_only=True)
 class CharacterActivity:
     """Represents a character activity profile component."""
 
@@ -200,7 +178,7 @@ class CharacterActivity:
     current_mode_hash: int
     """The current activity mode hash that the player is now playing."""
 
-    current_mode: enums.GameMode | None
+    current_mode: enums.GameMode
     """The current activity mode presented an an enum."""
 
     current_mode_types: collections.Sequence[enums.GameMode]
@@ -217,6 +195,9 @@ class CharacterActivity:
 
     available_activities: collections.Sequence[AvailableActivity]
     """A sequence of the available activities associated with this character."""
+
+    available_activity_interactables: collections.Sequence[InteractablesRef]
+    """The list of activity interactables that the player can interact with."""
 
 
 @attrs.frozen(kw_only=True)
@@ -249,11 +230,6 @@ class AvailableActivity:
 
     difficulty: Difficulty
     """Activity's difficulty tier."""
-
-    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
-    async def fetch_self(self) -> entity.ActivityEntity:
-        """Fetch the definition of this activity."""
-        return NotImplemented
 
 
 @attrs.frozen(kw_only=True)
@@ -493,13 +469,15 @@ class PostActivityPlayer:
     This include weapon, super, grenade kills and more.
     """
 
+    @property
+    def power_level(self) -> int:
+        """An alias to the player's light level."""
+        return self.light_level
+
 
 @attrs.frozen(kw_only=True)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
-
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
 
     starting_phase: int
     """If this activity has "phases", this is the phase at which the activity was started."""
@@ -535,38 +513,14 @@ class PostActivity:
     """
 
     @property
-    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
-    def is_flawless(self) -> bool:
-        """Whether this activity was a flawless run or not."""
-        return all(player.values.deaths == 0 for player in self.players)
-
-    @property
-    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
-    def is_solo(self) -> bool:
-        """Whether this activity was completed solo or not."""
-        return len(self.players) == 1
-
-    @property
-    @helpers.deprecated(since="0.2.10", removed_in="0.3.0")
-    def is_solo_flawless(self) -> bool:
-        """Whether this activity was completed solo and flawless."""
-        return self.is_solo & self.is_flawless
-
-    @property
     def reference_id(self) -> int:
         """An alias to the activity's hash"""
-        return self.hash
-
-    def __int__(self) -> int:
         return self.hash
 
 
 @attrs.frozen(kw_only=True)
 class Activity:
     """Represents a Bungie Activity."""
-
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
 
     hash: int
     """The activity's reference id or hash."""
@@ -593,42 +547,9 @@ class Activity:
     """Information occurred in this activity."""
 
     @property
-    def is_flawless(self) -> bool:
-        """Whether this activity was a flawless run or not."""
-        return self.values.deaths == 0 and self.values.is_completed is True
-
-    @property
-    def is_solo(self) -> bool:
-        """Whether this activity was completed solo or not."""
-        return self.values.player_count == 1 and self.values.is_completed
-
-    @property
-    def is_solo_flawless(self) -> bool:
-        """Whether this activity was completed solo and flawless."""
-        return self.is_solo & self.is_flawless
-
-    @property
     def reference_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_post_activity",
-    )
-    async def fetch_post(self) -> PostActivity:
-        """Fetch this activity's data after it was finished.
-
-        Returns
-        -------
-        `PostActivity`
-            A post activity object.
-        """
-        return await self.net.request.fetch_post_activity(self.instance_id)
-
-    def __int__(self) -> int:
-        return self.instance_id
 
 
 @attrs.frozen(kw_only=True)

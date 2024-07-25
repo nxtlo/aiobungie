@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of a Bungie a profile."""
+"""Basic implementation of Bungie profiles components."""
 
 from __future__ import annotations
 
@@ -36,16 +36,12 @@ import typing
 
 import attrs
 
-from aiobungie.crates import entity
 from aiobungie.crates import user
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
-    from aiobungie.crates import components
     from aiobungie.crates import season
 
 
@@ -54,15 +50,15 @@ class LinkedProfile:
     """Represents a membership linked profile information summary."""
 
     profiles: collections.Sequence[user.DestinyMembership]
-    """A sequence of destiny memberships for this profile."""
+    """A sequence of Destiny2 memberships for this profile."""
 
     bungie_user: user.PartialBungieUser
-    """The profile's bungie membership."""
+    """The Bungie user that's bound to this profile."""
 
     profiles_with_errors: collections.Sequence[user.DestinyMembership] | None
-    """A sequence of optional destiny memberships with errors.
+    """A sequence of Destiny2 memberships with errors.
 
-    These profiles exists because they have missing fields. Otherwise this will be an empty array.
+    These profiles exists because they have missing fields. Otherwise this will be `None`.
     """
 
 
@@ -82,14 +78,11 @@ class ProfileProgression:
 class ProfileItemImpl:
     """Concrete implementation of any profile component item.
 
-    This also can be a character equipment i.e. Weapons, Armor, Ships, etc.
+    This can be a character equipment, i.e., Weapon, Armor, Ship, etc.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
-
     hash: int
-    """The item type hash."""
+    """The item hash."""
 
     quantity: int
     """The item quantity."""
@@ -127,38 +120,6 @@ class ProfileItemImpl:
     version_number: int | None
     """The item version number of available, other wise will be `None`."""
 
-    @property
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="Check if {self}.instance_id is not `None`.",
-        hint="You can also check if {self}.transfer_status == 0",
-    )
-    def is_transferable(self) -> bool:
-        """Check whether this item can be transferred or not."""
-        return (
-            self.transfer_status is enums.TransferStatus.CAN_TRANSFER
-            and self.instance_id is not None  # noqa: W503
-        )
-
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_inventory_item",
-    )
-    async def fetch_self(self) -> entity.InventoryEntity:
-        """Fetch this profile item.
-
-        Returns
-        -------
-        `aiobungie.crates.InventoryEntity`
-            An inventory item definition entity.
-        """
-        return await self.net.request.fetch_inventory_item(self.hash)
-
-    def __int__(self) -> int:
-        return self.hash
-
 
 @attrs.frozen(kw_only=True)
 class Profile:
@@ -168,70 +129,34 @@ class Profile:
     See `aiobungie.crates.Component` for other components.
     """
 
-    id: int
-    """Profile's id"""
-
-    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
-    """A network state used for making external requests."""
-
-    name: str
-    """Profile's name."""
-
-    type: enums.MembershipType
-    """Profile's type."""
-
-    is_public: bool
-    """Profile's privacy status."""
+    user: user.DestinyMembership
+    """Basic information about this profile's user information."""
 
     last_played: datetime.datetime
     """Profile's last played Destiny 2 played date."""
 
     character_ids: collections.Sequence[int]
-    """A list of the profile's character ids."""
+    """A sequence of the profile's character IDs."""
 
     power_cap: int
-    """The profile's current season power cap."""
+    """The current season reward power cap."""
 
-    @helpers.deprecated(
-        since="0.2.10",
-        removed_in="0.3.0",
-        use_instead="{self}.net.request.fetch_character",
-        hint="You can fetch each character concurrently with {self}.character_ids.",
-    )
-    async def collect_characters(
-        self,
-        components: collections.Sequence[enums.ComponentType],
-        auth: str | None = None,
-    ) -> collections.Sequence[components.CharacterComponent]:
-        """Fetch this profile's characters.
+    season_hashes: collections.Sequence[int]
+    """An immutable sequence of Destiny 2 season hashes this profile participated in."""
 
-        Parameters
-        ----------
-        components: `collections.Sequence[aiobungie.ComponentType]`
-            A sequence of character components to collect and return.
+    versions_owned: enums.GameVersions
+    """An enum flag representing the DLCs this profile owns."""
 
-        Other Parameters
-        ----------------
-        auth : `str | None`
-            A Bearer access_token to make the request with.
-            This is optional and limited to components that only requires an Authorization token.
+    season_hash: int
+    """ The hash of the current season. You can use this hash to fetch the definition of this season."""
 
-        Returns
-        -------
-        `collections.Sequence[aiobungie.crates.CharacterComponent]`
-            A sequence of the characters components.
-        """
-        return await helpers.awaits(
-            *[
-                self.net.request.fetch_character(
-                    self.id, self.type, char_id, components, auth
-                )
-                for char_id in self.character_ids
-            ]
-        )
+    guardian_rank: int
+    """The in-game guardian rank of this profile."""
 
-    def __str__(self) -> str:
-        return self.name
+    highest_guardian_rank: int
+    """The highest achieved in-game guardian rank of this profile."""
 
-    def __int__(self) -> int:
-        return int(self.id)
+    renewed_guardian_rank: int
+    """The renewed guardian rank of this profile."""
+
+    event_card_hashes: collections.Sequence[int]

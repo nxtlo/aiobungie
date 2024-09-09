@@ -386,13 +386,13 @@ files = [
 
 [[package]]
 name = "sain"
-version = "1.1.0"
+version = "1.2.0"
 description = "Standard Rust core types implementations for Python."
 optional = false
 python-versions = "*"
 files = [
-    {file = "sain-1.1.0-py2.py3-none-any.whl", hash = "sha256:2608d6ba5c1b9c73567160911464b55d283aedbc75098f7c2a4575b3202aa4c9"},
-    {file = "sain-1.1.0.tar.gz", hash = "sha256:44983589e1721bebdffef9ca7913ae3176af4d1bc6f823c75271240a3ac89f6f"},
+    {file = "sain-1.2.0-py2.py3-none-any.whl", hash = "sha256:c335868ecbcfadccc0414f7ecc96b91387ca15a92d1b15c0211adb6c07f3e422"},
+    {file = "sain-1.2.0.tar.gz", hash = "sha256:45ffb3b4ab55b0a76793596c389837e44a3d05b11408b9644481d6acbeb96895"},
 ]
 
 [[package]]
@@ -489,4 +489,4 @@ speedup = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.0,<3.12"
-content-hash = "c37bbdc193a6b5d9f3f5875c67c48f041f4d986da0e1fc781293a8906415421c"
+content-hash = "70c4f621416acf3293fdf5c23fa75be388e469211de3a93165a8a9d630762bfd"

@@ -24,6 +24,7 @@
 import inspect
 import os
 import sys
+import asyncio
 
 import aiobungie
 from tests import config
@@ -375,4 +376,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    client.run(main())
+    asyncio.run(main())

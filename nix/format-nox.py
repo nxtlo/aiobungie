@@ -32,7 +32,7 @@ def format(session: nox.Session) -> None:
     session.install("-r", "dev-requirements.txt", "-r", "requirements.txt")
     session.run("python", "-m", "isort", "aiobungie")
     session.run("python", "-m", "ruff", "format", ".")
-    session.run("python", "-m", "ruff", "check", ".")
+    session.run("python", "-m", "ruff", "check", ".", "--fix")
 
 
 @nox.session(reuse_venv=True)

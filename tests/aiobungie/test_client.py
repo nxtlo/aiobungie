@@ -21,6 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import asyncio
 import inspect
 import os
 import sys
@@ -375,4 +376,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    client.run(main())
+    asyncio.run(main())

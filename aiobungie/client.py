@@ -131,18 +131,6 @@ class Client(traits.Compact):
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
         return self._rest.metadata
 
-    @helpers.deprecated(since="0.3.0", removed_in="0.3.1", use_instead="asyncio.run")
-    def run(self, fn: collections.Awaitable[typing.Any], debug: bool = False) -> None:
-        loop = helpers.get_or_make_loop()
-
-        try:
-            if not loop.is_running():
-                loop.set_debug(debug)
-                loop.run_until_complete(fn)
-
-        except Exception as exc:
-            raise RuntimeError(f"Failed to run {fn!s}") from exc
-
     # * User methods.
 
     async def fetch_current_user_memberships(self, access_token: str, /) -> user.User:

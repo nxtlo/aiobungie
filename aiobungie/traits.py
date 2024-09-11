@@ -335,6 +335,33 @@ class Compact(Send, Deserialize, typing.Protocol):
 
     __slots__ = ()
 
+    def run(self, fn: collections.Awaitable[typing.Any], debug: bool = False) -> None:
+        """Runs a coroutine function until its complete.
+
+        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
+
+        Warning
+        -------
+        This method is scheduled to be removed in future versions. Please use `asyncio.run` instead.
+
+        Parameters
+        ----------
+        fn: `collections.Awaitable[Any]`
+            The async function to run.
+        debug : `bool`
+            Either to enable asyncio debug or not. Disabled by default.
+
+        Example
+        -------
+        ```py
+        async def main() -> None:
+            await fetch(...)
+
+        # Run the coroutine.
+        client.run(main())
+        ```
+        """
+
     @property
     def rest(self) -> api.RESTClient:
         """Returns the REST client for the this client."""

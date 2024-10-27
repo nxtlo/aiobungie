@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The method `search_entnties` is currently marked as `unstable` until Bungie fixes it.
 - Support `aiohttp` 3.10.5 compatibility
 
 ## [0.3.0](https://github.com/nxtlo/aiobungie/compare/0.2.11...0.3.0) - 2024-07-25

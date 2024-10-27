@@ -31,7 +31,6 @@ __all__ = (
     "InventoryEntity",
     "Entity",
     "ObjectiveEntity",
-    "EntityBase",
     "ActivityEntity",
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
@@ -39,7 +38,6 @@ __all__ = (
     "ObjectiveUIStyle",
 )
 
-import abc
 import typing
 
 import attrs
@@ -101,39 +99,8 @@ class ObjectiveUIStyle(int, enums.Enum):
     CRAFTING_MEMENTO_TITLE = 6
 
 
-class EntityBase(abc.ABC):
-    """An interface of any Bungie Definition/Entity."""
-
-    __slots__ = ()
-
-    @property
-    @abc.abstractmethod
-    def name(self) -> str | None:
-        """Entity's name. This can be `UNDEFINED` if not found."""
-
-    @property
-    @abc.abstractmethod
-    def icon(self) -> builders.Image:
-        """An optional entity's icon if its filled."""
-
-    @property
-    @abc.abstractmethod
-    def has_icon(self) -> bool:
-        """A boolean that returns True if the entity has an icon."""
-
-    @property
-    @abc.abstractmethod
-    def description(self) -> str | None:
-        """Entity's description"""
-
-    @property
-    @abc.abstractmethod
-    def hash(self) -> int:
-        """Entity's hash."""
-
-
 @attrs.frozen(kw_only=True)
-class Entity(EntityBase):
+class Entity:
     """Represents any entity in Destiny 2.
     This can be item definition, activity definition, etc.
 
@@ -161,7 +128,7 @@ class Entity(EntityBase):
 
 
 @attrs.frozen(kw_only=True)
-class SearchableEntity(EntityBase):
+class SearchableEntity:
     """Represents an entity object returned from a searchable term."""
 
     suggested_words: collections.Sequence[str]

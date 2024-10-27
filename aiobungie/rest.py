@@ -59,21 +59,23 @@ if typing.TYPE_CHECKING:
     import concurrent.futures
     import types
 
-_ALLOWED_LANGS = typing.Literal[
-    "en",
-    "fr",
-    "es",
-    "es-mx",
-    "de",
-    "it",
-    "ja",
-    "pt-br",
-    "ru",
-    "pl",
-    "ko",
-    "zh-cht",
-    "zh-chs",
-]
+    _HTTP_METHOD = typing.Literal["GET", "DELETE", "POST", "PUT", "PATCH"]
+    _ALLOWED_LANGS = typing.Literal[
+        "en",
+        "fr",
+        "es",
+        "es-mx",
+        "de",
+        "it",
+        "ja",
+        "pt-br",
+        "ru",
+        "pl",
+        "ko",
+        "zh-cht",
+        "zh-chs",
+    ]
+
 _MANIFEST_LANGUAGES: typing.Final[frozenset[_ALLOWED_LANGS]] = frozenset(
     (
         "en",
@@ -113,7 +115,6 @@ _POST: typing.Final[str] = "POST"
 # _PUT: typing.Final[str] = "PUT"
 # _PATCH: typing.Final[str] = "PATCH"
 
-_HTTP_METHOD = typing.Literal["GET", "DELETE", "POST", "PUT", "PATCH"]
 
 _LOGGER = logging.getLogger("aiobungie.rest")
 
@@ -1725,6 +1726,7 @@ class RESTClient(api.RESTClient):
         assert isinstance(resp, dict)
         return resp
 
+    @helpers.unstable
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
     ) -> typedefs.JSONObject:

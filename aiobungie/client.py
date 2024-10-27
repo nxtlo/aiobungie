@@ -1044,6 +1044,7 @@ class Client(traits.Compact):
 
         return self._framework.deserialize_objective_entity(resp)
 
+    @helpers.unstable
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
     ) -> sain.Iterator[entity.SearchableEntity]:
@@ -1067,9 +1068,9 @@ class Client(traits.Compact):
         `Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found results matching the provided name.
         """
-        resp = await self.rest.search_entities(name, entity_type, page=page)
-
-        return self._framework.deserialize_inventory_results(resp)
+        # resp = await self.rest.search_entities(name, entity_type, page=page)
+        # calling this method will raise anyways.
+        raise
 
     # Fireteams
 

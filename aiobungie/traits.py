@@ -285,7 +285,7 @@ class RESTful(typing.Protocol):
 
     async def static_request(
         self,
-        method: str,
+        method: typing.Literal["GET", "DELETE", "POST", "PUT", "PATCH"],
         path: str,
         *,
         auth: str | None = None,

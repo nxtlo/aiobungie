@@ -96,8 +96,8 @@ asyncio.run(main())
 aiobungie features are extra dependencies that replaces the standard library with either faster/neater pkgs.
 
 * `speedup`
-This will include and uses [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
-as the default `json` parser. They provide faster json serialization and de-serialization than the standard Python JSON pkg.
+This will include and uses [orjson](https://github.com/ijl/orjson)
+as the default `json` parser. They provide faster JSON serialization and de-serialization than the standard Python JSON pkg.
 * `full`: This will include all of the features above.
 
 For installing the specified feature, type `pip install aiobungie[feature-name]`

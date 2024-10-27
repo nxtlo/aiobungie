@@ -155,7 +155,6 @@ __all__ = [
 #   CustomizationOptions
 #   DestinyMembership
 #   Dye
-#   EntityBase
 #   ExtendedValues
 #   ExtendedWeaponValues
 #   Factions

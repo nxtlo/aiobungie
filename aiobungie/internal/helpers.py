@@ -105,36 +105,25 @@ def dumps(
         return _json.dumps(x).encode("UTF-8")
 
     try:
-        import orjson
+        import orjson  # pyright: ignore
 
         default_dumps = orjson.dumps  # type: ignore[UnknownMemberType]  # noqa: F811
     except ModuleNotFoundError:
-        try:
-            import ujson  # type: ignore[reportMissingImports]
-
-            default_dumps = lambda x: ujson.dumps(x).encode("UTF-8")  # noqa: E731
-        except ModuleNotFoundError:
-            pass
+        pass
 
     try:
         return default_dumps(obj)
+    # This could get raised in some scenarios, Just to be safe.
     except TypeError:
-        return _json.dumps(obj).encode("UTF-8")
+        return _json.dumps(obj).encode("utf-8")
 
 
 def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
-    default_loads = _json.loads
     try:
-        import orjson
+        import orjson  # pyright: ignore
 
-        default_loads = orjson.loads
-
+        default_loads = orjson.loads  # pyright: ignore
     except ModuleNotFoundError:
-        try:
-            import ujson  # pyright: ignore[reportMissingModuleSource]
-
-            default_loads = ujson.loads
-        except ModuleNotFoundError:
-            pass
+        default_loads = _json.loads
 
     return default_loads(obj)

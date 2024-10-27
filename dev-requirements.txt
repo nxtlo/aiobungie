@@ -2,7 +2,7 @@
 nox~=2024.10.9
 
 # Ducumentation.
-pdoc~=14.7.0
+pdoc~=15.0.0
 
 # Testing and Mocking.
 pytest~=8.3.3

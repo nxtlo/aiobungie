@@ -1,3 +1,4 @@
+# pyright: reportIncompatibleMethodOverride = false
 # MIT License
 #
 # Copyright (c) 2020 - Present nxtlo

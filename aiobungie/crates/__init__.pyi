@@ -63,7 +63,6 @@ __all__ = [
     "ActivityEntity",
     "PlaylistActivityEntity",
     "ObjectiveEntity",
-    "EntityBase",
     "SearchableEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",

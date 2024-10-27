@@ -1989,6 +1989,7 @@ class RESTClient(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    @helpers.unstable
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
     ) -> typedefs.JSONObject:

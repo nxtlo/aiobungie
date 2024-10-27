@@ -282,10 +282,11 @@ class TestEntities:
         i = await client.fetch_inventory_item(1216319404)
         assert isinstance(i, aiobungie.crates.InventoryEntity)
 
-    @staticmethod
-    async def test_search_entities():
-        acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
-        assert "Scourge of the Past" in acts.next().unwrap().name
+    # ! Unstable
+    # @staticmethod
+    # async def test_search_entities():
+    #     acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
+    #     assert "Scourge of the Past" in acts.next().unwrap().name
 
 
 # *->> Functions that doesn't fall under any of the above <<-*

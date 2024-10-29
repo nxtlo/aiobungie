@@ -4,7 +4,7 @@ A statically typed, asynchronous API wrapper that supports Bungie's REST API for
 
 ## Installing
 
-Currently Python 3.10, 3.11 and 3.12 are supported.
+Currently Python 3.10, 3.11, 3.12 and 3.13 are supported.
 
 Latest Release using `pip`.
 

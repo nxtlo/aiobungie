@@ -102,6 +102,11 @@ as the default `json` parser. They provide faster JSON serialization and de-seri
 
 For installing the specified feature, type `pip install aiobungie[feature-name]`
 
+## Optimizations
+- runtime-assertion: You can disable runtime assertions by passing a `-O` flag `python app.py -O`.
+the API responses won't get asserted at runtime which may boost the return speeds by a bit.
+- [uvloop](https://github.com/MagicStack/uvloop) (unix systems only): uvloop is an _ultra-fast_ drop in replacement library for the built-in asyncio event loop.
+
 ## Contributing
 
 Please read this [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)

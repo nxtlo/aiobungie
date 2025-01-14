@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.3.1"
+version = "0.4.0"
 description = "A Python and Asyncio API wrapper for Bungie's API."
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
-keywords = ['async', 'api', 'destiny', 'bungie']
+keywords = ['async', 'api', 'destiny', 'destiny2', 'bungie']
 readme = "README.md"
 repository = "https://github.com/nxtlo/aiobungie"
 packages = [{ include = "aiobungie" }, { include = "aiobungie/**/*.py" }]
@@ -28,10 +28,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.14"
-sain = "1.2.0"
-aiohttp = "3.11.10"
-attrs = "24.2.0"
-backports-datetime-fromisoformat = { version = "2.0.2", markers = "python_version == '3.10'" }
+sain = "1.3.0"
+aiohttp = "3.11.11"
+attrs = "24.3.0"
+backports-datetime-fromisoformat = { version = "2.0.3", markers = "python_version == '3.10'" }
 
 [tool.poetry.extras]
 speedup = ["orjson"]
@@ -42,11 +42,6 @@ xfail_strict = true
 norecursedirs = "docs *.egg-info .git .nox .pytest_cache .venv venv test_client test_rest"
 addopts = "--ignore=./tests/aiobungie/test_client.py"
 asyncio_mode = "strict"
-
-[tool.isort]
-profile = "black"
-force_single_line = true
-skip_glob = "**/__init__.pyi"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -60,9 +55,7 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
-    "aiobungie/_*.py",
     "aiobungie/_*.pyi",
-    "aiobungie/crates/_*.py",
     "aiobungie/crates/_*.pyi",
 ]
 

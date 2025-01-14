@@ -82,13 +82,13 @@ async def on_start_up(app: web.Application) -> None:
         client_secret="CLIENT_SECRET",
         client_id=0000,  # client ID.
     )
+    await client.start()
     app["client"] = client
 
 
 async def on_shutdown(app: web.Application) -> None:
-    # Called when the app shuts down.
-    # You can close servers, cleanup database, etc.
-    ...
+    pool: aiobungie.RESTPool = app["client"]
+    await pool.stop()
 
 
 def main() -> None:

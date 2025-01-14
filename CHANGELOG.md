@@ -5,7 +5,82 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.3.1...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.4.0...HEAD)
+
+## [0.4.0](https://github.com/nxtlo/aiobungie/compare/0.3.1...0.4.0) - 2025-1-14
+
+### Added
+
+- Python 3.13 Support. i know, it has been months since this released.
+- `framework.Global` is a pre initialized instance alternative to `aiobungie.Empty`.
+- You can customize the behavior of certain HTTP parameters via `aiobungie.builders.Settings`
+object, This can be used in any client implementation, Example:
+
+```py
+import aiobungie
+from aiobungie.builders import Settings
+
+# By default, it initialize pre-configured.
+# You can checkout the documentations for more details
+# on what you can configure.
+default = Settings()
+client = aiobungie.RESTClient("token", settings=default)
+```
+
+- A `settings` property on both client implementations.
+- `owned_client` parameter to `RESTClient`, This allows you to use
+your own `aiohttp.ClientSession` instance, Example.
+
+```py
+import aiobungie
+import aiohttp
+
+my_session = aiohttp.ClientSession()
+# What `owned_client=False` means here is we're using our own TCP session.
+client = aiobungie.RESTClient("token", owned_client=False, client_session=my_session)
+
+async with client:
+    ...
+```
+
+This is useful if you're using one session for the entire lifetime of the program
+which's also being used in different parts of the program,
+
+### Removed
+
+- `ujson` is no longer supported. See [Why](https://github.com/ultrajson/ultrajson?tab=readme-ov-file#project-status)
+- `Empty` framework, This was supposed to be removed in `0.3.1`.
+
+### Changed
+
+- You need to open and close the HTTP connection by yourself when using `RESTPool`, Example:
+
+```py
+import aiobungie
+
+pool = aiobungie.RESTPool("token")
+
+async def start():
+    # Starting point of the program
+    await pool.start()
+
+async def runtime():
+    # We know that the pool connection is open
+    # at this point of the program.
+    async with pool.acquire() as client:
+        ...
+
+async def closing():
+    # Exit point of the program
+    await pool.stop()
+```
+
+- The method `search_entnties` is currently marked as `unstable` until a further fix, This is a Bungie problem.
+- Methods such as `RESTClient._handle_ratelimit` and `RESTClient.open/close` has been unmarked as `@final` methods, which allows you to write your own logic.
+
+### Fixed
+
+- The `TRACE` debugging level no longer outputs sensitive data.
 
 ## [0.3.1](https://github.com/nxtlo/aiobungie/compare/0.3.0...0.3.1) - 2024-07-25
 
@@ -13,13 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- `ujson` is no longer supported.
-
 - `Client.run`, use `asyncio.run` instead.
 
 ### Changed
 
-- The method `search_entnties` is currently marked as `unstable` until Bungie fixes it.
 - Support `aiohttp` 3.10.5 compatibility
 
 ## [0.3.0](https://github.com/nxtlo/aiobungie/compare/0.2.11...0.3.0) - 2024-07-25

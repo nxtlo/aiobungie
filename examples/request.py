@@ -6,10 +6,8 @@ In this example we will use a simple requests client to make the request and des
 import requests
 
 import aiobungie
+from aiobungie import framework
 
-
-# Construct an empty framework. This will be used as a deserializer only.
-framework = aiobungie.framework.Empty()
 CLAN_TYPE = int(aiobungie.GroupType.CLAN)
 CLAN_NAME = "Redeem"  # You can use your clan name.
 TOKEN = "YOUR_TOKEN"  # This should be stored somewhere safe.
@@ -26,7 +24,7 @@ def main():
     if response.status_code == 200:
         json_response = response.json()
         # Deserialize the JSON response into a Clan Python object.
-        clan = framework.deserialize_clan(json_response["Response"])
+        clan = framework.Global.deserialize_clan(json_response["Response"])
         print(f"Clan: {clan}, Owner: {clan.owner}, Description: {clan.motto}")
     else:
         print(f"Encountered an error! {response.status_code}; {response.json()}")

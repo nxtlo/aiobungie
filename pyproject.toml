@@ -29,9 +29,9 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.14"
 sain = "1.2.0"
-aiohttp = "3.11.7"
-attrs = "24.2.0"
-backports-datetime-fromisoformat = { version = "2.0.2", markers = "python_version == '3.10'" }
+aiohttp = "3.11.11"
+attrs = "24.3.0"
+backports-datetime-fromisoformat = { version = "2.0.3", markers = "python_version == '3.10'" }
 
 [tool.poetry.extras]
 speedup = ["orjson"]

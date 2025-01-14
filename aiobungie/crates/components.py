@@ -45,17 +45,14 @@ import typing
 
 import attrs
 
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
+from aiobungie.internal import enums, helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
     from aiobungie.crates import activity
     from aiobungie.crates import character as character_
-    from aiobungie.crates import fireteams
-    from aiobungie.crates import items
-    from aiobungie.crates import profile
+    from aiobungie.crates import fireteams, items, profile
     from aiobungie.crates import records as records_
 
 

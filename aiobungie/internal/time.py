@@ -34,29 +34,34 @@ __all__ = (
 import datetime
 import sys as _sys
 import time as _time
+import warnings
+
+_has_backport = True
+if _sys.version_info.minor == 10:
+    try:
+        from backports.datetime_fromisoformat import MonkeyPatch  # pyright: ignore
+
+        MonkeyPatch.patch_fromisoformat()  # pyright: ignore[reportUnknownMemberType]
+    except ModuleNotFoundError:
+        _has_backport = False
+        warnings.warn(
+            "The backports module is required for Python 3.10 compatibility.\n"
+            "Please install it with `pip install backports-datetime-fromisoformat`"
+        )
 
 
 def from_timestamp(
-    timer: int | float, tz: datetime.timezone = datetime.timezone.utc, /
+    timestamp: int | float, tz: datetime.timezone = datetime.timezone.utc, /
 ) -> datetime.datetime:
     """Converts a timestamp to `datetime.datetime`"""
-    return datetime.datetime.fromtimestamp(timer, tz=tz)
+    return datetime.datetime.fromtimestamp(float(timestamp), tz=tz)
 
 
 def clean_date(iso_date: str, /) -> datetime.datetime:
     """Parse an `ISO8601` string datetime into a Python `datetime.datetime` object."""
     # Python 3.10 doesn't parse all ISO8601 formats, Need a backport for that.
-
-    if _sys.version_info.minor == 10:
-        try:
-            from backports.datetime_fromisoformat import MonkeyPatch  # pyright: ignore
-
-            MonkeyPatch.patch_fromisoformat()  # pyright: ignore[reportUnknownMemberType]
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "The backports module is required for Python 3.10 compatibility.\n"
-                "Please install it with `pip install backports-datetime-fromisoformat`"
-            )
+    if not _has_backport:
+        return datetime.datetime.min
 
     return datetime.datetime.fromisoformat(iso_date)
 

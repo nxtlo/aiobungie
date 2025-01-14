@@ -34,21 +34,23 @@ if typing.TYPE_CHECKING:
     from sain import Iterator
 
     from aiobungie import typedefs
-    from aiobungie.crates import activity
-    from aiobungie.crates import application
-    from aiobungie.crates import character
-    from aiobungie.crates import clans
-    from aiobungie.crates import components
-    from aiobungie.crates import entity
-    from aiobungie.crates import fireteams
-    from aiobungie.crates import friends
-    from aiobungie.crates import items
-    from aiobungie.crates import milestones
-    from aiobungie.crates import profile
-    from aiobungie.crates import progressions
-    from aiobungie.crates import records
-    from aiobungie.crates import season
-    from aiobungie.crates import user
+    from aiobungie.crates import (
+        activity,
+        application,
+        character,
+        clans,
+        components,
+        entity,
+        fireteams,
+        friends,
+        items,
+        milestones,
+        profile,
+        progressions,
+        records,
+        season,
+        user,
+    )
 
 
 class Framework(abc.ABC):

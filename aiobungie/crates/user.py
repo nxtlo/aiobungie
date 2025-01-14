@@ -43,8 +43,7 @@ import typing
 
 import attrs
 
-from aiobungie import builders
-from aiobungie import url
+from aiobungie import builders, url
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:

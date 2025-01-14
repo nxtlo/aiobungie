@@ -41,18 +41,10 @@ import zipfile
 
 import aiohttp
 
-from aiobungie import api
-from aiobungie import builders
-from aiobungie import error
-from aiobungie import metadata
-from aiobungie import typedefs
-from aiobungie import url
-from aiobungie.crates import clans
-from aiobungie.crates import fireteams
+from aiobungie import api, builders, error, metadata, typedefs, url
+from aiobungie.crates import clans, fireteams
 from aiobungie.internal import _backoff as backoff
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import time
+from aiobungie.internal import enums, helpers, time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -209,11 +201,9 @@ class _JSONPayload(aiohttp.BytesPayload):
 
 
 class RESTPool:
-    """a Pool of `RESTClient` instances.
+    """a Pool of `RESTClient` instances that shares the same TCP client connection.
 
-    This allows to acquire multiple instances of `RESTClient`s which can be acquired with the same token and metadata.
-
-    A full example of this client can be found in the examples directory.
+    This allows you to acquire instances of `RESTClient`s from single settings and credentials.
 
     Example
     -------
@@ -222,13 +212,16 @@ class RESTPool:
     import asyncio
 
     pool = aiobungie.RESTPool("token")
-    pool.metadata['auth_code'] = 'code'
 
     async def get() -> None:
-        async with pool.acquire() as rest:
-            this = await rest.fetch_current_user_memberships(pool.metadata['auth_code'])
+        await pool.start()
 
-    await asyncio.run(get())
+        async with pool.acquire() as client:
+            await client.fetch_character(...)
+
+        await pool.stop()
+
+    asyncio.run(get())
     ```
 
     Parameters
@@ -238,14 +231,16 @@ class RESTPool:
 
     Other Parameters
     ----------------
-    max_retries : `int`
-        The max retries number to retry if the request hit a `5xx` status code.
     client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    settings: `aiobungie.builders.Settings | None`
+        The client settings to use, if `None` the default will be used.
+    max_retries : `int`
+        The max retries number to retry if the request hit a `5xx` status code.
     debug : `bool | str`
         Whether to enable logging responses or not.
 
@@ -267,6 +262,7 @@ class RESTPool:
         "_client_session",
         "_loads",
         "_dumps",
+        "_settings",
     )
 
     # Looks like mypy doesn't like this.
@@ -280,7 +276,7 @@ class RESTPool:
         *,
         client_secret: str | None = None,
         client_id: int | None = None,
-        client_session: aiohttp.ClientSession | None = None,
+        settings: builders.Settings | None = None,
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
@@ -292,18 +288,28 @@ class RESTPool:
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self._enable_debug = debug
-        self._client_session = client_session
+        self._client_session: aiohttp.ClientSession | None = None
         self._loads = loads
         self._dumps = dumps
+        self._settings = settings or builders.Settings()
 
     @property
     def client_id(self) -> int | None:
+        """Return the client id of this REST client if provided, Otherwise None."""
         return self._client_id
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        """Pool's Metadata. This is different from client instance metadata."""
+        """A general-purpose mutable mapping you can use to store data.
+
+        This mapping can be accessed from any process that has a reference to this pool.
+        """
         return self._metadata
+
+    @property
+    def settings(self) -> builders.Settings:
+        """Internal client settings used within the HTTP client session."""
+        return self._settings
 
     @typing.overload
     def build_oauth2_url(self, client_id: int) -> builders.OAuthURL: ...
@@ -338,6 +344,67 @@ class RESTPool:
 
         return builders.OAuthURL(client_id=client_id)
 
+    async def start(self) -> None:
+        """Start the TCP connection of this client pool.
+
+        This will raise `RuntimeError` if the connection has already been started.
+
+        Example
+        -------
+        ```py
+        pool = aiobungie.RESTPool(...)
+
+        async def run() -> None:
+            await pool.start()
+            async with pool.acquire() as client:
+                # use client
+
+        async def stop(self) -> None:
+            await pool.close()
+        ```
+        """
+        if self._client_session is not None:
+            raise RuntimeError("<RESTPool> has already been started.") from None
+
+        self._client_session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(
+                use_dns_cache=self._settings.use_dns_cache,
+                ttl_dns_cache=self._settings.ttl_dns_cache,
+                ssl_context=self._settings.ssl_context,
+                ssl=self._settings.ssl,
+            ),
+            connector_owner=True,
+            raise_for_status=False,
+            timeout=self._settings.http_timeout,
+            trust_env=self._settings.trust_env,
+            headers=self._settings.headers,
+        )
+
+    async def stop(self) -> None:
+        """Stop the TCP connection of this client pool.
+
+        This will raise `RuntimeError` if the connection has already been closed.
+
+        Example
+        -------
+        ```py
+        pool = aiobungie.RESTPool(...)
+
+        async def run() -> None:
+            await pool.start()
+            async with pool.acquire() as client:
+                # use client
+
+        async def stop(self) -> None:
+            await pool.close()
+        ```
+        """
+        if self._client_session is None:
+            raise RuntimeError("<RESTPool> is already stopped.")
+
+        await self._client_session.close()
+        self._client_session = None
+
     @typing.final
     def acquire(self) -> RESTClient:
         """Acquires a new `RESTClient` instance from this pool.
@@ -356,6 +423,8 @@ class RESTPool:
             max_retries=self._max_retries,
             debug=self._enable_debug,
             client_session=self._client_session,
+            owned_client=False,
+            settings=self._settings,
         )
 
 
@@ -383,14 +452,24 @@ class RESTClient(api.RESTClient):
 
     Other Parameters
     ----------------
-    max_retries : `int`
-        The max retries number to retry if the request hit a `5xx` status code.
     client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    settings: `aiobungie.builders.Settings | None`
+        The client settings to use, if `None` the default will be used.
+    owned_client: `bool`
+        * If set to `True`, this client will use the provided `client_session` parameter instead,
+        * If set to `True` and `client_session` is `None`, `ValueError` will be raised.
+        * If set to `False`, aiobungie will initialize a new client session for you.
+
+    client_session: `aiohttp.ClientSession | None`
+        If provided, this client session will be used to make all the HTTP requests.
+        The `owned_client` must be set to `True` for this to work.
+    max_retries : `int`
+        The max retries number to retry if the request hit a `5xx` status code.
     debug : `bool | str`
         Whether to enable logging responses or not.
 
@@ -411,6 +490,8 @@ class RESTClient(api.RESTClient):
         "_metadata",
         "_dumps",
         "_loads",
+        "_owned_client",
+        "_settings",
     )
 
     def __init__(
@@ -420,13 +501,22 @@ class RESTClient(api.RESTClient):
         *,
         client_secret: str | None = None,
         client_id: int | None = None,
+        settings: builders.Settings | None = None,
+        owned_client: bool = True,
         client_session: aiohttp.ClientSession | None = None,
         dumps: typedefs.Dumps = helpers.dumps,
         loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
         debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
+        if owned_client is False and client_session is None:
+            raise ValueError(
+                "Expected an owned client session, but got `None`, Cannot have `owned_client` set to `False` and `client_session` to `None`"
+            )
+
+        self._settings = settings or builders.Settings()
         self._session = client_session
+        self._owned_client = owned_client
         self._lock: asyncio.Lock | None = None
         self._client_secret = client_secret
         self._client_id = client_id
@@ -449,26 +539,37 @@ class RESTClient(api.RESTClient):
     def is_alive(self) -> bool:
         return self._session is not None
 
-    @typing.final
+    @property
+    def settings(self) -> builders.Settings:
+        return self._settings
+
     async def close(self) -> None:
         if self._session is None:
             raise RuntimeError("REST client is not running.")
 
-        await self._session.close()
-        self._session = None
+        if self._owned_client:
+            await self._session.close()
+            self._session = None
 
-    @typing.final
     def open(self) -> None:
         """Open a new client session. This is called internally with contextmanager usage."""
-        if self._session:
+        if self.is_alive and self._owned_client:
             raise RuntimeError("Cannot open REST client when it's already open.")
 
-        self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(),
-            connector_owner=True,
-            raise_for_status=False,
-            timeout=aiohttp.ClientTimeout(total=30.0),
-        )
+        if self._owned_client:
+            self._session = aiohttp.ClientSession(
+                connector=aiohttp.TCPConnector(
+                    use_dns_cache=self._settings.use_dns_cache,
+                    ttl_dns_cache=self._settings.ttl_dns_cache,
+                    ssl_context=self._settings.ssl_context,
+                    ssl=self._settings.ssl,
+                ),
+                connector_owner=True,
+                raise_for_status=False,
+                timeout=self._settings.http_timeout,
+                trust_env=self._settings.trust_env,
+                headers=self._settings.headers,
+            )
 
     @typing.final
     async def static_request(
@@ -498,6 +599,7 @@ class RESTClient(api.RESTClient):
 
         return builders.OAuthURL(client_id=client_id)
 
+    @typing.final
     async def _request(
         self,
         method: _HTTP_METHOD,
@@ -626,13 +728,13 @@ class RESTClient(api.RESTClient):
 
                     details: collections.MutableMapping[str, typing.Any] = {}
                     if json:
-                        details["json"] = json
+                        details["json"] = error.filtered_headers(json)
 
                     if data:
-                        details["data"] = data
+                        details["data"] = error.filtered_headers(data)
 
                     if params:
-                        details["params"] = params
+                        details["params"] = error.filtered_headers(params)
 
                     if details:
                         _LOGGER.log(TRACE, "%s", error.stringify_headers(details))
@@ -678,7 +780,6 @@ class RESTClient(api.RESTClient):
         await self.close()
 
     # We don't want this to be super complicated.
-    @typing.final
     async def _handle_ratelimit(
         self,
         response: aiohttp.ClientResponse,

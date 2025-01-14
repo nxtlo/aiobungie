@@ -46,8 +46,7 @@ import typing
 
 import attrs
 
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
+from aiobungie.internal import enums, helpers
 
 if typing.TYPE_CHECKING:
     import aiohttp
@@ -63,6 +62,15 @@ _MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
     "BungieNext": enums.MembershipType.BUNGIE,
     "TigerStadia": enums.MembershipType.STADIA,
     "TigerDemon": enums.MembershipType.DEMON,
+}
+
+_SENSITIVE_KEYS = {
+    "Authorization",
+    "X-API-KEY",
+    "client_secret",
+    "client_id",
+    "access_token",
+    "refresh_token",
 }
 
 
@@ -434,21 +442,22 @@ async def panic(response: aiohttp.ClientResponse) -> HTTPError:
                 )
 
 
+def filtered_headers(
+    details: collections.Mapping[str, typing.Any],
+) -> collections.Mapping[str, typing.Any]:
+    return {k: v for k, v in details.items() if k not in _SENSITIVE_KEYS}
+
+
 def stringify_headers(headers: collections.Mapping[str, typing.Any]) -> str:
+    if not headers:
+        return ""
+
     return (
         "{ \n"
         + "\n".join(  # noqa: W503
             f"{f'   {key}'}: {value}"
-            if key
-            not in {
-                "Authorization",
-                "X-API-KEY",
-                "client_secret",
-                "client_id",
-                "access_token",
-                "refresh_token",
-            }
-            else f"   {key}: REDACTED_TOKEN"
+            if key not in _SENSITIVE_KEYS
+            else f"   {key}: REDACTED_KEY"
             for key, value in headers.items()
         )
         + "\n}"  # noqa: W503

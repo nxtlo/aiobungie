@@ -34,8 +34,7 @@ import collections.abc as collections
 import typing
 
 from aiobungie import traits
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
+from aiobungie.internal import enums, helpers
 
 if typing.TYPE_CHECKING:
     import concurrent.futures
@@ -43,10 +42,8 @@ if typing.TYPE_CHECKING:
 
     from typing_extensions import Self
 
-    from aiobungie import builders
-    from aiobungie import typedefs
-    from aiobungie.crates import clans
-    from aiobungie.crates import fireteams
+    from aiobungie import builders, typedefs
+    from aiobungie.crates import clans, fireteams
 
     _ALLOWED_LANGS = typing.Literal[
         "en",

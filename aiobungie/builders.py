@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL", "Image")
+__all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL", "Image", "Settings")
 
 import asyncio
 import datetime
@@ -35,22 +35,19 @@ import uuid
 import aiohttp
 import attrs
 
-from . import error
-from . import url
-from .internal import enums
-from .internal import helpers
+from . import error, url
+from .internal import enums, helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import concurrent.futures
     import os
+    import ssl
     import types
 
-    from typing_extensions import Required
-    from typing_extensions import Self
+    from typing_extensions import Required, Self
 
-    from aiobungie import traits
-    from aiobungie import typedefs
+    from aiobungie import traits, typedefs
 
     class _FinderListingValue(typing.TypedDict):
         valueType: Required[int]
@@ -60,6 +57,49 @@ if typing.TYPE_CHECKING:
         listingValue: Required[_FinderListingValue]
         rangeType: int
         matchType: int
+
+
+@typing.final
+@attrs.define(kw_only=True)
+class Settings:
+    """Basic settings used within aiobungie HTTP clients."""
+
+    http_timeout: aiohttp.ClientTimeout = attrs.field(
+        default=aiohttp.ClientTimeout(30.0)
+    )
+    """Setting to control HTTP request timeouts, This includes
+    the time it takes to acquire the client,
+    timeout for connecting and reading the socket, and more.
+
+    Defaults to total of `30.0` seconds.
+    """
+
+    trust_env: bool = attrs.field(default=False)
+    """Trust environment settings for proxy configuration.
+
+    Gets proxy credentials from `~/.netrc` file if present or
+    Gets HTTP Basic Auth credentials from `~/.netrc` file if present.
+
+    If `NETRC` environment variable is set, read from file specified 
+    there rather than from `~/.netrc`.
+    """
+
+    auth: aiohttp.BasicAuth | None = attrs.field(default=None)
+    """an object that represents HTTP Basic Authorization, Defaults to `None`."""
+
+    headers: collections.Mapping[str, typing.Any] | None = attrs.field(default=None)
+    """Default HTTP headers to send the request with, Defaults to `None`."""
+
+    use_dns_cache: bool = attrs.field(default=True)
+    """References [use_dns_cache](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector)"""
+    ttl_dns_cache: int = attrs.field(default=10)
+    """References [ttl_dns_cache](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector)"""
+    verify_ssl: bool = attrs.field(default=True)
+    """References [verify_ssl](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector)"""
+    ssl_context: ssl.SSLContext | None = attrs.field(default=None)
+    """References [ssl_context](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector)"""
+    ssl: bool | aiohttp.Fingerprint | ssl.SSLContext = attrs.field(default=True)
+    """References [ssl](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector)"""
 
 
 @typing.final
@@ -82,7 +122,9 @@ def _open_write_path(path: pathlib.Path) -> typing.BinaryIO:
 
 @typing.final
 class Image:
-    """A stream-able Bungie resource.
+    """A streamable Bungie resource.
+
+    Images are _lazy_, which mean they do nothing unless you `await` or poll them.
 
     Example
     -------
@@ -171,7 +213,7 @@ class Image:
         """
         return url.BASE + "/" + self.path
 
-    async def static_request(self) -> aiohttp.ClientResponse:
+    async def _static_request(self) -> aiohttp.ClientResponse:
         client_session = aiohttp.ClientSession()
         request = client_session.request(
             "GET", self.create_url(), raise_for_status=False
@@ -200,7 +242,7 @@ class Image:
         file_name: str,
         path: str | os.PathLike[str],
         *,
-        mime_type: MimeType | str = MimeType.JPEG,
+        mime_type: MimeType | str = MimeType.PNG,
         executor: concurrent.futures.Executor | None = None,
     ) -> None:
         """Saves this image to a file.
@@ -239,7 +281,7 @@ class Image:
         loop = helpers.get_or_make_loop()
         file = await loop.run_in_executor(executor, _open_write_path, path)
 
-        reader = await self.static_request()
+        reader = await self._static_request()
         try:
             async for chunk in reader.content:
                 await loop.run_in_executor(executor, file.write, chunk)
@@ -268,7 +310,7 @@ class Image:
         `bytes`:
             The bytes of this image.
         """
-        return await (await self.static_request()).read()
+        return await (await self._static_request()).read()
 
     async def stream(self) -> aiohttp.streams.AsyncStreamIterator[bytes]:
         """Stream this image's data.
@@ -287,17 +329,16 @@ class Image:
         Returns
         -------
         `AsyncStreamIterator[bytes]`:
-            A lazy async iterator that is ready in memory.
+            A streaming iterator of this image bytes, yielding the entire data as soon as its received.
         """
-        return (await self.static_request()).content.iter_any()
+        return (await self._static_request()).content.iter_any()
 
-    async def chunks(self, size: int) -> aiohttp.streams.AsyncStreamIterator[bytes]:
-        """Stream this image's data in chunks.
+    async def chunks(self, n: int) -> aiohttp.streams.AsyncStreamIterator[bytes]:
+        """Stream the bytes of this image in `n` chunks.
 
         Example
         -------
         ```py
-        # it must be awaited to fetch the image first.
         buffer_size = 1024
         image = Image.default()
 
@@ -313,9 +354,9 @@ class Image:
         Returns
         -------
         `AsyncStreamIterator[bytes]`:
-            lazy async iterator that is ready in memory.
+            A chunking stream of bytes.
         """
-        return (await self.static_request()).content.iter_chunked(size)
+        return (await self._static_request()).content.iter_chunked(n)
 
     async def iter(self) -> collections.AsyncGenerator[bytes, None]:
         """Yield each byte in this image from start to end.
@@ -332,7 +373,7 @@ class Image:
         Returns
         -------
         `collections.AsyncGenerator[bytes, None]`
-            An async generator that yields this image's bytes.
+            An async generator that yields this image's bytes from start to end.
         """
 
         reader = await self.chunks(1024)

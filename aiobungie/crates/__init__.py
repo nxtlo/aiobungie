@@ -1,5 +1,6 @@
 # MIT License
-#
+# ruff: noqa: F405
+# ruff: noqa: F403
 # Copyright (c) 2020 - Present nxtlo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -43,8 +43,7 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import os
 
-    from aiobungie import api
-    from aiobungie import client
+    from aiobungie import api, client
     from aiobungie.internal import enums
 
 
@@ -105,7 +104,8 @@ class RESTful(typing.Protocol):
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
         """A mutable mapping storage for the user's needs.
 
-        This mapping is useful for storing any kind of data that the user may need.
+        This mapping is useful for storing any kind of data that the user may need
+        to access later from a different process.
 
         Example
         -------
@@ -132,6 +132,11 @@ class RESTful(typing.Protocol):
     @property
     def is_alive(self) -> bool:
         """Returns `True` if the REST client is alive and `False` otherwise."""
+        raise NotImplementedError
+
+    @property
+    def settings(self) -> builders.Settings:
+        """Internal client settings used within the HTTP client session."""
         raise NotImplementedError
 
     @typing.final
@@ -327,7 +332,7 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class Compact(Send, Deserialize, typing.Protocol):
+class Compact(Deserialize, typing.Protocol):
     """A structural super-type that can perform all actions that other traits provide.
 
     This trait includes all aiobungie traits. is also automatically implemented for `aiobungie.Client`
@@ -343,4 +348,9 @@ class Compact(Send, Deserialize, typing.Protocol):
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
         """A mutable mapping storage for the user's needs."""
+        raise NotImplementedError
+
+    @property
+    def settings(self) -> builders.Settings:
+        """Internal client settings used within the HTTP client session."""
         raise NotImplementedError

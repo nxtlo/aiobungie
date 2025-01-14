@@ -47,8 +47,7 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import builders
-    from aiobungie import typedefs
+    from aiobungie import builders, typedefs
     from aiobungie.crates import activity
 
 

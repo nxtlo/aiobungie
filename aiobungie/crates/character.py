@@ -50,8 +50,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import builders
     from aiobungie.crates import milestones as milestones_
     from aiobungie.crates import progressions as progressions_
-    from aiobungie.crates import records
-    from aiobungie.crates import season
+    from aiobungie.crates import records, season
     from aiobungie.internal import enums
 
 

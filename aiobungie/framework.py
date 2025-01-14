@@ -19,43 +19,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Concrete implementations of the library's deserialization framework.
+"""Implementation of the library's deserialization framework.
 
-Exports
--------
-* `Framework`: The default deserialization framework that's used within client impl's.
-* `Empty`: An empty deserialization framework, it can be used standalone without the need of a client owner.
+* `Framework` Is the default deserialization framework that's used within client impl's.
+* `Global` Is a pre-initialized instance of `Framework` that can be used at any scope.
 """
 
 from __future__ import annotations
 
-__all__ = ("Framework", "Empty")
+__all__ = ("Framework", "Global")
 
 import typing
 
 import sain
 
-from aiobungie import api
-from aiobungie import builders
-from aiobungie import typedefs
-from aiobungie.crates import activity
-from aiobungie.crates import application
-from aiobungie.crates import character
-from aiobungie.crates import clans
-from aiobungie.crates import components
-from aiobungie.crates import entity
-from aiobungie.crates import fireteams
-from aiobungie.crates import friends
-from aiobungie.crates import items
-from aiobungie.crates import milestones
-from aiobungie.crates import profile
-from aiobungie.crates import progressions
-from aiobungie.crates import records
-from aiobungie.crates import season
-from aiobungie.crates import user
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import time
+from aiobungie import api, builders, typedefs
+from aiobungie.crates import (
+    activity,
+    application,
+    character,
+    clans,
+    components,
+    entity,
+    fireteams,
+    friends,
+    items,
+    milestones,
+    profile,
+    progressions,
+    records,
+    season,
+    user,
+)
+from aiobungie.internal import enums, time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -76,20 +72,18 @@ class Framework(api.Framework):
 
     from aiobungie import traits
     from aiobungie import framework
-    from aiobungie import crates
 
     class MyClient(traits.Deserialize):
-        rest = aiobungie.RESTClient("token")
-        my_name = "Fate怒"
-        my_code = 4275
+        def __init__(self) -> None:
+            self.rest = aiobungie.RESTClient("token")
+            self.my_name = "Fate怒"
+            self.my_code = 4275
 
         @property # required method.
         def framework(self) -> framework.Empty:
-            return framework.Empty()
+            return framework.Global
 
-        async def my_memberships(self) -> tuple[crates.DestinyMembership, ...]:
-            # Note, Do not call methods within objects, Since this is an empty
-            # factory, The client reference that makes these calls will be `None`.
+        async def my_memberships(self):
             response = await self.rest.fetch_membership(self.my_name, self.my_code)
             return self.factory.deserialize_destiny_memberships(response)
 
@@ -102,7 +96,7 @@ class Framework(api.Framework):
     ```
     """
 
-    __slots__ = ("_app",)
+    __slots__ = ()
 
     def __init__(self) -> None:
         super().__init__()
@@ -2574,14 +2568,9 @@ class Framework(api.Framework):
         )
 
 
-@typing.final
-@helpers.deprecated(
-    since="0.3.0",
-    removed_in="0.3.1",
-    use_instead="aiobungie.Framework()",
-    hint="Framework doesn't need a client owner anymore.",
-)
-class Empty(Framework):
-    """A stand-alone framework that doesn't require a client owner."""
+Global = Framework()
+"""The global framework instance.
 
-    __slots__ = ()
+This type is global constant that can be used to deserialize payloads
+without the need to initialize a new instance of the framework.
+"""

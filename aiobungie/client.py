@@ -33,23 +33,23 @@ import sain
 from aiobungie import framework
 from aiobungie import rest as rest_
 from aiobungie import traits
-from aiobungie.crates import fireteams
-from aiobungie.crates import user
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
+from aiobungie.crates import fireteams, user
+from aiobungie.internal import enums, helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import api
-    from aiobungie.crates import activity
-    from aiobungie.crates import application
-    from aiobungie.crates import clans
-    from aiobungie.crates import components
-    from aiobungie.crates import entity
-    from aiobungie.crates import friends
-    from aiobungie.crates import milestones
-    from aiobungie.crates import profile
+    from aiobungie import api, builders
+    from aiobungie.crates import (
+        activity,
+        application,
+        clans,
+        components,
+        entity,
+        friends,
+        milestones,
+        profile,
+    )
 
 
 class Client(traits.Compact):
@@ -81,14 +81,16 @@ class Client(traits.Compact):
 
     Other Parameters
     ----------------
-    max_retries : `int`
-        The max retries number to retry if the request hit a `5xx` status code.
     client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
     client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    settings: `aiobungie.builders.Settings | None`
+        The client settings to use, if `None` the default will be used.
+    max_retries : `int`
+        The max retries number to retry if the request hit a `5xx` status code.
     debug: `"TRACE" | bool | int`
         The level of logging to enable.
     """
@@ -102,6 +104,7 @@ class Client(traits.Compact):
         *,
         client_secret: str | None = None,
         client_id: int | None = None,
+        settings: builders.Settings | None = None,
         max_retries: int = 4,
         debug: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
@@ -109,6 +112,7 @@ class Client(traits.Compact):
             token,
             client_secret=client_secret,
             client_id=client_id,
+            settings=settings,
             max_retries=max_retries,
             debug=debug,
         )
@@ -124,12 +128,12 @@ class Client(traits.Compact):
         return self._rest
 
     @property
-    def request(self) -> Client:
-        return self
-
-    @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
         return self._rest.metadata
+
+    @property
+    def settings(self) -> builders.Settings:
+        return self._rest.settings
 
     # * User methods.
 

@@ -46,8 +46,7 @@ if typing.TYPE_CHECKING:
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
 
-from sain import deprecated
-from sain import unimplemented
+from sain import deprecated, unimplemented
 
 
 def unstable(obj: T) -> collections.Callable[[T], typing.NoReturn]:

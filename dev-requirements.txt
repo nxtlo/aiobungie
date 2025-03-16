@@ -1,5 +1,5 @@
 # Tester.
-nox~=2024.10.9
+nox~=2025.2.9
 
 # Ducumentation.
 pdoc~=15.0.1

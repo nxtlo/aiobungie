@@ -24,22 +24,22 @@ import nox
 import pathlib
 import shutil
 import os
+import warnings
 
 try:
     import dotenv
 
-    if cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN"):
-        os.environ["CLIENT_TOKEN"] = cli_key
+    dotenv.load_dotenv()
 except ModuleNotFoundError:
-    pass
+    warnings.warn(
+        "`python-dotenv` not found, expecting `CLIENT_TOKEN` in env variables."
+    )
 
 
 @nox.session(reuse_venv=True, name="client")
 def client_test(session: nox.Session) -> None:
     session.install("python-dotenv")
     session.install("orjson")
-    if session.env.get("CLIENT_TOKEN") is None:
-        session.error("CLIENT_TOKEN not found in env variables.")
 
     session.install("-r", "requirements.txt")
     session.install(".", "--upgrade")

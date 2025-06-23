@@ -517,14 +517,29 @@ files = [
 
 [[package]]
 name = "sain"
-version = "1.2.0"
-description = "Standard Rust core types implementations for Python."
+version = "1.4.0"
+description = "Write safe Python code like Rust"
 optional = false
-python-versions = "*"
+python-versions = ">=3.10.0"
 groups = ["main"]
 files = [
-    {file = "sain-1.2.0-py2.py3-none-any.whl", hash = "sha256:c335868ecbcfadccc0414f7ecc96b91387ca15a92d1b15c0211adb6c07f3e422"},
-    {file = "sain-1.2.0.tar.gz", hash = "sha256:45ffb3b4ab55b0a76793596c389837e44a3d05b11408b9644481d6acbeb96895"},
+    {file = "sain-1.4.0-py3-none-any.whl", hash = "sha256:6ba4494b0be9e82f41e90f1537cb56c966777db6f4d47e835e258e407cc2ded7"},
+    {file = "sain-1.4.0.tar.gz", hash = "sha256:cfc3afd3f4857028cbec890a09f098207d16713f9b72090c895589fe5c7e8727"},
+]
+
+[package.dependencies]
+typing-extensions = ">=4.13.2"
+
+[[package]]
+name = "typing-extensions"
+version = "4.14.0"
+description = "Backported and Experimental Type Hints for Python 3.9+"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "typing_extensions-4.14.0-py3-none-any.whl", hash = "sha256:a1514509136dd0b477638fc68d6a91497af5076466ad0fa6c338e44e359944af"},
+    {file = "typing_extensions-4.14.0.tar.gz", hash = "sha256:8676b788e32f02ab42d9e7c61324048ae4c6d844a399eebace3d4979d75ceef4"},
 ]
 
 [[package]]
@@ -631,4 +646,4 @@ speedup = []
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.0,<3.12"
-content-hash = "a730cc75bb7db41e16f389fad1ccb56930dbcc9ea6db97bf4482cbe318dd5c84"
+content-hash = "6f666546f610b531e1184ce42904fb60c0a70cd4ecd51139ddedf6534da7d11e"

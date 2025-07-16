@@ -373,7 +373,7 @@ async def main() -> None:
                     tasks.append(coro)
 
     async with client.rest:
-        await futures.spawn(*tasks)
+        await futures.join(*tasks)
 
 
 if __name__ == "__main__":

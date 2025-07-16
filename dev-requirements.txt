@@ -8,7 +8,7 @@ pdoc~=15.0.4
 pytest~=8.4.1
 pytest-asyncio~=1.0.0
 mock~=5.2.0
-python-dotenv~=1.1.0
+python-dotenv~=1.1.1
 
 # Format - Type checking.
 ruff~=0.12.0

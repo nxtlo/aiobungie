@@ -165,7 +165,7 @@ class RESTful(typing.Protocol):
         logging.logProcesses = False
         logging.captureWarnings(True)
 
-        format = "%(levelname)s " "%(asctime)23.23s " "%(name)s: " "%(message)s"
+        format = "%(levelname)s %(asctime)23.23s %(name)s: %(message)s"
 
         # early exit, don't bother doing anything.
         if not level:

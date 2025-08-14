@@ -80,7 +80,7 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     try:
         loop = asyncio.get_event_loop_policy().get_event_loop()
 
-        # Closed loops cannot be re-used.
+        # Closed loops cannot be reused.
         if not loop.is_closed():
             return loop
 

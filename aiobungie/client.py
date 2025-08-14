@@ -153,7 +153,7 @@ class Client(traits.Compact):
         `aiobungie.crates.user.User`
             A user object includes the Destiny memberships and Bungie.net user.
         """
-        resp = await self.rest.fetch_current_user_memberships(access_token)
+        resp = await self._rest.fetch_current_user_memberships(access_token)
 
         return self._framework.deserialize_user(resp)
 
@@ -175,7 +175,7 @@ class Client(traits.Compact):
         `aiobungie.error.NotFound`
             The user was not found.
         """
-        payload = await self.rest.fetch_bungie_user(id)
+        payload = await self._rest.fetch_bungie_user(id)
         return self._framework.deserialize_bungie_user(payload)
 
     async def search_users(
@@ -193,7 +193,7 @@ class Client(traits.Compact):
         `aiobungie.Iterator[aiobungie.crates.SearchableDestinyUser]`
             A sequence of the found users with this name.
         """
-        payload = await self.rest.search_users(name)
+        payload = await self._rest.search_users(name)
         return sain.Iter(
             self._framework.deserialize_searched_user(user)
             for user in payload["searchResults"]
@@ -207,7 +207,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.user.UserThemes]`
             A sequence of user themes.
         """
-        data = await self.rest.fetch_user_themes()
+        data = await self._rest.fetch_user_themes()
 
         return self._framework.deserialize_user_themes(data)
 
@@ -236,7 +236,7 @@ class Client(traits.Compact):
             Information about the hard linked data.
         """
 
-        payload = await self.rest.fetch_hardlinked_credentials(credential, type)
+        payload = await self._rest.fetch_hardlinked_credentials(credential, type)
 
         return user.HardLinkedMembership(
             id=int(payload["membershipId"]),
@@ -271,7 +271,7 @@ class Client(traits.Compact):
         `aiobungie.NotFound`
             The requested user was not found.
         """
-        payload = await self.rest.fetch_membership_from_id(id, type)
+        payload = await self._rest.fetch_membership_from_id(id, type)
 
         return self._framework.deserialize_user(payload)
 
@@ -300,7 +300,7 @@ class Client(traits.Compact):
         `aiobungie.Unauthorized`
             The access token was wrong or no access token passed.
         """
-        resp = await self.rest.fetch_user_credentials(access_token, membership_id)
+        resp = await self._rest.fetch_user_credentials(access_token, membership_id)
 
         return self._framework.deserialize_user_credentials(resp)
 
@@ -374,7 +374,7 @@ class Client(traits.Compact):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(member_id, type, components, auth)
+        data = await self._rest.fetch_profile(member_id, type, components, auth)
         return self._framework.deserialize_components(data)
 
     async def fetch_linked_profiles(
@@ -413,7 +413,7 @@ class Client(traits.Compact):
         `aiobungie.crates.profile.LinkedProfile`
             A linked profile object.
         """
-        resp = await self.rest.fetch_linked_profiles(member_id, member_type, all=all)
+        resp = await self._rest.fetch_linked_profiles(member_id, member_type, all=all)
 
         return self._framework.deserialize_linked_profiles(resp)
 
@@ -446,7 +446,7 @@ class Client(traits.Compact):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_membership(name, code, type)
+        resp = await self._rest.fetch_membership(name, code, type)
 
         return self._framework.deserialize_destiny_memberships(resp)
 
@@ -501,7 +501,7 @@ class Client(traits.Compact):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_character(
+        resp = await self._rest.fetch_character(
             member_id, membership_type, character_id, components, auth
         )
 
@@ -545,8 +545,8 @@ class Client(traits.Compact):
         member_id: int,
         character_id: int,
         mode: enums.GameMode | int,
+        membership_type: enums.MembershipType | int,
         *,
-        membership_type: enums.MembershipType | int = enums.MembershipType.ALL,
         page: int = 0,
         limit: int = 250,
     ) -> sain.Iterator[activity.Activity]:
@@ -560,11 +560,11 @@ class Client(traits.Compact):
             The id of the character to retrieve the activities for.
         mode: `aiobungie.aiobungie.internal.enums.GameMode | int`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+        membership_type: `aiobungie.internal.enums.MembershipType`
+            The Destiny 2 membership type.
 
         Other Parameters
         ----------------
-        membership_type: `aiobungie.internal.enums.MembershipType`
-            The Member ship type, if nothing was passed than it will return all.
         page: int
             The page number. Default is `0`
         limit: int
@@ -580,7 +580,7 @@ class Client(traits.Compact):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_activities(
+        resp = await self._rest.fetch_activities(
             member_id,
             character_id,
             mode,
@@ -604,7 +604,7 @@ class Client(traits.Compact):
         `aiobungie.crates.PostActivity`
            A post activity object.
         """
-        resp = await self.rest.fetch_post_activity(instance_id)
+        resp = await self._rest.fetch_post_activity(instance_id)
 
         return self._framework.deserialize_post_activity(resp)
 
@@ -635,7 +635,7 @@ class Client(traits.Compact):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_aggregated_activity_stats(
+        resp = await self._rest.fetch_aggregated_activity_stats(
             character_id, membership_id, membership_type
         )
 
@@ -666,7 +666,7 @@ class Client(traits.Compact):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan_from_id(id, access_token)
+        resp = await self._rest.fetch_clan_from_id(id, access_token)
 
         return self._framework.deserialize_clan(resp)
 
@@ -707,7 +707,7 @@ class Client(traits.Compact):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan(name, access_token, type=type)
+        resp = await self._rest.fetch_clan(name, access_token, type=type)
 
         return self._framework.deserialize_clan(resp)
 
@@ -725,7 +725,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.ClanConversation]`
             A sequence of the clan chat channels.
         """
-        resp = await self.rest.fetch_clan_conversations(clan_id)
+        resp = await self._rest.fetch_clan_conversations(clan_id)
 
         return self._framework.deserialize_clan_conversations(resp)
 
@@ -749,7 +749,7 @@ class Client(traits.Compact):
         `aiobungie.NotFound`
             The requested clan was not found.
         """
-        resp = await self.rest.fetch_clan_admins(clan_id)
+        resp = await self._rest.fetch_clan_admins(clan_id)
 
         return self._framework.deserialize_clan_members(resp)
 
@@ -784,7 +784,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.GroupMember]`
             A sequence of joined groups for the fetched member.
         """
-        resp = await self.rest.fetch_groups_for_member(
+        resp = await self._rest.fetch_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
 
@@ -823,7 +823,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.GroupMember]`
             A sequence of joined potential groups for the fetched member.
         """
-        resp = await self.rest.fetch_potential_groups_for_member(
+        resp = await self._rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
 
@@ -866,7 +866,7 @@ class Client(traits.Compact):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan_members(clan_id, type=type, name=name)
+        resp = await self._rest.fetch_clan_members(clan_id, type=type, name=name)
 
         return self._framework.deserialize_clan_members(resp)
 
@@ -878,7 +878,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.ClanBanner]`
             A sequence of the clan banners.
         """
-        resp = await self.rest.fetch_clan_banners()
+        resp = await self._rest.fetch_clan_banners()
 
         return self._framework.deserialize_clan_banners(resp)
 
@@ -912,7 +912,7 @@ class Client(traits.Compact):
         `aiobungie.crates.clan.Clan`
             The clan that the member was kicked from.
         """
-        resp = await self.rest.kick_clan_member(
+        resp = await self._rest.kick_clan_member(
             access_token,
             group_id=group_id,
             membership_id=membership_id,
@@ -935,7 +935,7 @@ class Client(traits.Compact):
             A runtime status of the clan's milestone data.
         """
 
-        resp = await self.rest.fetch_clan_weekly_rewards(clan_id)
+        resp = await self._rest.fetch_clan_weekly_rewards(clan_id)
 
         return self._framework.deserialize_milestone(resp)
 
@@ -1027,7 +1027,7 @@ class Client(traits.Compact):
         `aiobungie.crates.InventoryEntity`
             A bungie inventory item.
         """
-        resp = await self.rest.fetch_inventory_item(hash)
+        resp = await self._rest.fetch_inventory_item(hash)
 
         return self._framework.deserialize_inventory_entity(resp)
 
@@ -1044,7 +1044,7 @@ class Client(traits.Compact):
         `aiobungie.crates.ObjectiveEntity`
             An objective entity item.
         """
-        resp = await self.rest.fetch_objective_entity(hash)
+        resp = await self._rest.fetch_objective_entity(hash)
 
         return self._framework.deserialize_objective_entity(resp)
 
@@ -1072,12 +1072,13 @@ class Client(traits.Compact):
         `Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found results matching the provided name.
         """
-        # resp = await self.rest.search_entities(name, entity_type, page=page)
+        # resp = await self._rest.search_entities(name, entity_type, page=page)
         # calling this method will raise anyways.
         raise
 
     # Fireteams
 
+    @helpers.unstable
     async def fetch_fireteams(
         self,
         activity_type: fireteams.FireteamActivity | int,
@@ -1116,16 +1117,18 @@ class Client(traits.Compact):
             A sequence of `aiobungie.crates.Fireteam`.
         """
 
-        resp = await self.rest.fetch_fireteams(
-            activity_type,
-            platform=platform,
-            language=language,
-            date_range=date_range,
-            page=page,
-            slots_filter=slots_filter,
-        )
+        # resp = await self._rest.fetch_fireteams(
+        #     activity_type,
+        #     platform=platform,
+        #     language=language,
+        #     date_range=date_range,
+        #     page=page,
+        #     slots_filter=slots_filter,
+        # )
 
-        return self._framework.deserialize_fireteams(resp)
+        # return self._framework.deserialize_fireteams(resp)
+        # ! unreachable
+        raise
 
     async def fetch_available_clan_fireteams(
         self,
@@ -1177,7 +1180,7 @@ class Client(traits.Compact):
             A sequence of  fireteams found in the clan.
             `None` will be returned if nothing was found.
         """
-        resp = await self.rest.fetch_available_clan_fireteams(
+        resp = await self._rest.fetch_available_clan_fireteams(
             access_token,
             group_id,
             activity_type,
@@ -1213,7 +1216,7 @@ class Client(traits.Compact):
         `aiobungie.crates.AvailableFireteam`
             A sequence of available fireteams objects.
         """
-        resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
+        resp = await self._rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
 
         return self._framework.deserialize_available_fireteam(resp)
 
@@ -1261,7 +1264,7 @@ class Client(traits.Compact):
         `collections.Sequence[aiobungie.crates.AvailableFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
-        resp = await self.rest.fetch_my_clan_fireteams(
+        resp = await self._rest.fetch_my_clan_fireteams(
             access_token,
             group_id,
             include_closed=include_closed,
@@ -1294,7 +1297,7 @@ class Client(traits.Compact):
             A sequence of the friends associated with that access token.
         """
 
-        resp = await self.rest.fetch_friends(access_token)
+        resp = await self._rest.fetch_friends(access_token)
 
         return self._framework.deserialize_friends(resp)
 
@@ -1317,7 +1320,7 @@ class Client(traits.Compact):
             A friend requests view of that associated access token.
         """
 
-        resp = await self.rest.fetch_friend_requests(access_token)
+        resp = await self._rest.fetch_friend_requests(access_token)
 
         return self._framework.deserialize_friend_requests(resp)
 
@@ -1336,7 +1339,7 @@ class Client(traits.Compact):
         `aiobungie.crates.Application`
             A Bungie application.
         """
-        resp = await self.rest.fetch_application(appid)
+        resp = await self._rest.fetch_application(appid)
 
         return self._framework.deserialize_application(resp)
 
@@ -1358,5 +1361,5 @@ class Client(traits.Compact):
             A milestone content object.
         """
         ...
-        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
+        resp = await self._rest.fetch_public_milestone_content(milestone_hash)
         return self._framework.deserialize_public_milestone_content(resp)

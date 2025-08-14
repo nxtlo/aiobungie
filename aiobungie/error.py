@@ -132,9 +132,9 @@ class HTTPException(HTTPError):
             f"{status_name}: " + "("
             f"""
             http_status: {status_value},
-            message: {self.message if self.message else 'UNDEFINED'},
-            error_status: {self.error_status if self.error_status else 'UNDEFINED'},
-            url: {self.url if self.url else 'UNDEFINED'},
+            message: {self.message if self.message else "UNDEFINED"},
+            error_status: {self.error_status if self.error_status else "UNDEFINED"},
+            url: {self.url if self.url else "UNDEFINED"},
             message_data: {self.message_data}
         """ + ")"
         )

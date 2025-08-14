@@ -31,7 +31,6 @@ import contextlib
 import datetime
 import http
 import logging
-import logging.config
 import os
 import pathlib
 import sys
@@ -151,8 +150,7 @@ def _ensure_manifest_language(language: str) -> None:
     if language not in _MANIFEST_LANGUAGES:
         langs = "\n".join(_MANIFEST_LANGUAGES)
         raise ValueError(
-            f"{language} is not a valid manifest language, "
-            f"valid languages are: {langs}"
+            f"{language} is not a valid manifest language, valid languages are: {langs}"
         )
 
 
@@ -636,9 +634,9 @@ class RESTClient(api.RESTClient):
 
         if oauth2:
             assert self._client_id, "Client ID is required to make authorized requests."
-            assert (
-                self._client_secret
-            ), "Client secret is required to make authorized requests."
+            assert self._client_secret, (
+                "Client secret is required to make authorized requests."
+            )
             headers["client_secret"] = self._client_secret
 
             headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -1737,6 +1735,7 @@ class RESTClient(api.RESTClient):
                 vault=True,
             )
 
+    @helpers.unstable
     async def fetch_fireteams(
         self,
         activity_type: fireteams.FireteamActivity | int,

@@ -6,8 +6,6 @@ updates:
       interval: daily
     assignees:
       - nxtlo
-    reviewers:
-      - nxtlo
     rebase-strategy: auto
     target-branch: master
 
@@ -16,8 +14,6 @@ updates:
     schedule:
       interval: daily
     assignees:
-      - nxtlo
-    reviewers:
       - nxtlo
     rebase-strategy: auto
     target-branch: master

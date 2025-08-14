@@ -435,7 +435,7 @@ class RESTClient(traits.RESTful, abc.ABC):
         member_id: int,
         character_id: int,
         mode: enums.GameMode | int,
-        membership_type: enums.MembershipType | int = enums.MembershipType.ALL,
+        membership_type: enums.MembershipType | int,
         *,
         page: int = 1,
         limit: int = 1,
@@ -450,11 +450,11 @@ class RESTClient(traits.RESTful, abc.ABC):
             The id of the character to retrieve.
         mode: `aiobungie.aiobungie.GameMode | int`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+        membership_type: `aiobungie.aiobungie.internal.enums.MembershipType | int`
+            The Destiny 2 membership type.
 
         Other Parameters
         ----------------
-        membership_type: `aiobungie.aiobungie.internal.enums.MembershipType | int`
-            The Member ship type, if nothing was passed than it will return all.
         page: `int`
             The page number. Default to `1`
         limit: `int`
@@ -469,7 +469,6 @@ class RESTClient(traits.RESTful, abc.ABC):
         ------
         `aiobungie.error.NotFound`
             The activity was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """

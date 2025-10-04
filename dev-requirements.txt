@@ -6,7 +6,7 @@ pdoc~=15.0.4
 
 # Testing and Mocking.
 pytest~=8.4.1
-pytest-asyncio~=1.1.0
+pytest-asyncio~=1.2.0
 mock~=5.2.0
 python-dotenv~=1.1.1
 

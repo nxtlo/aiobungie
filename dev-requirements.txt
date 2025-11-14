@@ -6,13 +6,13 @@ pdoc~=15.0.4
 
 # Testing and Mocking.
 pytest~=8.4.2
-pytest-asyncio~=1.1.0
+pytest-asyncio~=1.2.0
 mock~=5.2.0
 python-dotenv~=1.1.1
 
 # Format - Type checking.
-ruff~=0.12.10
-isort~=6.0.1
-pyright~=1.1.404
+ruff~=0.13.3
+isort~=7.0.0
+pyright~=1.1.406
 typing-extensions~=4.15.0
 codespell~=2.4.1

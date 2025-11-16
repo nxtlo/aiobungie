@@ -6,7 +6,7 @@ aiobungie is built to be extensible and reusable, allowing its users to freely s
 
 ## Installing
 
-Currently Python 3.10, 3.11, 3.12 and 3.13 are supported.
+*The minimum Python interpreter version support is 3.10*
 
 Stable `pip`.
 

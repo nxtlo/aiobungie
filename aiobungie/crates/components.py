@@ -45,7 +45,7 @@ import typing
 
 import attrs
 
-from aiobungie.internal import enums, helpers
+from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -254,7 +254,6 @@ class ItemsComponent(UninstancedItemsComponent):
     """
 
 
-@helpers.unimplemented()
 @attrs.frozen(kw_only=True)
 class VendorsComponent:
     """Represents vendors-only Bungie component."""

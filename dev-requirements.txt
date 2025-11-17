@@ -11,7 +11,7 @@ mock~=5.2.0
 python-dotenv~=1.1.1
 
 # Format - Type checking.
-ruff~=0.13.3
+ruff~=0.14.5
 isort~=7.0.0
 pyright~=1.1.406
 typing-extensions~=4.15.0
